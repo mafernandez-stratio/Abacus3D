@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:h5="http://java.sun.com/jsf/composite/html5">
+    <f:view>
+        <h:head>
+            <title>Canvas example</title>            
+            <!--style>
+                canvas {width: 80%; height: 80%; background: lightgray;}
+            </style-->
+        </h:head>
+        <h:body style="background: #fefeef">
+            <!--h:outputScript library="js" name="jquery-1.9.1.min.js"/-->           
+            <h:outputScript library="js" name="three.js"/>
+            
+            <!--h:outputScript library="js" name="canvasThree.js"/-->
+            <h:outputScript library="js" name="canvas.js"/>
+            <!--h:outputScript library="js" name="helloworld.js"/-->
+            <!--h:outputScript library="js" name="holamundo.js"/-->
+            
+            <!--h5:canvas id="exampleCanvas" 
+                       width="400px" 
+                       height="400px" 
+                       lineWidth="10"
+                       script="canvas.js">                           
+                Your browser does not support HTML5 canvas                     
+            </h5:canvas-->     
+        </h:body>
+    </f:view>
+</html>
