@@ -41,6 +41,7 @@ scene.add(figure);
 
 camera.position.z = 5;
 
+/*
 var render = function () { 
     requestAnimationFrame(render);
     
@@ -50,5 +51,6 @@ var render = function () {
 };
 
 render();
+ */
 
-//renderer.render(scene, camera); 
+renderer.render(scene, camera); 
