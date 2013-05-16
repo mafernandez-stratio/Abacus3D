@@ -8,8 +8,8 @@ and open the template in the editor.
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:rich="http://richfaces.org/rich"
-      xmlns:h5="http://java.sun.com/jsf/composite/html5">
+      xmlns:rich="http://richfaces.org/rich">
+      <!--xmlns:h5="http://java.sun.com/jsf/composite/html5"-->
     <f:view>
         <h:head>
             <title>Canvas example</title>            
@@ -25,12 +25,14 @@ and open the template in the editor.
             <!--script src="http://threejs.org/build/three.min.js"/-->
             <!--script src="http://threejs.org/examples/js/libs/stats.min.js"/-->
             
+            <h:outputScript name="js/controls/TrackballControls.js"/>
             
             <!--h:outputScript library="js" name="canvasThree.js"/-->
             <!--h:outputScript library="js" name="canvas.js"/-->
             <!--h:outputScript library="js" name="sphere.js"/-->
             <!--h:outputScript library="js" name="helloworld.js"/-->
-            <h:outputScript library="js" name="canvasSphere.js"/>
+            <h:outputScript library="js" name="webgl_interactive_draggablecubes.js"/>
+            <!--h:outputScript library="js" name="canvasSphere.js"/-->
             
             <!--h5:canvas id="exampleCanvas" 
                        width="400px" 
