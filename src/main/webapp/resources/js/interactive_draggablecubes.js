@@ -1,4 +1,4 @@
-var container, stats;
+var container;
 var camera, controls, scene, projector, renderer;
 var objects = [], plane;
 
@@ -27,10 +27,10 @@ function init() {
 
     scene = new THREE.Scene();
 
-    scene.add( new THREE.AmbientLight( 0x505050 ) );
+    scene.add(new THREE.AmbientLight(0x505050));
 
-    var light = new THREE.SpotLight( 0xffffff, 1.5 );
-    light.position.set( 0, 500, 2000 );
+    var light = new THREE.SpotLight(0xffffff, 1.5);
+    light.position.set(0, 500, 2000);
     light.castShadow = true;
 
     light.shadowCameraNear = 200;
@@ -43,12 +43,12 @@ function init() {
     light.shadowMapWidth = 2048;
     light.shadowMapHeight = 2048;
 
-    scene.add( light );
+    scene.add(light);
 
-    var geometry = new THREE.CubeGeometry( 40, 40, 40 );
+    var geometry = new THREE.CubeGeometry(40, 40, 40);
 
     for ( var i = 0; i < 200; i ++ ) {
-        var object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: Math.random() * 0xffffff } ) );
+        var object = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({color: Math.random() * 0xffffff}));
 
         object.material.ambient = object.material.color;
 
@@ -67,54 +67,40 @@ function init() {
         object.castShadow = true;
         object.receiveShadow = true;
 
-        scene.add( object );
+        scene.add(object);
 
-        objects.push( object );
+        objects.push(object);
     }
 
-    plane = new THREE.Mesh( new THREE.PlaneGeometry( 2000, 2000, 8, 8 ), new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.25, transparent: true, wireframe: true } ) );
+    plane = new THREE.Mesh(new THREE.PlaneGeometry(2000, 2000, 8, 8), new THREE.MeshBasicMaterial({color: 0x000000, opacity: 0.25, transparent: true, wireframe: true}));
     plane.visible = false;
-    scene.add( plane );
+    scene.add(plane);
 
     projector = new THREE.Projector();
 
-    renderer = new THREE.WebGLRenderer({ antialias: true});
+    //renderer = new THREE.WebGLRenderer({antialias: true});
+    renderer = new THREE.CanvasRenderer();
     renderer.sortObjects = false;
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(window.innerWidth*0.9, window.innerHeight*0.9);
 
     renderer.shadowMapEnabled = true;
     renderer.shadowMapType = THREE.PCFShadowMap;
 
     container.appendChild(renderer.domElement);
 
-    var info = document.createElement('div');
-    info.style.position = 'absolute';
-    info.style.top = '10px';
-    info.style.width = '100%';
-    info.style.textAlign = 'center';
-    info.innerHTML = '<a href="http://threejs.org" target="_blank">three.js</a> webgl - draggable cubes';
-    container.appendChild(info);
-
-    stats = new Stats();
-    stats.domElement.style.position = 'absolute';
-    stats.domElement.style.top = '0px';
-    container.appendChild(stats.domElement);
-
     renderer.domElement.addEventListener('mousemove', onDocumentMouseMove, false);
     renderer.domElement.addEventListener('mousedown', onDocumentMouseDown, false);
     renderer.domElement.addEventListener('mouseup', onDocumentMouseUp, false);
 
     //
-
-    window.addEventListener( 'resize', onWindowResize, false );
-
+    window.addEventListener('resize', onWindowResize, false);
 }
 
 function onWindowResize() {
     camera.aspect = window.innerWidth/window.innerHeight;
     camera.updateProjectionMatrix();
 
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(window.innerWidth*0.9, window.innerHeight*0.9);
 }
 
 function onDocumentMouseMove(event) {
@@ -131,23 +117,23 @@ function onDocumentMouseMove(event) {
 
     if (SELECTED) {
         var intersects = raycaster.intersectObject(plane);
-        SELECTED.position.copy(intersects[ 0 ].point.sub(offset));
+        SELECTED.position.copy(intersects[0].point.sub(offset));
         return;
     }
 
     var intersects = raycaster.intersectObjects(objects);
 
-    if (intersects.length > 0) {
-        if (INTERSECTED != intersects[ 0 ].object) {
-            if ( INTERSECTED ) INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
-            INTERSECTED = intersects[ 0 ].object;
+    if (intersects.length > 0){
+        if (INTERSECTED != intersects[0].object) {
+            if ( INTERSECTED ) INTERSECTED.material.color.setHex(INTERSECTED.currentHex);
+            INTERSECTED = intersects[0].object;
             INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
-            plane.position.copy( INTERSECTED.position );
-            plane.lookAt( camera.position );
+            plane.position.copy(INTERSECTED.position);
+            plane.lookAt(camera.position);
         }
         container.style.cursor = 'pointer';
     } else {
-        if ( INTERSECTED ) INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
+        if ( INTERSECTED ) INTERSECTED.material.color.setHex(INTERSECTED.currentHex);
         INTERSECTED = null;
         container.style.cursor = 'auto';
     }
@@ -175,12 +161,12 @@ function onDocumentMouseDown(event) {
     }
 }
 
-function onDocumentMouseUp( event ) {
+function onDocumentMouseUp(event){
     event.preventDefault();
 
     controls.enabled = true;
 
-    if (INTERSECTED) {
+    if (INTERSECTED){
         plane.position.copy(INTERSECTED.position);
         SELECTED = null;
     }
@@ -188,18 +174,16 @@ function onDocumentMouseUp( event ) {
 }
 
 //
-
-function animate() {
-    requestAnimationFrame( animate );
+function animate(){
+    requestAnimationFrame(animate);
 
     render();
-    stats.update();
 }
 
-function render() {
+function render(){
     controls.update();
 
-    renderer.render( scene, camera );
+    renderer.render(scene, camera);
 }
 
 
