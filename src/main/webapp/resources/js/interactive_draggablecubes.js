@@ -45,7 +45,7 @@ function init() {
 
     scene.add(light);
 
-    var geometry = new THREE.CubeGeometry(40, 40, 40);
+    var geometry = new THREE.SphereGeometry(40, 8, 8);
 
     for ( var i = 0; i < 200; i ++ ) {
         var object = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({color: Math.random() * 0xffffff}));
@@ -106,8 +106,8 @@ function onWindowResize() {
 function onDocumentMouseMove(event) {
     event.preventDefault();
 
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+    mouse.x = (event.clientX / (window.innerWidth*0.9)) * 2 - 1;
+    mouse.y = - (event.clientY / (window.innerHeight*0.9)) * 2 + 1;
 
     //
     var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
