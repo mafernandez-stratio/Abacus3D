@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j">
+<ui:composition >
+    <h:head>
+        <title>ABACUS - Powered by CEDIANT</title>
+        <h:outputStylesheet library="css" name="main.css" />
+    </h:head>
+    <h:body>
+        <h:graphicImage library="img" name="lightBlueBanner.png" style="width: 100%;" />
+        <rich:tabPanel switchType="client">
+            <rich:tab header="Overview">                
+                RichFaces is a component library for JSF and an advanced framework for
+                easily integrating AJAX capabilities into business applications.
+                <ul>
+                    <li>100+ AJAX enabled components in two libraries</li>
+                    <li>a4j: page centric AJAX controls</li>
+                    <li>rich: self contained, ready to use components</li>
+                    <li>Whole set of JSF benefits while working with AJAX</li>
+                    <li>Skinnability mechanism</li>
+                    <li>Component Development Kit (CDK)</li>
+                    <li>Dynamic resources handling</li>
+                    <li>Testing facilities for components, actions, listeners, and pages</li>
+                    <li>Broad cross-browser support</li>
+                    <li>Large and active community</li>
+                </ul>
+            </rich:tab>
+            <rich:tab header="Manager">
+                <p>The rich:panel component creates a rectangle shaped area on the page that 
+                   may contain any content including other panels. Panel's have a header 
+                   (optional) and a body. The default look-n-feel is based on the current 
+                   skin. Look-n-feel of any part of the panel, including color scheme, 
+                   borders and paddings can be customizable using with pre-defined number of 
+                   CSS classes.</p>                
+            </rich:tab>
+            <rich:tab header="Graphs">
+                <p>We are working hard on RichFaces 4.0 which will have full JSF 2 integration. That is not all though, here is
+                    a summary of updates and features:</p>
+                <ul>
+                    <li>Redesigned modular repository and build system.</li>
+                    <li>Simplified Component Development Kit with annotations, faces-config extensions, advanced templates
+                        support and more..</li>
+                    <li>Ajax framework improvements extending the JSF 2 specification.</li>
+                    <li>Component review for consistency, usability, and redesign following semantic HTML principles where
+                        possible.</li>
+                    <li>Both server-side and client-side performance optimization.</li>
+                    <li>Strict code clean-up and review.</li>
+                </ul>
+            </rich:tab>
+            <rich:tab header="Conf">
+                <p>The rich:tabPanel component is used to create "tabbed" sections or pages. 
+                   RichFaces tab panel can be switched in the 3 ways detailed in the 
+                   rich:togglePanel example.</p>                
+            </rich:tab>
+        </rich:tabPanel>
+        <h:graphicImage library="img" name="banner.png" style="width: 100%;" />
+    </h:body>
+</ui:composition>
+</html>    
+    
