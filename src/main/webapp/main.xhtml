@@ -11,11 +11,15 @@
         <h:outputStylesheet library="css" name="main.css" />
     </h:head>
     <h:body>
-        <h:graphicImage library="img" name="lightBlueBanner.png" style="width: 100%;" />
-        <rich:tabPanel switchType="client">
-            <rich:tab header="Overview">                
-                RichFaces is a component library for JSF and an advanced framework for
-                easily integrating AJAX capabilities into business applications.
+        <h:graphicImage library="img" name="lightBlueBanner.png" 
+                        style="width: 100%; height: 12%" />
+        <rich:tabPanel switchType="client" style="min-height: 75%" >
+            <rich:tab header="Overview">        
+                <h:outputText id="overviewDate" value="Date: #{overviewBean.date}"
+                              style="font-size:16px; font-weight: bold"/> 
+                
+                <p>RichFaces is a component library for JSF and an advanced framework for
+                    easily integrating AJAX capabilities into business applications.</p>
                 <ul>
                     <li>100+ AJAX enabled components in two libraries</li>
                     <li>a4j: page centric AJAX controls</li>
@@ -27,7 +31,7 @@
                     <li>Testing facilities for components, actions, listeners, and pages</li>
                     <li>Broad cross-browser support</li>
                     <li>Large and active community</li>
-                </ul>
+                </ul>                               
             </rich:tab>
             <rich:tab header="Manager">
                 <p>The rich:panel component creates a rectangle shaped area on the page that 
@@ -35,7 +39,40 @@
                    (optional) and a body. The default look-n-feel is based on the current 
                    skin. Look-n-feel of any part of the panel, including color scheme, 
                    borders and paddings can be customizable using with pre-defined number of 
-                   CSS classes.</p>                
+                   CSS classes.</p>                   
+                <rich:dataTable value="" var="car" id="table" rows="20" 
+                                rowClasses="odd-row, even-row" styleClass="stable">
+                    <rich:column>
+                        <f:facet name="header">
+                            <h:outputText value="Vendor " />
+                        </f:facet>
+                        <h:outputText value="Ford" />
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">
+                            <h:outputText value="Model" />
+                        </f:facet>
+                        <h:outputText value="Focus" />
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">
+                            <h:outputText value="Price" />
+                        </f:facet>
+                        <h:outputText value="39695" />
+                    </rich:column>
+                    <rich:column filter="">
+                        <f:facet name="header">
+                            <h:outputText value="Mileage" />
+                        </f:facet>
+                        <h:outputText value="38975.0" />
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">
+                            <h:outputText value="VIN " />
+                        </f:facet>
+                        <h:outputText value="XALLPTPELDWUOSQES" />
+                    </rich:column>
+                </rich:dataTable>
             </rich:tab>
             <rich:tab header="Graphs">
                 <p>We are working hard on RichFaces 4.0 which will have full JSF 2 integration. That is not all though, here is
@@ -50,14 +87,58 @@
                     <li>Both server-side and client-side performance optimization.</li>
                     <li>Strict code clean-up and review.</li>
                 </ul>
+                <h:outputText value=" " />
+                <rich:panel id="graphs" style="background-color: #B0C4DE; width: 25%;">
+                    <f:facet name="header">
+                        <h:outputText value="Sphere" />
+                    </f:facet>           
+                    <h:panelGrid>
+                        <h:graphicImage library="img" name="sphere.png" />
+                        <h:outputText value=" " />
+                        <h:commandButton value="Submit" type="button" />
+                    </h:panelGrid>
+                </rich:panel>
             </rich:tab>
             <rich:tab header="Conf">
                 <p>The rich:tabPanel component is used to create "tabbed" sections or pages. 
                    RichFaces tab panel can be switched in the 3 ways detailed in the 
-                   rich:togglePanel example.</p>                
+                   rich:togglePanel example.</p>         
+                <h:form>
+                    <h:panelGrid columns="3">
+                        <h:outputText value="Parameter 1: " />
+                        <h:inputText value="4" style="width: 80px; text-align: right;" />
+                        <h:inputText value="" style="width: 80px; text-align: right;" />  
+                        
+                        <h:outputText value="Parameter 2: " />
+                        <h:inputText value="8" style="width: 80px; text-align: right;" />
+                        <h:inputText value="" style="width: 80px; text-align: right;" />
+                        
+                        <h:outputText value="Parameter 3: " />
+                        <h:inputText value="10" style="width: 80px; text-align: right;" />
+                        <h:inputText value="" style="width: 80px; text-align: right;" />
+                        
+                        <h:outputText value="Color: " />
+                        <h:inputText value="White" style="width: 80px; text-align: right;" />
+                        <h:selectOneMenu value="">
+                            <f:selectItem itemLabel="Red" itemValue="0" />
+                            <f:selectItem itemLabel="Dark Blue" itemValue="1" />
+                            <f:selectItem itemLabel="Green" itemValue="2" />
+                            <f:selectItem itemLabel="Yellow" itemValue="3" />
+                            <f:selectItem itemLabel="Blue" itemValue="4" />
+                        </h:selectOneMenu>
+                        
+                        <h:outputLabel value="Date:" />
+                        <h:inputText value="01/01/2013" style="width: 80px; text-align: right;" />
+                        <rich:calendar datePattern="dd/M/yyyy" enableManualInput="true">
+                            <rich:placeholder value="dd/mm/yyyy" />
+                        </rich:calendar>                        
+                        <h:commandButton value="Submit" type="button"/>                        
+                    </h:panelGrid>                    
+                </h:form>
             </rich:tab>
         </rich:tabPanel>
-        <h:graphicImage library="img" name="banner.png" style="width: 100%;" />
+        <h:graphicImage library="img" name="bottomBanner.png" 
+                        style="width: 100%; height: 12%; opacity: 0.8;"/>
     </h:body>
 </ui:composition>
 </html>    

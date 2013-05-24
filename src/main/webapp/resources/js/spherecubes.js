@@ -16,7 +16,7 @@ function init() {
     
     scale = 0.98; // of the window
 
-    camera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 1, 10000);
+    camera = new THREE.PerspectiveCamera(52, window.innerWidth/window.innerHeight, 1, 10000);
     camera.position.set(0, 0, 1000); 
     
     controls = new THREE.TrackballControls(camera);    
