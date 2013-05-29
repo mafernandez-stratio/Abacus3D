@@ -13,6 +13,17 @@
     <h:body>
         <h:graphicImage library="img" name="lightBlueBanner.png" 
                         style="width: 100%; height: 12%" />
+        <rich:popupPanel id="resultPopup" modal="false" autosized="true" resizeable="false"> 
+            <f:facet name="header">
+                <h:outputText value="Result" />
+            </f:facet>
+            <f:facet name="controls">
+                <h:outputLink value="#" onclick="#{rich:component('resultPopup')}.hide(); return false;">
+                    X
+                </h:outputLink>
+            </f:facet>
+            <h:graphicImage library="img" name="joke.jpg"/>
+        </rich:popupPanel>
         <rich:tabPanel switchType="client" style="min-height: 75%" >
             <rich:tab header="Overview">        
                 <h:outputText id="overviewDate" value="Date: #{overviewBean.date}"
@@ -87,15 +98,30 @@
                     <li>Both server-side and client-side performance optimization.</li>
                     <li>Strict code clean-up and review.</li>
                 </ul>
-                <h:outputText value=" " />
-                <rich:panel id="graphs" style="background-color: #B0C4DE; width: 25%;">
+                <br />
+                <rich:panel id="graphs" style="background-color: #B0C4DE; width: 50%;">
                     <f:facet name="header">
                         <h:outputText value="Sphere" />
                     </f:facet>           
-                    <h:panelGrid>
+                    <h:panelGrid>                        
+                        <h:panelGrid columns="2">
+                            <h:outputText value="Sphere radius: " />
+                            <rich:inputNumberSlider value="100" minValue="50" maxValue="500" step="50" />
+                            <h:outputText value="Number of focus: " />
+                            <rich:inputNumberSlider value="3" minValue="1" maxValue="10"/>
+                            <h:commandButton value="Update" type="button" />
+                        </h:panelGrid>
                         <h:graphicImage library="img" name="sphere.png" />
-                        <h:outputText value=" " />
-                        <h:commandButton value="Submit" type="button" />
+                        <br />
+                        <rich:select defaultLabel="Choose an option" required="true" >
+                            <f:selectItem itemValue="0" itemLabel="Local" />
+                            <f:selectItem itemValue="1" itemLabel="Remote" />
+                        </rich:select>
+                        <h:outputText id="sphereData" value="Spheres data: " />
+                        <h:outputText id="executionTime" value="Execution time: " />                        
+                        <h:commandButton value="Create" type="button" >
+                            <rich:componentControl target="resultPopup" operation="show" />
+                        </h:commandButton>                       
                     </h:panelGrid>
                 </rich:panel>
             </rich:tab>

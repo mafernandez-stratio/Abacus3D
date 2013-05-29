@@ -1,6 +1,6 @@
 var container;
 var camera, controls, scene, projector, renderer;
-var objects = [], scale;
+var objects = [], scale, lines = [];
 
 var mouse = new THREE.Vector2(), 
             offset = new THREE.Vector3(), 
@@ -45,21 +45,33 @@ function init() {
 
     scene.add(sphere);
     
-    // Little cube pointing to the light
-    var pointGeometry = new THREE.CubeGeometry(20, 20, 20);    
+    // Cube and sphere for focus location 
+    var pointGeometry = new THREE.CubeGeometry(20, 20, 20);  
+    
+    var pointSphere = new THREE.SphereGeometry(14, 10, 10);
+    
+    // Line width to join cube and sphere
+    var lineWidth = 4;
+    
+    // Coefficients for random location
+    var coefficientA = 1.5;
+    var coefficientB = 0.8;
           
-    for(var i = 0; i<10; i++){
+    var nFocus = 3;      
+          
+    for(var i = 0; i<nFocus; i++){
+        // Material for the current cube and sphere
+        var emissiveColor = Math.random()*0xffffff;
+        
         var pointMaterial = new THREE.MeshLambertMaterial({color: 0xdaa520, 
                                                            shading: THREE.FlatShading,                                                           
                                                            overdraw: true,
-                                                           emissive: Math.random()*0xffffff}); 
-        
+                                                           emissive: emissiveColor});
+                        
+        // Creating the cube                 
         var point = new THREE.Mesh(pointGeometry, pointMaterial);  
         
-        point.material.ambient = point.material.color;
-        
-        var coefficientA = 1.5;
-        var coefficientB = 0.8;
+        point.material.ambient = point.material.color;                
         
         var plusOrMinus = Math.random()< 0.5?-1:1;                
         point.position.x = (Math.random()*(radius/coefficientA))+(radius*coefficientB);
@@ -79,10 +91,59 @@ function init() {
        
         point.castShadow = true;
         point.receiveShadow = true;
+        
+        point.name = "c"+i;
                 
         scene.add(point);   
         
         objects.push(point);
+        
+        // Creating the sphere
+        var sphereMesh = new THREE.Mesh(pointSphere, pointMaterial);  
+        
+        sphereMesh.material.ambient = sphereMesh.material.color;                
+        
+        var plusOrMinus = Math.random()< 0.5?-1:1;                
+        sphereMesh.position.x = (Math.random()*(radius/coefficientA))+(radius*coefficientB);
+        sphereMesh.position.x = sphereMesh.position.x*plusOrMinus;
+        
+        plusOrMinus = Math.random()<0.5?-1:1;     
+        sphereMesh.position.y = (Math.random()*(radius/coefficientA))+(radius*coefficientB);
+        sphereMesh.position.y = sphereMesh.position.y*plusOrMinus;
+        
+        plusOrMinus = Math.random()<0.5?-1:1;     
+        sphereMesh.position.z = (Math.random()*(radius/coefficientA))+(radius*coefficientB);
+        sphereMesh.position.z = sphereMesh.position.z*plusOrMinus;       
+                
+        sphereMesh.rotation.x = Math.random()*2*Math.PI;
+        sphereMesh.rotation.y = Math.random()*2*Math.PI;
+        sphereMesh.rotation.z = Math.random()*2*Math.PI;
+       
+        sphereMesh.castShadow = true;
+        sphereMesh.receiveShadow = true;
+        
+        sphereMesh.name = "s"+i;
+                
+        scene.add(sphereMesh);
+        
+        objects.push(sphereMesh);
+        
+        //Creating line to join cube and sphere        
+        var joiningGeometry = new THREE.Geometry();
+        joiningGeometry.vertices.push(new THREE.Vector3(point.position.x, 
+                                                        point.position.y, 
+                                                        point.position.z));
+        joiningGeometry.vertices.push(new THREE.Vector3(sphereMesh.position.x, 
+                                                        sphereMesh.position.y, 
+                                                        sphereMesh.position.z));
+        var joiningMaterial = new THREE.LineBasicMaterial({color: emissiveColor, 
+                                                           linewidth: lineWidth,
+                                                           overdraw: true});
+        var joiningLine = new THREE.Line(joiningGeometry, joiningMaterial);
+        joiningLine.type = THREE.LinePieces;
+        scene.add(joiningLine);  
+        
+        lines.push(joiningLine);
     }
 
     plane = new THREE.Mesh(new THREE.PlaneGeometry(2000, 2000, 8, 8), 
@@ -352,6 +413,50 @@ function onDocumentMouseMove(event) {
     if (SELECTED) {
         var intersects = raycaster.intersectObject(plane);
         SELECTED.position.copy(intersects[0].point.sub(offset));
+        
+        var nameMesh = SELECTED.name; 
+        var nameGeometry = nameMesh.charAt(0);
+        var numberPosition = nameMesh.substring(1);
+        
+        var tmpLine = lines[numberPosition];
+        
+        var tmpVector = new THREE.Vector3(SELECTED.position.x, 
+                                          SELECTED.position.y, 
+                                          SELECTED.position.z);
+        
+        if(nameGeometry == "c"){ //Dragging a cube
+            tmpLine.geometry.vertices.shift();
+            tmpLine.geometry.vertices.unshift(tmpVector);
+            
+        } else { //Dragging a sphere
+            tmpLine.geometry.vertices.pop();
+            tmpLine.geometry.vertices.push(tmpVector);
+        }
+        
+        /*///////////////////////////////
+        lines[1].geometry.vertices.pop(); //Removes the last element of an array, and returns that element
+        lines[1].geometry.vertices.shift(); //Removes the first element of an array, and returns that element
+        lines[1].geometry.vertices.push(new THREE.Vector3(SELECTED.position.x+150, 
+                                                          SELECTED.position.y+150, 
+                                                          SELECTED.position.z+150));
+        lines[1].geometry.vertices.push(new THREE.Vector3(SELECTED.position.x-150, 
+                                                          SELECTED.position.y-150, 
+                                                          SELECTED.position.z-150));
+        //////////////////////////////////////////////////////////*/
+        /*//////////////////////////////////////////////////////
+        var joiningGeometry = new THREE.Geometry();
+        joiningGeometry.vertices.push(new THREE.Vector3(point.position.x, 
+                                                        point.position.y, 
+                                                        point.position.z));
+        joiningGeometry.vertices.push(new THREE.Vector3(sphereMesh.position.x, 
+                                                        sphereMesh.position.y, 
+                                                        sphereMesh.position.z));
+        var joiningMaterial = new THREE.LineBasicMaterial({color: emissiveColor, 
+                                                           linewidth: lineWidth,
+                                                           overdraw: true});
+        var joiningLine = new THREE.Line(joiningGeometry, joiningMaterial);
+        joiningLine.type = THREE.LinePieces;
+        //////////////////////////////////////////////////////////*/
         return;
     }
 
