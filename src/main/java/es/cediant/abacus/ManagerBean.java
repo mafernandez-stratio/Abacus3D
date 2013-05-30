@@ -4,16 +4,17 @@
  */
 package es.cediant.abacus;
 
+import java.io.Serializable;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.RequestScoped;
 
 /**
  *
  * @author miguel
  */
 @ManagedBean
-@SessionScoped
-public class ManagerBean {
+@RequestScoped
+public class ManagerBean implements Serializable {
 
     /**
      * Creates a new instance of ManagerBean
