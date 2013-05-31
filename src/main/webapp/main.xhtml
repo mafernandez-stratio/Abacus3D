@@ -5,7 +5,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:rich="http://richfaces.org/rich"
                 xmlns:a4j="http://richfaces.org/a4j">
-<ui:composition >
+<ui:composition>
     <h:head>
         <title>ABACUS - Powered by CEDIANT</title>
         <h:outputStylesheet library="css" name="main.css" />
@@ -22,7 +22,7 @@
                     X                    
                 </h:outputLink>
             </f:facet>
-            <h:graphicImage library="img" name="koalaJoke.jpg" />
+            <h:graphicImage library="img" name="redSphere.png" />
         </rich:popupPanel>
         <rich:tabPanel switchType="client" style="min-height: 75%" >
             <rich:tab header="Overview">        
@@ -99,35 +99,54 @@
                     <li>Strict code clean-up and review.</li>
                 </ul>
                 <br />
-                <rich:panel id="graphs" style="background-color: #B0C4DE; width: 50%;">
+                <rich:panel id="graphs" style="background-color: #B0C4DE; width: 40%;">
                     <f:facet name="header">
                         <h:outputText value="Sphere" />
                     </f:facet>           
-                    <h:panelGrid>                        
-                        <h:panelGrid columns="2">
-                            <h:outputText value="Sphere radius: " />
-                            <rich:inputNumberSlider value="100" minValue="50" maxValue="500" step="50" />
-                            <h:outputText value="Number of focus: " />
-                            <rich:inputNumberSlider value="3" minValue="1" maxValue="10"/>
-                            <h:commandButton value="Update" type="button" />
-                        </h:panelGrid>
-                        <h:graphicImage library="img" name="sphere.png" />
-                        <br />
-                        <rich:select defaultLabel="Choose an option" required="true" >
-                            <f:selectItem itemValue="0" itemLabel="Local" />
-                            <f:selectItem itemValue="1" itemLabel="Remote" />
-                        </rich:select>
-                        <h:panelGrid columns="2" id="resultInfoPanel">
-                            <h:outputText id="sphereData" value="Spheres data: " />
-                            <h:outputText value="#{graphBean.printFocuses()}" rendered="#{not graphBean.isEmpty()}" />
-                            <h:outputText value=" " rendered="#{graphBean.isEmpty()}" />
-                            <h:outputText id="executionTime" value="Execution time: " />                            
-                            <h:outputText value="#{graphBean.executionTime}" rendered="#{not graphBean.execTimeIsZero()}" />
-                            <h:outputText value=" " rendered="#{graphBean.execTimeIsZero()}" />
-                        </h:panelGrid>
-                        <h:commandButton value="Create" type="button" actionListener="#{graphBean.createImage}" >
-                            <rich:componentControl target="resultPopup" operation="show" />
-                        </h:commandButton>                       
+                    <h:panelGrid>       
+                        <h:form id="sphereForm">
+                            <h:panelGrid columns="2">
+                                <h:outputText value="Sphere radius: " />
+                                <rich:inputNumberSlider value="#{graphBean.sphereRadius}" minValue="50" maxValue="500" step="10" />
+                                <h:outputText value="Number of focus: " />
+                                <rich:inputNumberSlider value="#{graphBean.numbFocus}" minValue="1" maxValue="10"/>
+                                <a4j:commandButton value="Update" actionListener="#{graphBean.updateSphere}"
+                                                   render="inputSphere" />    
+                            </h:panelGrid>  
+                            <h:panelGrid columns="2" id="inputSphere">  
+                                <h:outputText value="Sphere radius: " rendered="#{not empty graphBean.sphereRadius}" />
+                                <h:outputText id="sphereData" value="#{graphBean.sphereRadius}" rendered="#{not empty graphBean.sphereRadius}" />
+                                <h:outputText value="Number of focus: " rendered="#{not empty graphBean.numbFocus}" />                            
+                                <h:outputText id="executionTime" value="#{graphBean.numbFocus}" rendered="#{not empty graphBean.numbFocus}" />                                
+                            </h:panelGrid>
+                        </h:form>                        
+                        <a4j:jsFunction name="assignObjects">
+                            <a4j:param name="focuses" assignTo="#{graphBean.focuses}" />
+                        </a4j:jsFunction>                                                
+                        <h:graphicImage library="img" name="sphere.png" />                                                                                                
+                        <br />    
+                        <h:form id="createForm">
+                            <h:panelGrid columns="1" id="resultInfoPanel">                           
+                                <rich:select id="execSelect" defaultLabel="Choose an option" 
+                                             required="true" value="#{graphBean.typeExec}" >
+                                    <f:selectItem itemValue="0" itemLabel="Local" />
+                                    <f:selectItem itemValue="1" itemLabel="Remote" />
+                                </rich:select>    
+                                <h:panelGrid columns="2" id="execInfoPanel">    
+                                    <h:outputText value="Spheres data: " rendered="#{not graphBean.isEmpty()}" />
+                                    <h:outputText id="sphereData" value="#{graphBean.printFocuses()}" rendered="#{not graphBean.isEmpty()}" />
+                                    <h:outputText value="Execution time: " rendered="#{not graphBean.execTimeIsZero()}" />                            
+                                    <h:outputText id="executionTime" value="#{graphBean.executionTime}" rendered="#{not graphBean.execTimeIsZero()}" />
+                                </h:panelGrid>                                 
+                                <!--h:commandButton value="Create" actionListener="{graphBean.createImage}" >        
+                                    <rich:componentControl target="resultPopup" operation="show" />
+                                </h:commandButton-->   
+                                <a4j:commandButton value="Create"
+                                                   actionListener="#{graphBean.createImage}"
+                                                   oncomplete="#{rich:component('resultPopup')}.show()" 
+                                                   render="resultPopup, execInfoPanel"/>
+                            </h:panelGrid>   
+                        </h:form>
                     </h:panelGrid>
                 </rich:panel>
             </rich:tab>
@@ -135,7 +154,7 @@
                 <p>The rich:tabPanel component is used to create "tabbed" sections or pages. 
                    RichFaces tab panel can be switched in the 3 ways detailed in the 
                    rich:togglePanel example.</p>         
-                <h:form>
+                <h:form id="configForm">
                     <h:panelGrid columns="3">
                         <h:outputText value="Parameter 1: " />
                         <h:inputText value="4" style="width: 80px; text-align: right;" />

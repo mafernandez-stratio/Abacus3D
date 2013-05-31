@@ -7,14 +7,14 @@ package es.cediant.abacus;
 import java.io.Serializable;
 import java.util.Date;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
 
 /**
  *
  * @author miguel
  */
 @ManagedBean
-@RequestScoped
+@SessionScoped
 public class OverviewBean implements Serializable {
 
     /**

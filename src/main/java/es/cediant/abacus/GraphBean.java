@@ -7,23 +7,29 @@ package es.cediant.abacus;
 import es.cediant.structures.Focus;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
+import javax.faces.event.ActionEvent;
 
 /**
  *
  * @author miguel
  */
 @ManagedBean
-@RequestScoped
+@SessionScoped
 public class GraphBean implements Serializable {
 
+    public static final int EXEC_LOCAL = 0;
+    public static final int EXEC_REMOTE = 1;
+    
     private String sphereRadius;
     private String numbFocus;   
     private long startTime;
     private long endTime;
     private long executionTime;
-    private boolean remote;    
+    private int typeExec;    
     private ArrayList<Focus> focuses;
     
     public GraphBean() {
@@ -71,12 +77,12 @@ public class GraphBean implements Serializable {
         this.executionTime = executionTime;
     }
 
-    public boolean isRemote() {
-        return remote;
+    public int getTypeExec() {
+        return typeExec;
     }
 
-    public void setRemote(boolean remote) {
-        this.remote = remote;
+    public void setTypeExec(int typeExec) {
+        this.typeExec = typeExec;
     }
 
     public ArrayList getFocuses() {
@@ -113,11 +119,21 @@ public class GraphBean implements Serializable {
         return Integer.toString((int) executionTime).equalsIgnoreCase("0");
     }
     
-    public void createImage() throws InterruptedException{
+    public void createImage(ActionEvent event) {
         this.setStartTime(System.currentTimeMillis());
         System.out.println("Creating image");
-        Thread.sleep(4000);
-        this.setEndTime(System.currentTimeMillis());
-    }
+        try {
+            Thread.sleep(4000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(GraphBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        long randomAdd = (long) (Math.random()*100); 
+        System.out.println("randomAdd="+randomAdd);
+        System.out.println("Type Execution="+this.typeExec);
+        this.setEndTime(System.currentTimeMillis()+randomAdd);        
+    }       
     
+    public void updateSphere(ActionEvent event){
+        System.out.println("Updating sphere");
+    }
 }

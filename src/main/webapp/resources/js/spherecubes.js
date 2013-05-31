@@ -6,11 +6,14 @@ var mouse = new THREE.Vector2(),
             offset = new THREE.Vector3(), 
             INTERSECTED, 
             SELECTED;
+    
+var sphereRadiusJSF = "#{graphBean.sphereRadius}";
+var numbFocusJSF = "#{graphBean.numbFocus}";
 
 init();
 animate();
 
-function init() {
+function init() {        
     container = document.createElement('div');
     document.body.appendChild(container);
     
@@ -492,6 +495,8 @@ function onDocumentMouseUp(event){
         SELECTED = null;
     }
     container.style.cursor = 'auto';
+    // Send info to the java bean
+    assignObjects(objects);    
 }
 
 function animate() {
