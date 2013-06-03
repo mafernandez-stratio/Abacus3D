@@ -137,7 +137,34 @@
                                     <h:outputText id="sphereData" value="#{graphBean.printFocuses()}" rendered="#{not graphBean.isEmpty()}" />
                                     <h:outputText value="Execution time: " rendered="#{not graphBean.execTimeIsZero()}" />                            
                                     <h:outputText id="executionTime" value="#{graphBean.executionTime}" rendered="#{not graphBean.execTimeIsZero()}" />
-                                </h:panelGrid>                                 
+                                </h:panelGrid>         
+                                
+                                
+                                <h:form id="form">
+                                    <rich:progressBar mode="ajax" value="#{progressBarBean.currentValue}" interval="500" id="pb"
+                                                      enabled="#{progressBarBean.enabled}" minValue="0" maxValue="100">
+                                        <f:facet name="initial">
+                                            <h:panelGroup>
+                                                <!--h:outputText value="Process hasn't started yet" /-->
+                                                <a4j:commandButton action="#{progressBarBean.startProcess}" value="Start Process" execute="@form"
+                                                    render="pb" rendered="#{progressBarBean.buttonRendered}" style="margin: 9px 0px 5px;" />
+                                            </h:panelGroup>
+                                        </f:facet>
+                                        <f:facet name="finish">
+                                            <h:panelGroup>
+                                                <!--h:outputText value="Process Done" /-->
+                                                <a4j:commandButton action="#{progressBarBean.startProcess}" value="Restart Process" execute="@form"
+                                                    render="pb" rendered="#{progressBarBean.buttonRendered}" style="margin: 9px 0px 5px;" />
+                                            </h:panelGroup>
+                                        </f:facet>
+                                        <h:outputText value="#{progressBarBean.currentValue} %" />
+                                        <!-- Update the progress for each AJAX update -->
+                                        <a4j:ajax event="begin" listener="#{progressBarBean.increment}" />
+                                    </rich:progressBar>
+                                </h:form>
+                                
+                                
+                                
                                 <!--h:commandButton value="Create" actionListener="{graphBean.createImage}" >        
                                     <rich:componentControl target="resultPopup" operation="show" />
                                 </h:commandButton-->   

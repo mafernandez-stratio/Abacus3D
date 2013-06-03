@@ -7,8 +7,8 @@ var mouse = new THREE.Vector2(),
             INTERSECTED, 
             SELECTED;
     
-var sphereRadiusJSF = "#{graphBean.sphereRadius}";
-var numbFocusJSF = "#{graphBean.numbFocus}";
+var sphereRadiusJSF = "${graphBean.sphereRadius}";
+var numbFocusJSF = "${graphBean.numbFocus}";
 
 init();
 animate();
@@ -51,7 +51,8 @@ function init() {
     // Cube and sphere for focus location 
     var pointGeometry = new THREE.CubeGeometry(20, 20, 20);  
     
-    var pointSphere = new THREE.SphereGeometry(14, 10, 10);
+    //var pointSphere = new THREE.SphereGeometry(14, 10, 10);
+    var cylinderGeometry = new THREE.CylinderGeometry(0, 14, 40, 4, 1);
     
     // Line width to join cube and sphere
     var lineWidth = 4;
@@ -72,36 +73,36 @@ function init() {
                                                            emissive: emissiveColor});
                         
         // Creating the cube                 
-        var point = new THREE.Mesh(pointGeometry, pointMaterial);  
+        var cubePoint = new THREE.Mesh(pointGeometry, pointMaterial);  
         
-        point.material.ambient = point.material.color;                
+        cubePoint.material.ambient = cubePoint.material.color;                
         
         var plusOrMinus = Math.random()< 0.5?-1:1;                
-        point.position.x = (Math.random()*(radius/coefficientA))+(radius*coefficientB);
-        point.position.x = point.position.x*plusOrMinus;
+        cubePoint.position.x = (Math.random()*(radius/coefficientA))+(radius*coefficientB);
+        cubePoint.position.x = cubePoint.position.x*plusOrMinus;
         
         plusOrMinus = Math.random()<0.5?-1:1;     
-        point.position.y = (Math.random()*(radius/coefficientA))+(radius*coefficientB);
-        point.position.y = point.position.y*plusOrMinus;
+        cubePoint.position.y = (Math.random()*(radius/coefficientA))+(radius*coefficientB);
+        cubePoint.position.y = cubePoint.position.y*plusOrMinus;
         
         plusOrMinus = Math.random()<0.5?-1:1;     
-        point.position.z = (Math.random()*(radius/coefficientA))+(radius*coefficientB);
-        point.position.z = point.position.z*plusOrMinus;       
+        cubePoint.position.z = (Math.random()*(radius/coefficientA))+(radius*coefficientB);
+        cubePoint.position.z = cubePoint.position.z*plusOrMinus;       
                 
-        point.rotation.x = Math.random()*2*Math.PI;
-        point.rotation.y = Math.random()*2*Math.PI;
-        point.rotation.z = Math.random()*2*Math.PI;
+        cubePoint.rotation.x = Math.random()*2*Math.PI;
+        cubePoint.rotation.y = Math.random()*2*Math.PI;
+        cubePoint.rotation.z = Math.random()*2*Math.PI;
        
-        point.castShadow = true;
-        point.receiveShadow = true;
+        cubePoint.castShadow = true;
+        cubePoint.receiveShadow = true;
         
-        point.name = "c"+i;
+        cubePoint.name = "c"+i;
                 
-        scene.add(point);   
+        scene.add(cubePoint);   
         
-        objects.push(point);
+        objects.push(cubePoint);
         
-        // Creating the sphere
+        /* Creating the sphere
         var sphereMesh = new THREE.Mesh(pointSphere, pointMaterial);  
         
         sphereMesh.material.ambient = sphereMesh.material.color;                
@@ -129,16 +130,48 @@ function init() {
                 
         scene.add(sphereMesh);
         
-        objects.push(sphereMesh);
+        objects.push(sphereMesh);*/
+        
+        // Creating the cylinder        
+        var cylinderMaterial =  new THREE.MeshLambertMaterial({color:Math.random()*0xffffff, 
+                                                               shading: THREE.FlatShading});
+        var cylinderMesh = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
+    
+        cylinderMesh.material.ambient = cylinderMesh.material.color;                
+        
+        var plusOrMinus = Math.random()< 0.5?-1:1;                
+        cylinderMesh.position.x = (Math.random()*(radius/coefficientA))+(radius*coefficientB);
+        cylinderMesh.position.x = cylinderMesh.position.x*plusOrMinus;
+        
+        plusOrMinus = Math.random()<0.5?-1:1;     
+        cylinderMesh.position.y = (Math.random()*(radius/coefficientA))+(radius*coefficientB);
+        cylinderMesh.position.y = cylinderMesh.position.y*plusOrMinus;
+        
+        plusOrMinus = Math.random()<0.5?-1:1;     
+        cylinderMesh.position.z = (Math.random()*(radius/coefficientA))+(radius*coefficientB);
+        cylinderMesh.position.z = cylinderMesh.position.z*plusOrMinus;       
+                
+        //cylinderMesh.rotation.x = Math.random()*2*Math.PI;
+        //cylinderMesh.rotation.y = Math.random()*2*Math.PI;
+        cylinderMesh.rotation.z = Math.random()*2*Math.PI;
+       
+        cylinderMesh.castShadow = true;
+        cylinderMesh.receiveShadow = true;
+        
+        cylinderMesh.name = "s"+i;
+                
+        scene.add(cylinderMesh);
+        
+        objects.push(cylinderMesh);
         
         //Creating line to join cube and sphere        
         var joiningGeometry = new THREE.Geometry();
-        joiningGeometry.vertices.push(new THREE.Vector3(point.position.x, 
-                                                        point.position.y, 
-                                                        point.position.z));
-        joiningGeometry.vertices.push(new THREE.Vector3(sphereMesh.position.x, 
-                                                        sphereMesh.position.y, 
-                                                        sphereMesh.position.z));
+        joiningGeometry.vertices.push(new THREE.Vector3(cubePoint.position.x, 
+                                                        cubePoint.position.y, 
+                                                        cubePoint.position.z));
+        joiningGeometry.vertices.push(new THREE.Vector3(cylinderMesh.position.x, 
+                                                        cylinderMesh.position.y, 
+                                                        cylinderMesh.position.z));
         var joiningMaterial = new THREE.LineBasicMaterial({color: emissiveColor, 
                                                            linewidth: lineWidth,
                                                            overdraw: true});
@@ -148,6 +181,32 @@ function init() {
         
         lines.push(joiningLine);
     }
+       
+    /*//////////////////////////////////////////////////////////////////////////
+    var triangleShape = new THREE.Shape();
+    triangleShape.moveTo(220, 120);
+    triangleShape.lineTo(180, 180);
+    triangleShape.lineTo(260, 180);
+    triangleShape.lineTo(220, 120); // close path
+
+    var triangleGeometry = new THREE.ShapeGeometry(triangleShape);
+    var triangleMaterial = new THREE.MeshLambertMaterial({color: 0xdaa520});
+    var triangleMesh = new THREE.Mesh(triangleGeometry, triangleMaterial);
+    
+    scene.add(triangleMesh);
+    ///////////////////////////////////////////////////////////////////////////*/        
+    /*//////////////////////////////////////////////////////////////////////////
+    var cylinderGeometry = new THREE.CylinderGeometry(0, 10, 30, 4, 1);
+    var cylinderMaterial =  new THREE.MeshLambertMaterial({color:Math.random()*0xffffff, 
+                                                           shading: THREE.FlatShading});
+    var cylinderMesh = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
+    cylinderMesh.position.x = 400;
+    cylinderMesh.position.y = 300;
+    cylinderMesh.position.z = 100;
+    cylinderMesh.updateMatrix();
+    cylinderMesh.matrixAutoUpdate = false;
+    scene.add(cylinderMesh);
+    ///////////////////////////////////////////////////////////////////////////*/
 
     plane = new THREE.Mesh(new THREE.PlaneGeometry(2000, 2000, 8, 8), 
                            new THREE.MeshBasicMaterial({color: 0x000000, 
