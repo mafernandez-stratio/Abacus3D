@@ -13,6 +13,7 @@
     <h:body>
         <h:graphicImage library="img" name="lightBlueBanner.png" 
                         style="width: 100%; height: 12%" />
+        
         <rich:popupPanel id="resultPopup" modal="false" autosized="true" resizeable="false"> 
             <f:facet name="header">
                 <h:outputText value="Result" />
@@ -24,6 +25,19 @@
             </f:facet>
             <h:graphicImage library="img" name="redSphere.png" />
         </rich:popupPanel>
+        
+        <rich:popupPanel id="JSPopup" modal="false" autosized="true" resizeable="false"> 
+            <f:facet name="header">
+                <h:outputText value="Result" />
+            </f:facet>
+            <f:facet name="controls">
+                <h:outputLink value="#" onclick="#{rich:component('JSPopup')}.hide(); return false;">
+                    X                    
+                </h:outputLink>
+            </f:facet>           
+            <!-- JavaScript -->
+        </rich:popupPanel>
+
         <rich:tabPanel switchType="client" style="min-height: 75%" >
             <rich:tab header="Overview">        
                 <h:outputText id="overviewDate" value="Date: #{overviewBean.date}"
@@ -137,34 +151,27 @@
                                     <h:outputText id="sphereData" value="#{graphBean.printFocuses()}" rendered="#{not graphBean.isEmpty()}" />
                                     <h:outputText value="Execution time: " rendered="#{not graphBean.execTimeIsZero()}" />                            
                                     <h:outputText id="executionTime" value="#{graphBean.executionTime}" rendered="#{not graphBean.execTimeIsZero()}" />
-                                </h:panelGrid>         
-                                
-                                
-                                <h:form id="form">
-                                    <rich:progressBar mode="ajax" value="#{progressBarBean.currentValue}" interval="500" id="pb"
-                                                      enabled="#{progressBarBean.enabled}" minValue="0" maxValue="100">
-                                        <f:facet name="initial">
-                                            <h:panelGroup>
-                                                <!--h:outputText value="Process hasn't started yet" /-->
-                                                <a4j:commandButton action="#{progressBarBean.startProcess}" value="Start Process" execute="@form"
-                                                    render="pb" rendered="#{progressBarBean.buttonRendered}" style="margin: 9px 0px 5px;" />
-                                            </h:panelGroup>
-                                        </f:facet>
-                                        <f:facet name="finish">
-                                            <h:panelGroup>
-                                                <!--h:outputText value="Process Done" /-->
-                                                <a4j:commandButton action="#{progressBarBean.startProcess}" value="Restart Process" execute="@form"
-                                                    render="pb" rendered="#{progressBarBean.buttonRendered}" style="margin: 9px 0px 5px;" />
-                                            </h:panelGroup>
-                                        </f:facet>
-                                        <h:outputText value="#{progressBarBean.currentValue} %" />
-                                        <!-- Update the progress for each AJAX update -->
-                                        <a4j:ajax event="begin" listener="#{progressBarBean.increment}" />
-                                    </rich:progressBar>
-                                </h:form>
-                                
-                                
-                                
+                                </h:panelGrid>                                                                         
+                                <rich:progressBar mode="ajax" value="#{progressBarBean.currentValue}" interval="500" id="pb"
+                                                  enabled="#{progressBarBean.enabled}" minValue="0" maxValue="100">
+                                    <f:facet name="initial">
+                                        <h:panelGroup>
+                                            <!--h:outputText value="Process hasn't started yet" /-->
+                                            <a4j:commandButton action="#{progressBarBean.startProcess}" value="Start Process" execute="@form"
+                                                render="pb" rendered="#{progressBarBean.buttonRendered}" style="margin: 9px 0px 5px;" />
+                                        </h:panelGroup>
+                                    </f:facet>
+                                    <f:facet name="finish">
+                                        <h:panelGroup>
+                                            <!--h:outputText value="Process Done" /-->
+                                            <a4j:commandButton action="#{progressBarBean.startProcess}" value="Restart Process" execute="@form"
+                                                render="pb" rendered="#{progressBarBean.buttonRendered}" style="margin: 9px 0px 5px;" />
+                                        </h:panelGroup>
+                                    </f:facet>
+                                    <h:outputText value="#{progressBarBean.currentValue} %" />
+                                    <!-- Update the progress for each AJAX update -->
+                                    <a4j:ajax event="begin" listener="#{progressBarBean.increment}" />
+                                </rich:progressBar>
                                 <!--h:commandButton value="Create" actionListener="{graphBean.createImage}" >        
                                     <rich:componentControl target="resultPopup" operation="show" />
                                 </h:commandButton-->   
@@ -176,7 +183,91 @@
                         </h:form>
                     </h:panelGrid>
                 </rich:panel>
+            </rich:tab>        
+                                    
+            <rich:tab header="NBody">
+                <h:form>
+                    <rich:panel style="max-width: 40%;">
+                        <f:facet name="header">
+                            <!--h:panelGroup-->
+                            <h:outputText value="Data for simulation" />
+                                <!--a4j:status>
+                                    <f:facet name="start">
+                                        <h:graphicImage value="/images/ai.gif" alt="ai" style="height:12px;width:12px;" />
+                                    </f:facet>
+                                </a4j:status-->
+                            <!--/h:panelGroup-->
+                        </f:facet>
+                        <h:panelGrid columns="3">
+                            <h:outputText value="nParticles: " />
+                            <h:inputText value="#{nBodysBean.nParticles}" id="nParticles">
+                                <rich:validator />
+                            </h:inputText>
+                            <rich:message for="nParticles" />
+                            <h:outputText value="nSteps: " />
+                            <h:inputText value="#{nBodysBean.nSteps}" id="nSteps">
+                                <rich:validator />
+                            </h:inputText>
+                            <rich:message for="nSteps" />
+                            <h:outputText value="dt: " />
+                            <h:inputText value="#{nBodysBean.dt}" id="dt">
+                                <rich:validator />
+                            </h:inputText>
+                            <rich:message for="dt" />                             
+                            <h:outputText value="Device: "/>
+                            <h:selectOneMenu value="#{nBodysBean.device}">
+                                <f:selectItem itemLabel="Xeon Phi" itemValue="xeon" />
+                                <f:selectItem itemLabel="Host" itemValue="host" />
+                                <f:selectItem itemLabel="Both" itemValue="both" />
+                            </h:selectOneMenu>                          
+                            <h:outputText value=" "/>
+                            <a4j:commandButton value="Submit"  
+                                               actionListener="#{nBodysBean.launchCalculation}" 
+                                               render="calculationPanel"/>       
+                            <!-- TODO: Show a progress bar onclick -->
+                        </h:panelGrid>         
+                        <br />
+                        <h:panelGrid id="calculationPanel" width="80%">
+                            <rich:dataTable var="record" 
+                                            value="Value" 
+                                            rendered="#{nBodysBean.showCalc}">
+                                <f:facet name="header">
+                                    <rich:columnGroup>
+                                        <rich:column>
+                                            <h:outputText value=" " />
+                                        </rich:column>
+                                        <rich:column>
+                                            <h:outputText value="Elapsed time" />
+                                        </rich:column>                                        
+                                    </rich:columnGroup>
+                                </f:facet>
+
+                                <rich:columnGroup>
+                                    <rich:column>
+                                        <h:outputText value="Xeon Phi" />
+                                    </rich:column>
+                                    <rich:column>
+                                        <h:outputText value="6" />
+                                    </rich:column>                                                                            
+                                </rich:columnGroup>
+                                <rich:columnGroup>
+                                    <rich:column>
+                                        <h:outputText value="Host" />
+                                    </rich:column>
+                                    <rich:column>
+                                        <h:outputText value="10" />
+                                    </rich:column>                                                                            
+                                </rich:columnGroup>                                
+                            </rich:dataTable>    
+                            <br />
+                            <a4j:commandButton value="Show result" 
+                                               actionListener="#{nBodysBean.launchJS}"
+                                               rendered="#{nBodysBean.showCalc}"/>                            
+                        </h:panelGrid>                        
+                    </rich:panel>
+                </h:form>
             </rich:tab>
+            
             <rich:tab header="Conf">
                 <p>The rich:tabPanel component is used to create "tabbed" sections or pages. 
                    RichFaces tab panel can be switched in the 3 ways detailed in the 

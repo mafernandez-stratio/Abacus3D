@@ -51,8 +51,8 @@ function init() {
     // Cube and sphere for focus location 
     var pointGeometry = new THREE.CubeGeometry(20, 20, 20);  
     
-    //var pointSphere = new THREE.SphereGeometry(14, 10, 10);
-    var cylinderGeometry = new THREE.CylinderGeometry(0, 14, 40, 4, 1);
+    var pointSphere = new THREE.SphereGeometry(14, 10, 10);
+    //var cylinderGeometry = new THREE.CylinderGeometry(0, 14, 40, 4, 1);
     
     // Line width to join cube and sphere
     var lineWidth = 4;
@@ -102,7 +102,7 @@ function init() {
         
         objects.push(cubePoint);
         
-        /* Creating the sphere
+        // Creating the sphere
         var sphereMesh = new THREE.Mesh(pointSphere, pointMaterial);  
         
         sphereMesh.material.ambient = sphereMesh.material.color;                
@@ -130,9 +130,9 @@ function init() {
                 
         scene.add(sphereMesh);
         
-        objects.push(sphereMesh);*/
+        objects.push(sphereMesh);
         
-        // Creating the cylinder        
+        /* Creating the cylinder        
         var cylinderMaterial =  new THREE.MeshLambertMaterial({color:Math.random()*0xffffff, 
                                                                shading: THREE.FlatShading});
         var cylinderMesh = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
@@ -153,8 +153,18 @@ function init() {
                 
         //cylinderMesh.rotation.x = Math.random()*2*Math.PI;
         //cylinderMesh.rotation.y = Math.random()*2*Math.PI;
-        cylinderMesh.rotation.z = Math.random()*2*Math.PI;
-       
+        //cylinderMesh.rotation.z = Math.random()*2*Math.PI; 
+        
+        */
+        
+        /*
+        cylinderMesh.rotation.x = Math.atan(
+                (cylinderMesh.position.y-cubePoint.rotation.y)/(cylinderMesh.position.z-cubePoint.rotation.z));
+        cylinderMesh.rotation.z = Math.atan(
+                (cylinderMesh.position.y-cubePoint.rotation.y)/(cylinderMesh.position.x-cubePoint.rotation.x));        
+        */
+        
+        /*
         cylinderMesh.castShadow = true;
         cylinderMesh.receiveShadow = true;
         
@@ -163,15 +173,16 @@ function init() {
         scene.add(cylinderMesh);
         
         objects.push(cylinderMesh);
+        */
         
         //Creating line to join cube and sphere        
         var joiningGeometry = new THREE.Geometry();
         joiningGeometry.vertices.push(new THREE.Vector3(cubePoint.position.x, 
                                                         cubePoint.position.y, 
                                                         cubePoint.position.z));
-        joiningGeometry.vertices.push(new THREE.Vector3(cylinderMesh.position.x, 
-                                                        cylinderMesh.position.y, 
-                                                        cylinderMesh.position.z));
+        joiningGeometry.vertices.push(new THREE.Vector3(sphereMesh.position.x, 
+                                                        sphereMesh.position.y, 
+                                                        sphereMesh.position.z));
         var joiningMaterial = new THREE.LineBasicMaterial({color: emissiveColor, 
                                                            linewidth: lineWidth,
                                                            overdraw: true});
