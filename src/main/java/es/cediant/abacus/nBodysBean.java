@@ -32,7 +32,9 @@ public class nBodysBean implements Serializable {
     @Min(value = (long) 0.01f)
     @Max(value = (long) 1f)
     private Float dt;   
-    boolean showCalc = false;    
+    boolean showCalc = false;  
+    boolean showHost = false;
+    boolean showXeon = false;
     String device;
     
     /**
@@ -66,6 +68,22 @@ public class nBodysBean implements Serializable {
         this.dt = dt;
     }
     
+    public boolean isShowHost() {
+        return showHost;
+    }
+
+    public void setShowHost(boolean showHost) {
+        this.showHost = showHost;
+    }
+
+    public boolean isShowXeon() {
+        return showXeon;
+    }
+
+    public void setShowXeon(boolean showXeon) {
+        this.showXeon = showXeon;
+    }
+    
     public boolean isShowCalc() {
         return showCalc;
     }
@@ -82,13 +100,24 @@ public class nBodysBean implements Serializable {
         this.device = device;
     }
     
-    public void launchCalculation(ActionEvent event){
+    public String launchCalculation(ActionEvent event){
+        String startProcess = "";
         try {
             this.setShowCalc(true);
+            if(this.getDevice().equalsIgnoreCase("host")){
+                this.setShowHost(true);
+            } else if (this.getDevice().equalsIgnoreCase("xeon")){
+                this.setShowXeon(true);
+            } else {
+                this.setShowHost(true);
+                this.setShowXeon(true);
+            }
+            /*
             System.out.println("nParticles="+nParticles);
             System.out.println("Steps="+nSteps);
             System.out.println("dt="+dt);
             System.out.println("device="+device);
+            */
             ProcessBuilder pb = new ProcessBuilder(
                     "./abacus", 
                     "Abacus", 
@@ -106,6 +135,12 @@ public class nBodysBean implements Serializable {
         } catch (InterruptedException ex) {
             Logger.getLogger(nBodysBean.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println("Calculation Done");
-    }        
+        //System.out.println("Calculation Done");
+        return startProcess;
+    }            
+    
+    public void launchJS(ActionEvent event){
+    
+    }   
+ 
 }   

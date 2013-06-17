@@ -1,5 +1,5 @@
 var container;
-var camera, controls, scene, projector, renderer;
+var camera, scene, projector, renderer;
 var objects = [], scale, lines = [];
 
 var mouse = new THREE.Vector2(), 
@@ -15,21 +15,14 @@ animate();
 
 function init() {        
     container = document.createElement('div');
-    document.body.appendChild(container);    
+    //document.body.appendChild(container);
+    document.getElementById("JSPopup").appendChild(container);
+    
     
     scale = 0.98; // of the window
 
     camera = new THREE.PerspectiveCamera(52, window.innerWidth/window.innerHeight, 1, 10000);
-    camera.position.set(0, 0, 1000); 
-    
-    controls = new THREE.TrackballControls(camera);    
-    controls.rotateSpeed = 1.0;
-    controls.zoomSpeed = 1.2;
-    controls.panSpeed = 0.8;
-    controls.noZoom = false;
-    controls.noPan = false;
-    controls.staticMoving = true;
-    controls.dynamicDampingFactor = 0.3;
+    camera.position.set(0, 0, 1000);     
 
     scene = new THREE.Scene();
     
@@ -460,7 +453,6 @@ function onDocumentMouseDown(event) {
     var intersects = raycaster.intersectObjects(objects);
 
     if (intersects.length > 0) {
-        controls.enabled = false;
 
         SELECTED = intersects[0].object;       
 
@@ -558,8 +550,6 @@ function onDocumentMouseMove(event) {
 function onDocumentMouseUp(event){
     event.preventDefault();
 
-    controls.enabled = true;
-
     if (INTERSECTED){
         plane.position.copy(INTERSECTED.position);
         SELECTED = null;
@@ -575,7 +565,6 @@ function animate() {
 }
 
 function render() {
-    controls.update();
     renderer.render(scene, camera);
 }
 

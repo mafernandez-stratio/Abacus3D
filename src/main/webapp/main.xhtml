@@ -10,10 +10,9 @@
         <title>ABACUS - Powered by CEDIANT</title>
         <h:outputStylesheet library="css" name="main.css" />
     </h:head>
-    <h:body>
+    <h:body>        
         <h:graphicImage library="img" name="lightBlueBanner.png" 
-                        style="width: 100%; height: 12%" />
-        
+                        style="width: 100%; height: 12%" />        
         <rich:popupPanel id="resultPopup" modal="false" autosized="true" resizeable="false"> 
             <f:facet name="header">
                 <h:outputText value="Result" />
@@ -26,7 +25,10 @@
             <h:graphicImage library="img" name="redSphere.png" />
         </rich:popupPanel>
         
-        <rich:popupPanel id="JSPopup" modal="false" autosized="true" resizeable="false"> 
+        <rich:popupPanel id="JSPopup" 
+                         modal="false"
+                         autosized="true" 
+                         moveable="true"> 
             <f:facet name="header">
                 <h:outputText value="Result" />
             </f:facet>
@@ -34,8 +36,18 @@
                 <h:outputLink value="#" onclick="#{rich:component('JSPopup')}.hide(); return false;">
                     X                    
                 </h:outputLink>
-            </f:facet>           
+            </f:facet>       
+            <!--h:graphicImage library="img" name="redSphere.png" /-->
             <!-- JavaScript -->
+            <div id="nBodyDiv">
+                <h:outputScript library="js" name="three.min.js"/>
+                <h:outputScript library="js" name="rotatingCube.js" />
+            </div>
+            <!--div-->
+                <!--ui:insert id="JSResult"-->                    
+                    <!--ui:include src="welcome.xhtml" /-->                    
+                <!--/ui:insert-->                
+            <!--/div-->
         </rich:popupPanel>
 
         <rich:tabPanel switchType="client" style="min-height: 75%" >
@@ -223,8 +235,9 @@
                             <h:outputText value=" "/>
                             <a4j:commandButton value="Submit"  
                                                actionListener="#{nBodysBean.launchCalculation}" 
-                                               render="calculationPanel"/>       
-                            <!-- TODO: Show a progress bar onclick -->
+                                               render="calculationPanel"/>                                                        
+                            
+                            
                         </h:panelGrid>         
                         <br />
                         <h:panelGrid id="calculationPanel" width="80%">
@@ -242,7 +255,7 @@
                                     </rich:columnGroup>
                                 </f:facet>
 
-                                <rich:columnGroup>
+                                <rich:columnGroup rendered="#{nBodysBean.showXeon}">
                                     <rich:column>
                                         <h:outputText value="Xeon Phi" />
                                     </rich:column>
@@ -250,7 +263,7 @@
                                         <h:outputText value="6" />
                                     </rich:column>                                                                            
                                 </rich:columnGroup>
-                                <rich:columnGroup>
+                                <rich:columnGroup rendered="#{nBodysBean.showHost}">
                                     <rich:column>
                                         <h:outputText value="Host" />
                                     </rich:column>
@@ -262,7 +275,9 @@
                             <br />
                             <a4j:commandButton value="Show result" 
                                                actionListener="#{nBodysBean.launchJS}"
-                                               rendered="#{nBodysBean.showCalc}"/>                            
+                                               rendered="#{nBodysBean.showCalc}"                                               
+                                               oncomplete="#{rich:component('JSPopup')}.show()"
+                                               render="JSPopup"/>                            
                         </h:panelGrid>                        
                     </rich:panel>
                 </h:form>

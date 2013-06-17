@@ -4,20 +4,21 @@ To change this template, choose Tools | Templates
 and open the template in the editor.
 -->
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:rich="http://richfaces.org/rich">
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:rich="http://richfaces.org/rich">
       <!--xmlns:h5="http://java.sun.com/jsf/composite/html5"-->
     <f:view>
-        <h:head>
+        <!--h:head>
             <title>Canvas example</title>            
-            <!--style>
+            <style>
                 canvas {width: 80%; height: 80%; background: lightgray;}
-            </style-->
-        </h:head>
-        <h:body style="background: #B0C4DE">
+            </style>
+        </h:head-->
+        <!--h:body style="background: #B0C4DE"-->
+        <h:body>
             <!--h:outputScript library="js" name="jquery-1.9.1.min.js"/-->   
             <!--h:outputScript library="js" name="Three.js"/-->
             <!--h:outputScript library="js" name="three.js"/-->
@@ -34,7 +35,6 @@ and open the template in the editor.
             <!--h:outputScript library="js" name="interactive_draggablecubes.js"/-->
             <!--h:outputScript library="js" name="canvasSphere.js"/-->
             <h:outputScript library="js" name="spherecubes.js"/>
-            
             <!--h5:canvas id="exampleCanvas" 
                        width="400px" 
                        height="400px" 
@@ -44,4 +44,4 @@ and open the template in the editor.
             </h5:canvas-->     
         </h:body>
     </f:view>
-</html>
+</ui:component>

@@ -1,3 +1,4 @@
+
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -15,6 +16,7 @@ import javax.faces.bean.ViewScoped;
 @ManagedBean
 @ViewScoped
 public class ProgressBarBean implements Serializable {
+    private static final long serialVersionUID = 1L;
     private boolean buttonRendered = true;
     private boolean enabled = false;
     private int currentValue;
