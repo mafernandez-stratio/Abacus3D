@@ -198,7 +198,7 @@
             </rich:tab>        
                                     
             <rich:tab header="NBody">
-                <h:form>
+                <h:form id="form">
                     <rich:panel style="max-width: 40%;">
                         <f:facet name="header">
                             <!--h:panelGroup-->
@@ -233,52 +233,76 @@
                                 <f:selectItem itemLabel="Both" itemValue="both" />
                             </h:selectOneMenu>                          
                             <h:outputText value=" "/>
-                            <a4j:commandButton value="Submit"  
-                                               actionListener="#{nBodysBean.launchCalculation}" 
-                                               render="calculationPanel"/>                                                        
-                            
-                            
-                        </h:panelGrid>         
-                        <br />
-                        <h:panelGrid id="calculationPanel" width="80%">
-                            <rich:dataTable var="record" 
-                                            value="Value" 
-                                            rendered="#{nBodysBean.showCalc}">
-                                <f:facet name="header">
-                                    <rich:columnGroup>
-                                        <rich:column>
-                                            <h:outputText value=" " />
-                                        </rich:column>
-                                        <rich:column>
-                                            <h:outputText value="Elapsed time" />
-                                        </rich:column>                                        
-                                    </rich:columnGroup>
-                                </f:facet>
+                            <!--a4j:commandButton value="Submit"  
+                                               action="{nBodysBean.launchCalculation}" 
+                                               render="calculationPanel"/-->                                                                                        
+                            <!--h:form id="form"-->
+                                <rich:progressBar mode="ajax" 
+                                                  value="#{nBodysBean.currentValue}" 
+                                                  interval="400" 
+                                                  id="pb"
+                                                  enabled="#{nBodysBean.enabled}" 
+                                                  minValue="0" 
+                                                  maxValue="100">
+                                    <f:facet name="initial">
+                                        <h:panelGroup>
+                                            <a4j:commandButton action="#{nBodysBean.startProcess}" 
+                                                               value="Submit" 
+                                                               execute="@form"
+                                                               render="pb" 
+                                                               rendered="#{nBodysBean.buttonRendered}" 
+                                                               style="margin: 9px 0px 5px;" />
+                                        </h:panelGroup>
+                                    </f:facet>
+                                    <f:facet name="finish">
+                                        <h:panelGroup>                                            
+                                            <!--a4j:commandButton action="{nBodysBean.startProcess}" 
+                                                               value="Submit" 
+                                                               execute="@form"
+                                                               render="pb" 
+                                                               rendered="{nBodysBean.buttonRendered}" 
+                                                               style="margin: 9px 0px 5px;" /-->
+                                        </h:panelGroup>                                        
+                                        <br />                                        
+                                        <rich:dataTable var="record" 
+                                                        value="Value" 
+                                                        rendered="#{nBodysBean.showCalc}">
+                                            <f:facet name="header">
+                                                <rich:columnGroup>
+                                                    <rich:column>
+                                                        <h:outputText value=" " />
+                                                    </rich:column>
+                                                    <rich:column>
+                                                        <h:outputText value="Elapsed time" />
+                                                    </rich:column>                                        
+                                                </rich:columnGroup>
+                                            </f:facet>
 
-                                <rich:columnGroup rendered="#{nBodysBean.showXeon}">
-                                    <rich:column>
-                                        <h:outputText value="Xeon Phi" />
-                                    </rich:column>
-                                    <rich:column>
-                                        <h:outputText value="6" />
-                                    </rich:column>                                                                            
-                                </rich:columnGroup>
-                                <rich:columnGroup rendered="#{nBodysBean.showHost}">
-                                    <rich:column>
-                                        <h:outputText value="Host" />
-                                    </rich:column>
-                                    <rich:column>
-                                        <h:outputText value="10" />
-                                    </rich:column>                                                                            
-                                </rich:columnGroup>                                
-                            </rich:dataTable>    
-                            <br />
-                            <a4j:commandButton value="Show result" 
-                                               actionListener="#{nBodysBean.launchJS}"
-                                               rendered="#{nBodysBean.showCalc}"                                               
-                                               oncomplete="#{rich:component('JSPopup')}.show()"
-                                               render="JSPopup"/>                            
-                        </h:panelGrid>                        
+                                            <rich:columnGroup rendered="#{nBodysBean.showXeon}">
+                                                <rich:column>
+                                                    <h:outputText value="Xeon Phi" />
+                                                </rich:column>
+                                                <rich:column>
+                                                    <h:outputText value="6" />
+                                                </rich:column>                                                                            
+                                            </rich:columnGroup>
+                                            <rich:columnGroup rendered="#{nBodysBean.showHost}">
+                                                <rich:column>
+                                                    <h:outputText value="Host" />
+                                                </rich:column>
+                                                <rich:column>
+                                                    <h:outputText value="10" />
+                                                </rich:column>                                                                            
+                                            </rich:columnGroup>                                
+                                        </rich:dataTable>   
+                                    </f:facet>
+                                    <h:outputText value="Proccessing..." />
+                                    <!-- Update the progress for each AJAX update -->
+                                    <a4j:ajax event="begin" listener="#{nBodysBean.increment}" />
+                                </rich:progressBar>                            
+                            <!--/h:form-->
+                        </h:panelGrid>         
+                        <br />                                              
                     </rich:panel>
                 </h:form>
             </rich:tab>

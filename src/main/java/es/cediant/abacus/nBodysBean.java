@@ -4,14 +4,12 @@
  */
 package es.cediant.abacus;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
-import javax.faces.event.ActionEvent;
+import javax.faces.bean.ViewScoped;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
@@ -20,9 +18,9 @@ import javax.validation.constraints.Min;
  * @author miguel
  */
 @ManagedBean
-@RequestScoped
+@ViewScoped
 public class nBodysBean implements Serializable {
-
+    private static final long serialVersionUID = 1L;
     @Min(value = 2)
     @Max(value = 999)
     private Integer nParticles;
@@ -35,12 +33,14 @@ public class nBodysBean implements Serializable {
     boolean showCalc = false;  
     boolean showHost = false;
     boolean showXeon = false;
-    String device;
+    String device;  
+    Thread thread;
     
     /**
      * Creates a new instance of nBodysBean
      */
     public nBodysBean() {
+        //System.out.println("new NBody Bean");
         device="both";
     }
     
@@ -100,25 +100,31 @@ public class nBodysBean implements Serializable {
         this.device = device;
     }
     
-    public String launchCalculation(ActionEvent event){
-        String startProcess = "";
-        try {
-            this.setShowCalc(true);
-            if(this.getDevice().equalsIgnoreCase("host")){
-                this.setShowHost(true);
-            } else if (this.getDevice().equalsIgnoreCase("xeon")){
-                this.setShowXeon(true);
+    public void launchCalculation(){
+        //System.out.println("launchCalculation");
+        //try {
+            if(getDevice().equalsIgnoreCase("host")){
+                setShowHost(true);
+            } else if (getDevice().equalsIgnoreCase("xeon")){
+                setShowXeon(true);
             } else {
-                this.setShowHost(true);
-                this.setShowXeon(true);
+                setShowHost(true);
+                setShowXeon(true);
             }
-            /*
-            System.out.println("nParticles="+nParticles);
+            /*System.out.println("nParticles="+nParticles);
             System.out.println("Steps="+nSteps);
             System.out.println("dt="+dt);
-            System.out.println("device="+device);
-            */
-            ProcessBuilder pb = new ProcessBuilder(
+            System.out.println("device="+device);*/
+            ArrayList<String> params = new ArrayList<String>();
+            params.add("./abacus");
+            params.add("Abacus");
+            params.add("Integer.toString(nParticles)");
+            params.add("Integer.toString(nSteps)");
+            params.add("Float.toString(dt)");
+            ExternalCommand ec = new ExternalCommand("/workspace/OpenGLGLU/src", params);
+            thread = new Thread(ec, "abacus");
+            thread.start();
+            /*ProcessBuilder pb = new ProcessBuilder(
                     "./abacus", 
                     "Abacus", 
                     Integer.toString(nParticles), 
@@ -129,18 +135,97 @@ public class nBodysBean implements Serializable {
             pb.directory(directory);
             Process p = pb.start();
             p.waitFor();
-            p.destroy();
-        } catch (IOException ex) {
-            Logger.getLogger(nBodysBean.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(nBodysBean.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        //System.out.println("Calculation Done");
-        return startProcess;
-    }            
+            p.destroy();*/
+        //} catch (IOException ex) {
+        //    Logger.getLogger(nBodysBean.class.getName()).log(Level.SEVERE, null, ex);
+        //} catch (InterruptedException ex) {
+        //    Logger.getLogger(nBodysBean.class.getName()).log(Level.SEVERE, null, ex);
+        //}
+    }                
     
-    public void launchJS(ActionEvent event){
-    
-    }   
+    public boolean threadIsRunning(){
+        try {
+            if (thread.isAlive()){
+                //System.out.println("Process running...");
+                return true;
+            } else {
+                //System.out.println("Process done");
+                return false;
+            }
+        } catch (Throwable ex) {
+            Logger.getLogger(nBodysBean.class.getName()).log(Level.SEVERE, null, ex);     
+            return false;
+        } 
+    }
+                        
+    private boolean buttonRendered = true;
+    private boolean enabled = false;
+    private int currentValue;
  
+    public String startProcess() {
+        setEnabled(true);
+        setButtonRendered(false);
+        setCurrentValue(0);
+        launchCalculation();
+        return null;
+    }
+ 
+    public void increment() {
+        /*System.out.println("Current Value = "+currentValue);
+        System.out.println(nParticles);
+        System.out.println(nSteps);
+        System.out.println(dt);
+        System.out.println(device);*/
+        if (isEnabled() && (currentValue < 100)) {
+            currentValue += 5;
+            if(currentValue >= 100){
+                currentValue = 5;
+            } /*else {
+                System.out.println("New Current Value = "+currentValue);
+            }*/
+            boolean threadDone = !threadIsRunning();            
+            if(threadDone){
+                //System.out.println("Calculation Done");
+                currentValue = 100;
+                setShowCalc(true);
+                setButtonRendered(true);
+            } /*else {
+                System.out.println("Calculating...");
+            }*/
+        }
+    }
+ 
+    public boolean isEnabled() {
+        return enabled;
+    }
+ 
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+ 
+    public boolean isButtonRendered() {
+        return buttonRendered;
+    }
+ 
+    public void setButtonRendered(boolean buttonRendered) {
+        this.buttonRendered = buttonRendered;
+    }
+ 
+    public int getCurrentValue() {
+        if (!isEnabled()) {
+            return -1;
+        }
+        return currentValue;
+    }
+ 
+    public void setCurrentValue(int currentValue) {
+        this.currentValue = currentValue;
+    }
+ 
+
+    
+    
+    
+    
+    
 }   
