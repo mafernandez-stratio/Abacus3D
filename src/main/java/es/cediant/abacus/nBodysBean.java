@@ -20,44 +20,46 @@ import javax.validation.constraints.Min;
 @ManagedBean
 @ViewScoped
 public class nBodysBean implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 6101150443955943422L;   
     @Min(value = 2)
-    @Max(value = 999)
-    private Integer nParticles;
+    @Max(value = 50000)
+    Integer numParticles = 100;
     @Min(value = 9)
     @Max(value = 999)
-    private Integer nSteps;
+    Integer numSteps = 100;
     @Min(value = (long) 0.01f)
     @Max(value = (long) 1f)
-    private Float dt;   
+    Float dt = 0.02f;   
     boolean showCalc = false;  
     boolean showHost = false;
     boolean showXeon = false;
     String device;  
     Thread thread;
+    boolean buttonRendered = true;
+    boolean enabled = false;
+    int currentValue;
     
     /**
      * Creates a new instance of nBodysBean
      */
     public nBodysBean() {
         //System.out.println("new NBody Bean");
-        device="both";
-    }
-    
-    public Integer getnParticles() {
-        return nParticles;
     }
 
-    public void setnParticles(Integer nParticles) {
-        this.nParticles = nParticles;
+    public Integer getNumParticles() {
+        return numParticles;
     }
 
-    public Integer getnSteps() {
-        return nSteps;
+    public void setNumParticles(Integer numParticles) {
+        this.numParticles = numParticles;
     }
 
-    public void setnSteps(Integer nSteps) {
-        this.nSteps = nSteps;
+    public Integer getNumSteps() {
+        return numSteps;
+    }
+
+    public void setNumSteps(Integer numSteps) {
+        this.numSteps = numSteps;
     }
 
     public Float getDt() {
@@ -101,26 +103,21 @@ public class nBodysBean implements Serializable {
     }
     
     public void launchCalculation(){
-        //System.out.println("launchCalculation");
-        //try {
-            if(getDevice().equalsIgnoreCase("host")){
-                setShowHost(true);
-            } else if (getDevice().equalsIgnoreCase("xeon")){
-                setShowXeon(true);
-            } else {
-                setShowHost(true);
-                setShowXeon(true);
-            }
+        //System.out.println(" - launchCalculation");
+        //try {            
             /*System.out.println("nParticles="+nParticles);
             System.out.println("Steps="+nSteps);
             System.out.println("dt="+dt);
-            System.out.println("device="+device);*/
+            System.out.println("device="+device);
+            System.out.println(showXeon);
+            System.out.println(showHost);*/
             ArrayList<String> params = new ArrayList<String>();
             params.add("./abacus");
             params.add("Abacus");
-            params.add("Integer.toString(nParticles)");
-            params.add("Integer.toString(nSteps)");
-            params.add("Float.toString(dt)");
+            params.add(Integer.toString(numParticles));
+            params.add(Integer.toString(numSteps));
+            params.add(Float.toString(dt));
+            params.add(device);
             ExternalCommand ec = new ExternalCommand("/workspace/OpenGLGLU/src", params);
             thread = new Thread(ec, "abacus");
             thread.start();
@@ -156,15 +153,21 @@ public class nBodysBean implements Serializable {
             Logger.getLogger(nBodysBean.class.getName()).log(Level.SEVERE, null, ex);     
             return false;
         } 
-    }
-                        
-    private boolean buttonRendered = true;
-    private boolean enabled = false;
-    private int currentValue;
+    }                        
  
     public String startProcess() {
+        /*System.out.println(" - startProcess");
+        System.out.println("nParticles="+numParticles);
+        System.out.println("Steps="+numSteps);
+        System.out.println("dt="+dt);
+        System.out.println("device="+device);
+        System.out.println(showXeon);
+        System.out.println(showHost);*/
         setEnabled(true);
         setButtonRendered(false);
+        setShowCalc(false);    
+        setShowXeon(false);
+        setShowHost(false);
         setCurrentValue(0);
         launchCalculation();
         return null;
@@ -184,11 +187,26 @@ public class nBodysBean implements Serializable {
                 System.out.println("New Current Value = "+currentValue);
             }*/
             boolean threadDone = !threadIsRunning();            
-            if(threadDone){
-                //System.out.println("Calculation Done");
+            if(threadDone){                
                 currentValue = 100;
-                setShowCalc(true);
+                setShowCalc(true);                
+                if(getDevice().equalsIgnoreCase("host")){
+                    setShowHost(true);
+                } else if (getDevice().equalsIgnoreCase("xeon")){
+                    setShowXeon(true);
+                } else if (getDevice().equalsIgnoreCase("both")){
+                    setShowHost(true);
+                    setShowXeon(true);
+                }
                 setButtonRendered(true);
+                setEnabled(false);
+                /*System.out.println(" - Calculation Done");
+                System.out.println("nParticles="+numParticles);
+                System.out.println("Steps="+numSteps);
+                System.out.println("dt="+dt);
+                System.out.println("device="+device); 
+                System.out.println(showXeon);
+                System.out.println(showHost);*/
             } /*else {
                 System.out.println("Calculating...");
             }*/
@@ -220,12 +238,9 @@ public class nBodysBean implements Serializable {
  
     public void setCurrentValue(int currentValue) {
         this.currentValue = currentValue;
+    }    
+    
+    public String createJS(){
+        return null;
     }
- 
-
-    
-    
-    
-    
-    
 }   
