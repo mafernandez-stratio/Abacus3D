@@ -4,6 +4,11 @@
  */
 package es.cediant.abacus;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -24,26 +29,28 @@ public class nBodysBean implements Serializable {
     @Min(value = 2)
     @Max(value = 50000)
     Integer numParticles = 100;
-    @Min(value = 9)
+    @Min(value = 2)
     @Max(value = 999)
     Integer numSteps = 100;
     @Min(value = (long) 0.01f)
-    @Max(value = (long) 1f)
-    Float dt = 0.02f;   
+    @Max(value = (long) 2f)
+    Float dt = 0.1f;   
     boolean showCalc = false;  
     boolean showHost = false;
     boolean showXeon = false;
-    String device;  
+    String device = "both";  
     Thread thread;
     boolean buttonRendered = true;
     boolean enabled = false;
     int currentValue;
+    String coordinates;    
     
     /**
      * Creates a new instance of nBodysBean
      */
     public nBodysBean() {
         //System.out.println("new NBody Bean");
+        //coordinates="4409;0.9831,-0.4179,0.0416_4440;-0.4146,-0.3789,0.4994*4429;0.0855,0.0635,1.5552_4406;-0.5918,0.6306,0.7046";
     }
 
     public Integer getNumParticles() {
@@ -240,7 +247,53 @@ public class nBodysBean implements Serializable {
         this.currentValue = currentValue;
     }    
     
-    public String createJS(){
+    public String readCoordinates(){
+        // Read all frameXXX.txt and fill the variable coordinates where:
+        // ; represents the final of the number of the particle
+        // , represents the final of a coordinate
+        // _ represents the final of the particle's coordinates
+        // * represents the final of a frame   
+        //System.out.println("Num frames="+numSteps);
+        try {      
+            StringBuilder sb = new StringBuilder();
+            for(int i=1; i<=numSteps; i++){
+                String number = Integer.toString(i);
+                if(i<10){
+                    number = "00"+(i);
+                } else if (i<100){                    
+                    number = "0"+(i);
+                }
+                File file = new File("workspace/AbacusHTML5/src/main/webapp/resources/txt/frame"+number+".txt");
+                BufferedReader br = new BufferedReader(new FileReader(file));
+                String line;
+                int nLine = 0;
+                while ((line = br.readLine()) != null) {
+                    // process the line.
+                    sb.append(line);
+                    if((nLine+1)<numParticles){
+                        sb.append("_");
+                    }   
+                    nLine++;
+                }
+                if(i<numSteps){
+                    sb.append("*");
+                }
+                br.close();
+            }
+            coordinates = sb.toString();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(nBodysBean.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(nBodysBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return null;
+    }
+    
+    public String getCoordinates() {
+        return coordinates;
+    }
+
+    public void setCoordinates(String coordinates) {
+        this.coordinates = coordinates;
     }
 }   

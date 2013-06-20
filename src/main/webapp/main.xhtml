@@ -29,7 +29,7 @@
                          modal="false"
                          autosized="true" 
                          moveable="true"
-                         onshow="init('#{nBodysBean.numParticles}', '#{nBodysBean.numSteps}')"
+                         onshow="init('#{nBodysBean.numParticles}', '#{nBodysBean.numSteps}', '#{nBodysBean.coordinates}')"
                          left="0px"
                          top="0px"> 
             <f:facet name="header">
@@ -282,7 +282,7 @@
                                                     </rich:column> 
                                                     <rich:column>
                                                         <a4j:commandButton value="Show"  
-                                                                           action="#{nBodysBean.createJS()}"
+                                                                           action="#{nBodysBean.readCoordinates()}"
                                                                            oncomplete="#{rich:component('JSPopup')}.show()"
                                                                            render="JSPopup"/> 
                                                     </rich:column>
@@ -296,7 +296,7 @@
                                                     </rich:column>     
                                                     <rich:column>
                                                         <a4j:commandButton value="Show" 
-                                                                           action="#{nBodysBean.createJS()}"
+                                                                           action="#{nBodysBean.readCoordinates()}"
                                                                            oncomplete="#{rich:component('JSPopup')}.show()"
                                                                            render="JSPopup"/> 
                                                     </rich:column>
