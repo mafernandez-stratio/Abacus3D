@@ -5,7 +5,8 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:rich="http://richfaces.org/rich"
                 xmlns:a4j="http://richfaces.org/a4j">
-<ui:composition>
+<f:event type="preRenderView" listener="#{userBean.checkNotLoggedin}" />      
+<f:view>
     <h:head>
         <title>ABACUS - Powered by CEDIANT</title>
         <h:outputStylesheet library="css" name="main.css" />
@@ -367,6 +368,6 @@
         <h:graphicImage library="img" name="bottomBanner.png" 
                         style="width: 100%; height: 12%; opacity: 0.8;"/>
     </h:body>
-</ui:composition>
+</f:view>
 </html>    
     

@@ -8,7 +8,8 @@ and open the template in the editor.
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core">
-    <f:view>
+    <f:event type="preRenderView" listener="#{userBean.redirectToLogin}" />
+    <f:view>        
         <h:head>
             <title><h:outputText value="ABACUS" /></title>
         </h:head>

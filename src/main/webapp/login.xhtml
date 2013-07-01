@@ -5,7 +5,8 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:rich="http://richfaces.org/rich"
       xmlns:a4j="http://richfaces.org/a4j">
-<ui:composition>
+<f:event type="preRenderView" listener="#{userBean.checkLoggedin}" />    
+<f:view>
     <h:head>
         <title>ABACUS Login</title>
         <h:outputStylesheet library="css" name="login.css" />
@@ -48,5 +49,5 @@
             </h:form>
         </rich:popupPanel>
     </h:body>
-</ui:composition>
+</f:view>
 </html>
