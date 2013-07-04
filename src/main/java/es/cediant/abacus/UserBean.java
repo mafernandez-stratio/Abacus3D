@@ -1,6 +1,7 @@
 
 package es.cediant.abacus;
 
+import es.cediant.db.UserHelper;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.logging.Level;
@@ -19,7 +20,9 @@ import javax.faces.context.FacesContext;
 @ManagedBean
 @SessionScoped
 public class UserBean implements Serializable {  
+    
     private static final long serialVersionUID = 4474970058733848377L;
+    
     private String username;
     private String password;    
     private boolean loggedin = false;
@@ -41,7 +44,9 @@ public class UserBean implements Serializable {
     
     public void login() {
         try {
-            if ((username.compareTo("admin")==0) && (password.compareTo("admin")==0)){ 
+            //if ((username.compareTo("admin")==0) && (password.compareTo("admin")==0)){ 
+            UserHelper uh = new UserHelper();
+            if(uh.checkCredentials(username, password)){
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_INFO, 
                                  "Successful login!", 

@@ -32,7 +32,7 @@
                 <h:outputText value="ABACUS Login" />
             </f:facet>
             <!--f:facet name="controls">
-                <h:outputLink value="#" onclick="#{rich:component('popup')}.hide(); return false;">
+                <h:outputLink value="#" onclick="{rich:component('popup')}.hide(); return false;">
                     X
                 </h:outputLink>
             </f:facet-->
@@ -44,8 +44,12 @@
                     <h:inputText value="#{userBean.username}" id="userText" autocomplete="off" /> 
                     <h:outputText value="Password:" />
                     <h:inputSecret value="#{userBean.password}" id="passText" />
+                    <a4j:commandButton value="Log In" action="#{userBean.login}" />
+                    <h:outputLink value="registration.xhtml">
+                        New User
+                    </h:outputLink>
                 </h:panelGrid>
-                <a4j:commandButton value="Log In" action="#{userBean.login}" />
+                
             </h:form>
         </rich:popupPanel>
     </h:body>
