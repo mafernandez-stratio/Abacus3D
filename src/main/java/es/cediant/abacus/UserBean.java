@@ -2,6 +2,7 @@
 package es.cediant.abacus;
 
 import es.cediant.db.UserHelper;
+import es.cediant.encryption.MD5Util;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.logging.Level;
@@ -46,7 +47,9 @@ public class UserBean implements Serializable {
         try {
             //if ((username.compareTo("admin")==0) && (password.compareTo("admin")==0)){ 
             UserHelper uh = new UserHelper();
-            if(uh.checkCredentials(username, password)){
+            MD5Util md5util = new MD5Util();            
+            if(uh.checkCredentials(username, md5util.encrypt(password))){
+            //if(uh.checkCredentials(username, password)){
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_INFO, 
                                  "Successful login!", 
@@ -64,6 +67,18 @@ public class UserBean implements Serializable {
             setLoggedin(false);
             Logger.getLogger(UserBean.class.getName()).log(Level.SEVERE, null, ex);
         }   
+    }
+    
+    public void logout(){
+        FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+        redirectToLogin();
+    }
+    
+    public void unregister(){
+        FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+        UserHelper uh = new UserHelper();
+        uh.removeUser(username);
+        redirectToLogin();
     }
     
     public void setUsername(String username) {
@@ -104,8 +119,12 @@ public class UserBean implements Serializable {
         }*/
     }
     
-    public void redirectToLogin() throws IOException {
-        ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
-        ec.redirect(ec.getRequestContextPath() + "/login.xhtml");
+    public void redirectToLogin() {
+        try {
+            ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+            ec.redirect(ec.getRequestContextPath() + "/login.xhtml");
+        } catch (IOException ex) {
+            Logger.getLogger(UserBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

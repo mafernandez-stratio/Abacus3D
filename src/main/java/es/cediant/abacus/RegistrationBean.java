@@ -5,6 +5,7 @@
 package es.cediant.abacus;
 
 import es.cediant.db.UserHelper;
+import es.cediant.encryption.MD5Util;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.logging.Level;
@@ -69,7 +70,8 @@ public class RegistrationBean implements Serializable {
                                  "Username already exists!", 
                                  "Try Again!"));
             } else {
-                uh.addUser(newUserName, newPass);
+                MD5Util md5util = new MD5Util();
+                uh.addUser(newUserName, md5util.encrypt(newPass));
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_INFO, 
                                  "New user created!", 

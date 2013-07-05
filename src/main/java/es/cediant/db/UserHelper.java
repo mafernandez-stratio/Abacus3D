@@ -5,9 +5,11 @@
 package es.cediant.db;
 
 import java.util.List;
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Restrictions;
 
 /**
  *
@@ -18,15 +20,21 @@ public class UserHelper {
     private static Session session = null;
     
     public UserHelper(){
-        UserHelper.session = HibernateUtil.getSessionFactory().getCurrentSession();        
+        //UserHelper.session = HibernateUtil.getSessionFactory().getCurrentSession(); 
+        session = HibernateUtil.getSessionFactory().openSession();
     }
     
     public User getUser(String username){
         List<User> list = null;
         Transaction tx = session.beginTransaction();
-        Query q = session.createQuery("SELECT * FROM AbacusDB.User WHERE userName='admin';");
+        Query q = session.createQuery("FROM User U WHERE U.userName='"+username+"'");
         list = (List<User>) q.list();
-        return list.get(0);
+        session.getTransaction().commit();
+        if(list.size()>0){
+            return list.get(0);
+        } else {
+            return null;
+        }
     }
     
     public boolean usernameAlreadyExists(String username){
@@ -37,7 +45,6 @@ public class UserHelper {
     }
 
     public void addUser(String username, String password) {
-        //"INSERT INTO `AbacusDB`.`User` (`userName`, `password`, `Role`, `lastConnection`) VALUES ('cediant', 'cediant', 'User', '');"
         Transaction tx = null;
         tx = session.beginTransaction();
         User user = new User(username, password);
@@ -54,6 +61,15 @@ public class UserHelper {
         } else {
             return false;
         }
+    }
+
+    public void removeUser(String username) {
+        Transaction tx = null;
+        tx = session.beginTransaction();
+        Criteria criteria = session.createCriteria(User.class);
+        User user = (User) criteria.add(Restrictions.eq("userName", username)).uniqueResult();
+        session.delete(user);
+        tx.commit();
     }
     
 }
