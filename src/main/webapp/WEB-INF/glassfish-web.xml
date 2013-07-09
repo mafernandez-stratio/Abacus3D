@@ -8,4 +8,8 @@
       <description>Keep a copy of the generated servlet class' java code.</description>
     </property>
   </jsp-config>
+  <security-role-mapping>
+        <role-name>role1</role-name>
+        <group-name>Authenticated</group-name>
+    </security-role-mapping>
 </glassfish-web-app>

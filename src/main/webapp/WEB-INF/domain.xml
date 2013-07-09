@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<auth-realm name="ADREALM" classname="com.sun.enterprise.security.auth.realm.ldap.LDAPRealm">
+    <property name="directory" value="LDAP://http://10.129.129.148/"></property>
+    <property name="search-filter" value="(&amp;(objectClass=user)(sAMAccountName=%s))"></property>
+    <property name="base-dn" value="dc=abacus,dc=cediant,dc=es"></property>
+    <property name="group-search-filter" value="(&amp;(objectClass=group)(member=%d))"></property>
+    <property name="jaas-context" value="ldapRealm"></property>
+    <property name="assign-groups" value="Authenticated"></property>
+    <property name="search-bind-dn" value="http://10.129.129.148/Administrador"></property>
+    <property name="search-bind-password" value="Eur01mus"></property>
+</auth-realm>

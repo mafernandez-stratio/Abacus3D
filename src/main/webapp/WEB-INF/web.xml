@@ -37,7 +37,48 @@
     <!-- Session configuration -->
     <session-config>
         <session-timeout>
-            30
+            5
         </session-timeout>
     </session-config>
+    <login-config>
+        <auth-method>BASIC</auth-method>
+        <realm-name>LDAP</realm-name>
+    </login-config> 
+    <security-role>
+        <role-name>role1</role-name>
+    </security-role>
+    <security-constraint>
+      <!-- web resources that are protected -->
+      <web-resource-collection>
+         <web-resource-name>All Resources</web-resource-name>
+         <url-pattern>/*</url-pattern>
+         <!-- All methods but OPTIONS must be authenticated. OPTIONS must work without authentication for cross domain in Firefox to work -->
+         <http-method>GETLIB</http-method>
+         <http-method>COPY</http-method>
+         <http-method>MOVE</http-method>
+         <http-method>DELETE</http-method>
+         <http-method>PROPFIND</http-method>
+         <http-method>GET</http-method>
+         <http-method>HEAD</http-method>
+         <http-method>PUT</http-method>
+         <http-method>MKCOL</http-method>
+         <http-method>PROPPATCH</http-method>
+         <http-method>LOCK</http-method>
+         <http-method>UNLOCK</http-method>
+         <http-method>VERSION-CONTROL</http-method>
+         <http-method>CHECKIN</http-method>
+         <http-method>CHECKOUT</http-method>
+         <http-method>UNCHECKOUT</http-method>
+         <http-method>REPORT</http-method>
+         <http-method>UPDATE</http-method>
+         <http-method>CANCELUPLOAD</http-method>
+      </web-resource-collection>
+      <auth-constraint>
+          <!-- role-name indicates roles that are allowed to access the web resource specified above -->
+          <role-name>role1</role-name>
+      </auth-constraint>
+   </security-constraint> 
+    
+    
+    
 </web-app>
