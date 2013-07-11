@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <f:event type="preRenderView" listener="#{userBean.redirectToLogin}" />
+    <f:view>        
+        <h:head>
+            <title><h:outputText value="ABACUS" /></title>
+        </h:head>
+        <h:body>        
+            <h3><h:outputText value=" - ABACUS - " /></h3>
+            <p><h:outputText value="Enter data" /></p>
+            <h:form>
+                <h:panelGrid columns="2">
+                <h:outputLabel for="userName">User Name *</h:outputLabel>
+                <h:inputText id="userName" value="#{indexBean.userName}"></h:inputText>
+                <h:outputLabel for="password">Password *</h:outputLabel>
+                <h:inputSecret id="password" value="#{indexBean.password}" ></h:inputSecret>
+                <h:commandButton value="Submit" action="welcome"></h:commandButton>
+            </h:panelGrid>
+            </h:form>
+        </h:body>
+    </f:view>
+</html>

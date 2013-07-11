@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j">
+<f:event type="preRenderView" listener="#{userBean.checkLoggedin}" />    
+<f:view>
+    <h:head>
+        <title>ABACUS Login</title>
+        <h:outputStylesheet library="css" name="login.css" />
+    </h:head>
+    <h:body onload="#{rich:component('popup')}.show();">
+        <!--h:form>
+            <rich:graphValidator value="{passwordValidationBean}" id="gv">
+                <rich:panel header="ABACUS Login" styleClass="loginPanelStyle">    
+                    <rich:messages for="gv" />
+                    <rich:messages globalOnly="true" />
+                    <h:panelGrid columns="2">
+                        <h:outputText value="Username: "/>
+                        <h:inputText value="{userBean.username}" id="userText" autocomplete="off" /> 
+                        <h:outputText value="Password:" />
+                        <h:inputSecret value="{userBean.password}" id="passText" />
+                    </h:panelGrid>       
+                    <a4j:commandButton value="Log In" action="{userBean.login}" />
+                </rich:panel>   
+            </rich:graphValidator>
+        </h:form-->                       
+        <rich:popupPanel id="popup" modal="true" resizeable="true" style="background-color: #B0C4DE;">
+            <f:facet name="header">
+                <h:outputText value="ABACUS Login" />
+            </f:facet>
+            <!--f:facet name="controls">
+                <h:outputLink value="#" onclick="{rich:component('popup')}.hide(); return false;">
+                    X
+                </h:outputLink>
+            </f:facet-->
+            <h:form id="loginForm">
+                <rich:messages for="gv" />
+                <rich:messages globalOnly="true" />
+                <h:panelGrid columns="2">
+                    <h:outputText value="Username: " rendered="#{!userBean.ldapAuthentication}"/>
+                    <h:outputText value="Username (CN): " rendered="#{userBean.ldapAuthentication}"/>
+                    <h:inputText value="#{userBean.username}" id="userText" autocomplete="off" /> 
+                    <h:outputText value="Password:" />
+                    <h:inputSecret value="#{userBean.password}" id="passText" />                    
+                    <h:selectBooleanCheckbox value="#{userBean.ldapAuthentication}">
+                        <a4j:ajax event="click" 
+                                  render="loginForm" />
+                    </h:selectBooleanCheckbox>
+                    <h:outputText value="LDAP Authentication" />
+                     
+                    <h:outputText value="Group (OU): " rendered="#{userBean.ldapAuthentication}" />
+                    <h:inputText value="#{userBean.group}" rendered="#{userBean.ldapAuthentication}" />
+                    <h:outputText value="DCs: " rendered="#{userBean.ldapAuthentication}" />
+                    <h:inputText value="#{userBean.dcs}" rendered="#{userBean.ldapAuthentication}" />
+                                        
+                    <a4j:commandButton value="Log In" action="#{userBean.login}" />
+                    <h:outputLink value="registration.xhtml">
+                        New User
+                    </h:outputLink>
+                </h:panelGrid>
+                
+            </h:form>
+        </rich:popupPanel>
+    </h:body>
+</f:view>
+</html>

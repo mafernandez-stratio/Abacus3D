@@ -1,0 +1,23 @@
+/* 
+    Document   : login
+    Created on : May 23, 2013, 12:59:27 PM
+    Author     : miguel
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+root { 
+    display: block;
+}
+
+body {
+    background-color: #F5F5DC;
+}
+
+.rf-pp-cntr {
+    width:250px;
+}
+
+.rf-pp-cnt-scrlr {
+    background: #B0C4DE !important;
+}

@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j">
+<f:event type="preRenderView" listener="#{userBean.checkLoggedin}" />    
+<f:view>
+    <h:head>
+        <title>ABACUS Registration</title>
+        <h:outputStylesheet library="css" name="login.css" />
+    </h:head>
+    <!--h:body>   
+        <h:form>
+            <rich:panel style="width: 50%; margin-left: 20%" >
+                <f:facet name="header">
+                    <h:outputText value="User registration" />
+                </f:facet>
+                <h:panelGrid columns="3">            
+                    <h:outputText value="User name:" />
+                    <h:inputText value="{registrationBean.newUserName}" />
+                    <rich:message for="newUserName" />
+                    <h:outputText value="Password:" />
+                    <h:inputSecret value="{registrationBean.newPass}"/>
+                    <rich:message for="newPass" />
+                    <h:outputText value="Repeat password:" />
+                    <h:inputSecret value="{registrationBean.newPassRep}" />
+                    <rich:message for="newPassRep" />  
+                    <h:outputText value=" "/>
+                    <h:commandButton value="Create New User"/>
+                </h:panelGrid>  
+            </rich:panel>
+        </h:form>
+    </h:body-->
+    
+    
+    
+    
+    <h:body onload="#{rich:component('popupNewUser')}.show();">                   
+        <rich:popupPanel id="popupNewUser" 
+                         modal="true" 
+                         resizeable="true" 
+                         style="background-color: #B0C4DE;">
+            <f:facet name="header">
+                <h:outputText value="ABACUS Registration" />
+            </f:facet>            
+            <h:form>                                
+                <h:panelGrid columns="2">
+                    <h:outputText value="User name: "/>
+                    <h:inputText value="#{registrationBean.newUserName}" id="userText" autocomplete="off" /> 
+                    <h:outputText value="Password:" />
+                    <h:inputSecret value="#{registrationBean.newPass}" id="passText" />  
+                    <h:outputText value="Repeat password:" />
+                    <h:inputSecret value="#{registrationBean.newPassRep}" id="passRepText" />
+                    <a4j:commandButton value="Create" action="#{registrationBean.createUser}" />  
+                    <a4j:commandButton value="Back" action="#{userBean.redirectToLogin}" />                     
+                </h:panelGrid>  
+                <br />
+                <rich:messages globalOnly="true" />
+                <rich:messages for="nu" />
+            </h:form>
+        </rich:popupPanel>
+    </h:body>            
+</f:view>
+</html>

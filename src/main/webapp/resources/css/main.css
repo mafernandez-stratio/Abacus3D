@@ -1,0 +1,16 @@
+/* 
+    Document   : main
+    Created on : May 23, 2013, 5:51:34 PM
+    Author     : miguel
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+root { 
+    display: block;
+}
+
+body {
+    background-color: #F5F5DC;
+}
+
