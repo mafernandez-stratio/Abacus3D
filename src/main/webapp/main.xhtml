@@ -4,7 +4,8 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:rich="http://richfaces.org/rich"
-                xmlns:a4j="http://richfaces.org/a4j">
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
 <f:event type="preRenderView" listener="#{userBean.checkNotLoggedin}" />      
 <f:view>
     <h:head>
@@ -83,6 +84,13 @@
                     <li>Large and active community</li>
                 </ul>                               
             </rich:tab>
+            
+            <c:forEach var="i" begin="0" end="#{userBean.roles.size()-1}">
+                <rich:tab header="#{userBean.roles.get(i)}">
+                    <h:outputText value="#{userBean.roles.get(i)}" />
+                </rich:tab>
+            </c:forEach>
+            
             <rich:tab header="Manager">
                 <p>The rich:panel component creates a rectangle shaped area on the page that 
                    may contain any content including other panels. Panel's have a header 

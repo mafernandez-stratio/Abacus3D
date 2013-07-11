@@ -1,12 +1,18 @@
 
 package es.cediant.abacus;
 
+import com.novell.ldap.LDAPAttributeSet;
 import com.novell.ldap.LDAPConnection;
+import com.novell.ldap.LDAPEntry;
 import com.novell.ldap.LDAPException;
+import com.novell.ldap.LDAPSearchResults;
 import es.cediant.db.UserHelper;
 import es.cediant.encryption.MD5Util;
+import es.cediant.util.StringUtil;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
@@ -15,7 +21,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.event.AjaxBehaviorEvent;
 
 /**
  *
@@ -31,7 +36,10 @@ public class UserBean implements Serializable {
     private String password;    
     private boolean loggedin = false;   
     private boolean ldapAuthentication = false;
-    private String group;   
+    private String group;      
+    private String dcs;    
+    private ArrayList<String> roles = new ArrayList<String>();
+    private LDAPConnection ldapc;
     
     private final String hostLDAP = "10.129.129.148";
     private final int portLDAP = 389;
@@ -66,6 +74,22 @@ public class UserBean implements Serializable {
         this.group = group;
     }
     
+    public String getDcs() {
+        return dcs;
+    }
+
+    public void setDcs(String dcs) {
+        this.dcs = dcs;
+    }
+    
+    public ArrayList<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(ArrayList<String> roles) {
+        this.roles = roles;
+    }
+    
     public void login() {
         try {            
             //if ((username.compareTo("admin")==0) && (password.compareTo("admin")==0)){ 
@@ -78,7 +102,10 @@ public class UserBean implements Serializable {
                         new FacesMessage(FacesMessage.SEVERITY_INFO, 
                                  "Successful login!", 
                                  "Welcome!"));
-                setLoggedin(true);
+                setLoggedin(true);                
+                setRoles(new ArrayList<String>(
+                    Arrays.asList("admin", "usuario")
+                ));
                 FacesContext.getCurrentInstance().getExternalContext().redirect("/main.xhtml");
             } else {
                 FacesContext.getCurrentInstance().addMessage(null,
@@ -96,16 +123,54 @@ public class UserBean implements Serializable {
     public boolean loginLDAP() {
         boolean result = false;
         try {
-            LDAPConnection ldapc = new LDAPConnection();
+            ldapc = new LDAPConnection();
             ldapc.connect(hostLDAP, portLDAP);
             //String passw = "cediant";
             //byte[] passwArray = passw.getBytes();
             //ldapc.bind(com.novell.ldap.LDAPConnection.LDAP_V3, "cn=cediant UAX,ou=Users,dc=abacus,dc=cediant,dc=es", passwArray);
-            ldapc.bind(com.novell.ldap.LDAPConnection.LDAP_V3, username, password.getBytes());
+            //ldapc.bind(com.novell.ldap.LDAPConnection.LDAP_V3, username, password.getBytes());
+            StringBuilder sb = new StringBuilder();
+            sb.append("cn=");
+            sb.append(username);
+            sb.append(",ou=");
+            sb.append(group);            
+            String[] dcsArray = null;
+            dcsArray = StringUtil.splitDCs(dcs);
+            for(int i=0; i<dcsArray.length; i++){
+                sb.append(",dc=");
+                sb.append(dcsArray[i]);
+            }
+            ldapc.bind(com.novell.ldap.LDAPConnection.LDAP_V3, sb.toString(), password.getBytes());
             if (ldapc.isBound()){
                 result = true;
-            } 
-            ldapc.disconnect();
+                sb.delete(0, sb.length());
+                sb.append("ou=Groups");
+                for(int i=0; i<dcsArray.length; i++){
+                    sb.append(",dc=");
+                    sb.append(dcsArray[i]);
+                }
+                // Figure out roles
+                LDAPSearchResults rs = ldapc.search(
+                        sb.toString(), 
+			LDAPConnection.SCOPE_SUB, 
+                        "(&(objectCategory=person)(objectClass=user))", 
+                        null, 
+                        Boolean.FALSE);
+                while(rs.hasMore()){ 
+                    LDAPEntry entry = rs.next();   
+                    LDAPAttributeSet as=entry.getAttributeSet();
+                    System.out.println(entry.getAttribute("objectClass"));
+                    System.out.println(entry.getAttribute("objectCategory"));
+                    System.out.println(entry.getDN() +" ");
+                    if (entry.getAttribute("objectCategory").getStringValue().equals("CN=Person,CN=Schema,CN=Configuration,DC=AIA,DC=BIZ")) {
+                    //System.out.print(entry.getDN() +" ");
+                    System.out.println(entry.getAttribute("name").getStringValue());
+                    
+                    //System.out.print(entry.getAttribute("objectCategory").getStringValue()+" ");    
+                    //System.out.println(entry.getAttribute("displayName").getStringValue());   
+                }
+                
+            }            
         } catch (LDAPException ex) {
             Logger.getLogger(UserBean.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -115,6 +180,13 @@ public class UserBean implements Serializable {
     
     public void logout(){        
         setLoggedin(false);
+        if(ldapAuthentication){
+            try {
+                ldapc.disconnect();
+            } catch (LDAPException ex) {
+                Logger.getLogger(UserBean.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
         redirectToLogin();
     }
@@ -172,9 +244,5 @@ public class UserBean implements Serializable {
         } catch (IOException ex) {
             Logger.getLogger(UserBean.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-    
-    public void updateForm(AjaxBehaviorEvent event){
-        setLdapAuthentication(!isLdapAuthentication());
-    }
+    }    
 }

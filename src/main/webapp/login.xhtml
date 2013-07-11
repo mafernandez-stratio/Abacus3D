@@ -40,17 +40,21 @@
                 <rich:messages for="gv" />
                 <rich:messages globalOnly="true" />
                 <h:panelGrid columns="2">
-                    <h:outputText value="Username: "/>
+                    <h:outputText value="Username: " rendered="#{!userBean.ldapAuthentication}"/>
+                    <h:outputText value="Username (CN): " rendered="#{userBean.ldapAuthentication}"/>
                     <h:inputText value="#{userBean.username}" id="userText" autocomplete="off" /> 
                     <h:outputText value="Password:" />
                     <h:inputSecret value="#{userBean.password}" id="passText" />                    
                     <h:selectBooleanCheckbox value="#{userBean.ldapAuthentication}">
-                        <a4j:ajax execute="@this" event="change" listener="#{userBean.updateForm}" render="groupText,groupInput"/>
+                        <a4j:ajax event="click" 
+                                  render="loginForm" />
                     </h:selectBooleanCheckbox>
                     <h:outputText value="LDAP Authentication" />
                      
-                    <h:outputText value="Group: " rendered="#{userBean.ldapAuthentication}" id="groupText" />
-                    <h:inputText value="#{userBean.group}" id="groupInput" rendered="#{userBean.ldapAuthentication}" /> 
+                    <h:outputText value="Group (OU): " rendered="#{userBean.ldapAuthentication}" />
+                    <h:inputText value="#{userBean.group}" rendered="#{userBean.ldapAuthentication}" />
+                    <h:outputText value="DCs: " rendered="#{userBean.ldapAuthentication}" />
+                    <h:inputText value="#{userBean.dcs}" rendered="#{userBean.ldapAuthentication}" />
                                         
                     <a4j:commandButton value="Log In" action="#{userBean.login}" />
                     <h:outputLink value="registration.xhtml">
