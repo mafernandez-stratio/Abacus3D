@@ -1,6 +1,7 @@
 
 package es.cediant.abacus;
 
+import com.novell.ldap.LDAPAttribute;
 import com.novell.ldap.LDAPAttributeSet;
 import com.novell.ldap.LDAPConnection;
 import com.novell.ldap.LDAPEntry;
@@ -12,7 +13,9 @@ import es.cediant.util.StringUtil;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
@@ -40,6 +43,7 @@ public class UserBean implements Serializable {
     private String dcs;    
     private ArrayList<String> roles = new ArrayList<String>();
     private LDAPConnection ldapc;
+    private String uid;
     
     private final String hostLDAP = "10.129.129.148";
     private final int portLDAP = 389;
@@ -90,7 +94,19 @@ public class UserBean implements Serializable {
         this.roles = roles;
     }
     
-    public void login() {
+    public void addRole(String newRole){
+        roles.add(newRole);
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }        
+    
+    public void login() {        
         try {            
             //if ((username.compareTo("admin")==0) && (password.compareTo("admin")==0)){ 
             UserHelper uh = new UserHelper();
@@ -103,9 +119,14 @@ public class UserBean implements Serializable {
                                  "Successful login!", 
                                  "Welcome!"));
                 setLoggedin(true);                
-                setRoles(new ArrayList<String>(
-                    Arrays.asList("admin", "usuario")
-                ));
+                //setRoles(new ArrayList<String>(Arrays.asList("admin", "usuario")));
+                if(!ldapAuthentication){
+                    setRoles(uh.getRoles(username));
+                }
+                uh.updateLastConnection(username, new Date());                
+                //
+                uh.addRole(username, "Master");
+                //
                 FacesContext.getCurrentInstance().getExternalContext().redirect("/main.xhtml");
             } else {
                 FacesContext.getCurrentInstance().addMessage(null,
@@ -129,48 +150,61 @@ public class UserBean implements Serializable {
             //byte[] passwArray = passw.getBytes();
             //ldapc.bind(com.novell.ldap.LDAPConnection.LDAP_V3, "cn=cediant UAX,ou=Users,dc=abacus,dc=cediant,dc=es", passwArray);
             //ldapc.bind(com.novell.ldap.LDAPConnection.LDAP_V3, username, password.getBytes());
-            StringBuilder sb = new StringBuilder();
-            sb.append("cn=");
-            sb.append(username);
-            sb.append(",ou=");
-            sb.append(group);            
+            String cnStr = "cn="+username;
+            String ouStr = "ou="+group;
             String[] dcsArray = null;
             dcsArray = StringUtil.splitDCs(dcs);
+            StringBuilder sb = new StringBuilder();
             for(int i=0; i<dcsArray.length; i++){
                 sb.append(",dc=");
                 sb.append(dcsArray[i]);
             }
-            ldapc.bind(com.novell.ldap.LDAPConnection.LDAP_V3, sb.toString(), password.getBytes());
+            String dcsStr = sb.substring(1);
+            String dnStr = cnStr+","+ouStr+","+dcsStr;
+            //System.out.println("dn: "+dnStr);
+            ldapc.bind(com.novell.ldap.LDAPConnection.LDAP_V3, dnStr, password.getBytes());
             if (ldapc.isBound()){
-                result = true;
-                sb.delete(0, sb.length());
-                sb.append("ou=Groups");
-                for(int i=0; i<dcsArray.length; i++){
-                    sb.append(",dc=");
-                    sb.append(dcsArray[i]);
-                }
-                // Figure out roles
+                result = true; 
+                // Figure out User Name
                 LDAPSearchResults rs = ldapc.search(
-                        sb.toString(), 
-			LDAPConnection.SCOPE_SUB, 
-                        "(&(objectCategory=person)(objectClass=user))", 
+                        dnStr, 
+                        LDAPConnection.SCOPE_SUB, 
+                        null, 
                         null, 
                         Boolean.FALSE);
+                LDAPEntry entry = rs.next(); 
+                LDAPAttributeSet as=entry.getAttributeSet();
+                setUid(as.getAttribute("uid").getStringValue());
+                // Figure out roles
+                rs = ldapc.search("ou=Groups,"+dcsStr, LDAPConnection.SCOPE_SUB, 
+                                  "cn=*", null, Boolean.FALSE);
                 while(rs.hasMore()){ 
-                    LDAPEntry entry = rs.next();   
-                    LDAPAttributeSet as=entry.getAttributeSet();
+                    entry = rs.next();   
+                    //System.out.println(entry.toString());
+                    //System.out.println(entry.getDN());
+                    as=entry.getAttributeSet();
+                    LDAPAttribute members = as.getAttribute("memberUid");
+                    //System.out.println(members.toString());
+                    Enumeration membersList = members.getStringValues();
+                    ArrayList<String> membersArray = new ArrayList<String>();
+                    membersArray = Collections.list(membersList);                    
+                    if(membersArray.contains(getUid())){
+                        addRole(entry.getDN().substring(3, entry.getDN().indexOf(",")));
+                        //System.out.println(getRoles().toString());
+                    }
+                    //System.out.println(membersArray.toString());                    
+                    /*
                     System.out.println(entry.getAttribute("objectClass"));
                     System.out.println(entry.getAttribute("objectCategory"));
-                    System.out.println(entry.getDN() +" ");
-                    if (entry.getAttribute("objectCategory").getStringValue().equals("CN=Person,CN=Schema,CN=Configuration,DC=AIA,DC=BIZ")) {
-                    //System.out.print(entry.getDN() +" ");
+                    System.out.println(entry.getDN());
+                    System.out.println(entry.getAttribute("objectCategory").getStringValue());                    
+                    System.out.println(entry.getDN());
                     System.out.println(entry.getAttribute("name").getStringValue());
-                    
-                    //System.out.print(entry.getAttribute("objectCategory").getStringValue()+" ");    
-                    //System.out.println(entry.getAttribute("displayName").getStringValue());   
+                    System.out.println(entry.getAttribute("objectCategory").getStringValue());    
+                    System.out.println(entry.getAttribute("displayName").getStringValue());
+                    */                  
                 }
-                
-            }            
+            }
         } catch (LDAPException ex) {
             Logger.getLogger(UserBean.class.getName()).log(Level.SEVERE, null, ex);
         } finally {

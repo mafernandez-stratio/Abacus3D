@@ -4,6 +4,10 @@
  */
 package es.cediant.db;
 
+import es.cediant.util.StringUtil;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -70,6 +74,41 @@ public class UserHelper {
         User user = (User) criteria.add(Restrictions.eq("userName", username)).uniqueResult();
         session.delete(user);
         tx.commit();
+    }
+
+    public void updateLastConnection(String username, Date date) {
+        Transaction tx = null;
+        tx = session.beginTransaction();
+        Query query = session.createQuery("UPDATE User SET lastConnection = :lastConn WHERE userName = :user");
+        query.setParameter("lastConn", date);
+        query.setParameter("user", username);
+        //UPDATE `AbacusDB`.`User` SET `lastConnection`='2013-07-01 12:10:23' WHERE `userName`='admin';
+        query.executeUpdate();
+        tx.commit();
+    }
+
+    public ArrayList<String> getRoles(String username) {
+        User user = getUser(username);
+        String strRoles = user.getRole();
+        ArrayList<String> roles = new ArrayList<String>();
+        String[] result = StringUtil.splitDCs(strRoles);
+        roles.addAll(Arrays.asList(result));
+        return roles;
+    }
+    
+    public void addRole(String username, String role){
+        ArrayList<String> roles = new ArrayList<String>();
+        roles = getRoles(username);
+        if(!roles.contains(role)){            
+            Transaction tx = null;
+            tx = session.beginTransaction();
+            Query query = session.createQuery("UPDATE User SET Role = :role WHERE userName = :user");
+            query.setParameter("role", roles.toString().substring(1, roles.toString().length()-1)+", "+role);
+            query.setParameter("user", username);        
+            query.executeUpdate();
+            //System.out.println(roles.toString().substring(1, roles.toString().length()-1)+", "+role);
+            tx.commit();
+        }
     }
     
 }
