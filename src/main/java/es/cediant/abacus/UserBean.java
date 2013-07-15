@@ -13,9 +13,11 @@ import es.cediant.util.StringUtil;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
@@ -24,6 +26,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 
 /**
  *
@@ -43,13 +46,21 @@ public class UserBean implements Serializable {
     private String dcs;    
     private ArrayList<String> roles = new ArrayList<String>();
     private LDAPConnection ldapc;
-    private String uid;
+    private String uid;    
+    private String dn;
+    private String ldapAuthType;
+    private List<SelectItem> ldapAuthTypes = new ArrayList<SelectItem>();
+    
     
     private final String hostLDAP = "10.129.129.148";
-    private final int portLDAP = 389;
+    private final int portLDAP = 389;    
     
     public UserBean() {   
        //System.out.println("New UserBean");
+       SelectItem item = new SelectItem("CN", "CN"); 
+       ldapAuthTypes.add(item);
+       item = new SelectItem("UID", "UID"); 
+       ldapAuthTypes.add(item);
     }
     
     public boolean isLoggedin() {
@@ -106,6 +117,30 @@ public class UserBean implements Serializable {
         this.uid = uid;
     }        
     
+    public String getDn() {
+        return dn;
+    }
+
+    public void setDn(String dn) {
+        this.dn = dn;
+    }
+
+    public String getLdapAuthType() {
+        return ldapAuthType;
+    }
+
+    public void setLdapAuthType(String ldapAuthType) {
+        this.ldapAuthType = ldapAuthType;
+    }
+
+    public List<SelectItem> getLdapAuthTypes() {
+        return ldapAuthTypes;
+    }
+
+    public void setLdapAuthTypes(List<SelectItem> ldapAuthTypes) {
+        this.ldapAuthTypes = ldapAuthTypes;
+    }        
+    
     public void login() {        
         try {            
             //if ((username.compareTo("admin")==0) && (password.compareTo("admin")==0)){ 
@@ -125,7 +160,7 @@ public class UserBean implements Serializable {
                 }
                 uh.updateLastConnection(username, new Date());                
                 //
-                uh.addRole(username, "Master");
+                //uh.addRole(username, "Master");
                 //
                 FacesContext.getCurrentInstance().getExternalContext().redirect("/main.xhtml");
             } else {
@@ -142,10 +177,16 @@ public class UserBean implements Serializable {
     }
     
     public boolean loginLDAP() {
+        if(getLdapAuthType().equalsIgnoreCase("UID")){
+            return loginUID();
+        }
         boolean result = false;
         try {
             ldapc = new LDAPConnection();
             ldapc.connect(hostLDAP, portLDAP);
+            if(!ldapc.isConnected()){
+                return false;
+            }
             //String passw = "cediant";
             //byte[] passwArray = passw.getBytes();
             //ldapc.bind(com.novell.ldap.LDAPConnection.LDAP_V3, "cn=cediant UAX,ou=Users,dc=abacus,dc=cediant,dc=es", passwArray);
@@ -173,8 +214,10 @@ public class UserBean implements Serializable {
                         null, 
                         Boolean.FALSE);
                 LDAPEntry entry = rs.next(); 
+                //System.out.println(entry.getAttributeSet().toString());
+                //System.out.println(entry.getDN());
                 LDAPAttributeSet as=entry.getAttributeSet();
-                setUid(as.getAttribute("uid").getStringValue());
+                setUid(as.getAttribute("uid").getStringValue());                
                 // Figure out roles
                 rs = ldapc.search("ou=Groups,"+dcsStr, LDAPConnection.SCOPE_SUB, 
                                   "cn=*", null, Boolean.FALSE);
@@ -203,6 +246,56 @@ public class UserBean implements Serializable {
                     System.out.println(entry.getAttribute("objectCategory").getStringValue());    
                     System.out.println(entry.getAttribute("displayName").getStringValue());
                     */                  
+                }
+            }
+        } catch (LDAPException ex) {
+            Logger.getLogger(UserBean.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            return result;
+        }
+    }
+    
+    public boolean loginUID(){
+        boolean result = false;
+        try {
+            ldapc = new LDAPConnection();
+            ldapc.connect(hostLDAP, portLDAP);                  
+            if(!ldapc.isConnected()){
+                return false;
+            }            
+            LDAPSearchResults rs = ldapc.search(
+                        "ou=Users,dc=abacus,dc=cediant,dc=es",
+                        LDAPConnection.SCOPE_SUB,
+                        "uid="+username,
+                        null,
+                        false);            
+            if(rs.getCount()<1){
+                return false;
+            }            
+            LDAPEntry entry = rs.next();
+            dn = entry.getDN();            
+            ldapc.bind(com.novell.ldap.LDAPConnection.LDAP_V3, dn, password.getBytes());
+            if (ldapc.isBound()){
+                result = true; 
+                // Extract CN
+                setUid(dn.substring(3, dn.indexOf(",")));                
+                // Figure out roles
+                rs = ldapc.search(
+                        "ou=Groups,dc=abacus,dc=cediant,dc=es", 
+                        LDAPConnection.SCOPE_SUB, 
+                        "cn=*", 
+                        null, 
+                        Boolean.FALSE);
+                while(rs.hasMore()){ 
+                    entry = rs.next();   
+                    LDAPAttributeSet as = entry.getAttributeSet();
+                    LDAPAttribute members = as.getAttribute("memberUid");
+                    Enumeration membersList = members.getStringValues();
+                    ArrayList<String> membersArray = new ArrayList<String>();
+                    membersArray = Collections.list(membersList);                    
+                    if(membersArray.contains(getUid())){
+                        addRole(entry.getDN().substring(3, entry.getDN().indexOf(",")));
+                    }                                     
                 }
             }
         } catch (LDAPException ex) {

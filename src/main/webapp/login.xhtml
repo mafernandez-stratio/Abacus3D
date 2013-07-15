@@ -27,7 +27,11 @@
                 </rich:panel>   
             </rich:graphValidator>
         </h:form-->                       
-        <rich:popupPanel id="popup" modal="true" resizeable="true" style="background-color: #B0C4DE;">
+        <rich:popupPanel id="popup" 
+                         modal="true" 
+                         resizeable="true" 
+                         style="background-color: #B0C4DE;" 
+                         minHeight="250" >
             <f:facet name="header">
                 <h:outputText value="ABACUS Login" />
             </f:facet>
@@ -41,7 +45,7 @@
                 <rich:messages globalOnly="true" />
                 <h:panelGrid columns="2">
                     <h:outputText value="Username: " rendered="#{!userBean.ldapAuthentication}"/>
-                    <h:outputText value="Username (CN): " rendered="#{userBean.ldapAuthentication}"/>
+                    <h:outputText value="Username (CN) / UID: " rendered="#{userBean.ldapAuthentication}"/>
                     <h:inputText value="#{userBean.username}" id="userText" autocomplete="off" /> 
                     <h:outputText value="Password:" />
                     <h:inputSecret value="#{userBean.password}" id="passText" />                    
@@ -50,7 +54,12 @@
                                   render="loginForm" />
                     </h:selectBooleanCheckbox>
                     <h:outputText value="LDAP Authentication" />
-                     
+                    
+                    <h:outputText value="Option: " rendered="#{userBean.ldapAuthentication}"/>
+                    <h:selectOneMenu value="#{userBean.ldapAuthType}" rendered="#{userBean.ldapAuthentication}" >
+                        <f:selectItems value="#{userBean.ldapAuthTypes}" />
+                    </h:selectOneMenu>
+                    
                     <h:outputText value="Group (OU): " rendered="#{userBean.ldapAuthentication}" />
                     <h:inputText value="#{userBean.group}" rendered="#{userBean.ldapAuthentication}" />
                     <h:outputText value="DCs: " rendered="#{userBean.ldapAuthentication}" />

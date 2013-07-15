@@ -15,7 +15,11 @@ body {
 }
 
 .rf-pp-cntr {
-    width:250px;
+    width: 250px;
+}
+
+.rp-pp-cnt-scrlr {
+    height: 850px !important;
 }
 
 .rf-pp-cnt-scrlr {
