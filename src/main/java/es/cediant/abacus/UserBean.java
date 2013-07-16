@@ -13,7 +13,6 @@ import es.cediant.util.StringUtil;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
@@ -193,14 +192,14 @@ public class UserBean implements Serializable {
             //ldapc.bind(com.novell.ldap.LDAPConnection.LDAP_V3, username, password.getBytes());
             String cnStr = "cn="+username;
             String ouStr = "ou="+group;
-            String[] dcsArray = null;
-            dcsArray = StringUtil.splitDCs(dcs);
-            StringBuilder sb = new StringBuilder();
+            String[] dcsArray = StringUtil.splitDCs(dcs);
+            /*StringBuilder sb = new StringBuilder();
             for(int i=0; i<dcsArray.length; i++){
                 sb.append(",dc=");
                 sb.append(dcsArray[i]);
             }
-            String dcsStr = sb.substring(1);
+            String dcsStr = sb.substring(1);*/           
+            String dcsStr = StringUtil.formatDCs(dcsArray);
             String dnStr = cnStr+","+ouStr+","+dcsStr;
             //System.out.println("dn: "+dnStr);
             ldapc.bind(com.novell.ldap.LDAPConnection.LDAP_V3, dnStr, password.getBytes());
@@ -263,8 +262,16 @@ public class UserBean implements Serializable {
             if(!ldapc.isConnected()){
                 return false;
             }            
+            if(group.equalsIgnoreCase("")){
+                group="Users";
+            }
+            if(dcs.equalsIgnoreCase("")){
+                dcs="abacus cediant es";
+            }
+            String[] dcsArray = StringUtil.splitDCs(dcs);
+            String dcsStr = StringUtil.formatDCs(dcsArray);
             LDAPSearchResults rs = ldapc.search(
-                        "ou=Users,dc=abacus,dc=cediant,dc=es",
+                        "ou="+group+","+dcsStr,
                         LDAPConnection.SCOPE_SUB,
                         "uid="+username,
                         null,
@@ -281,7 +288,7 @@ public class UserBean implements Serializable {
                 setUid(dn.substring(3, dn.indexOf(",")));                
                 // Figure out roles
                 rs = ldapc.search(
-                        "ou=Groups,dc=abacus,dc=cediant,dc=es", 
+                        "ou=Groups,"+dcsStr, 
                         LDAPConnection.SCOPE_SUB, 
                         "cn=*", 
                         null, 
