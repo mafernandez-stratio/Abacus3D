@@ -60,8 +60,10 @@
             <!--/div-->
         </rich:popupPanel>
 
-        <rich:tabPanel switchType="client" style="min-height: 75%" >
-            <rich:tab header="Overview">        
+        <rich:tabPanel switchType="client" 
+                       style="min-height: 75%" >
+            <rich:tab header="Overview" 
+                      onheaderclick="#{userBean.updateTab('overview')}">        
                 <h:outputText id="overviewDate" value="Date: #{overviewBean.date}"
                               style="font-size:16px; font-weight: bold"/> 
                 <br />
@@ -95,7 +97,8 @@
                 </rich:tab>
             </c:forEach>
             
-            <rich:tab header="Manager">
+            <rich:tab header="Manager"
+                      onheaderclick="#{userBean.updateTab('manager')}">
                 <p>The rich:panel component creates a rectangle shaped area on the page that 
                    may contain any content including other panels. Panel's have a header 
                    (optional) and a body. The default look-n-feel is based on the current 
@@ -347,23 +350,15 @@
                 </h:form>
             </rich:tab>
                                  
-            <div id="externdiv" style="height:400px;width:300px;" />
+            <div id="externdiv" style="width: 98%;" />
             
-            <rich:tab id="plotTab" header="Plots &amp; Charts">                                                   
-                    
-                <div id="chartdiv" style="height:400px;width:300px;" /> 
-                
-                <!--h:outputScript library="jqPlot" name="plots.js" /-->
-                               
-                
-            </rich:tab>                                            
-            
-            <script language="javascript" type="text/javascript">                
-                $.jqplot('externdiv',  [[[1, 2],[3,5.12],[5,13.1],[7,33.6],[9,85.9],[11,219.9]]]);
-                var div = document.getElementById("chartdiv");
-                var plot = document.getElementById("externdiv");
-                div.appendChild(plot);
-            </script> 
+            <rich:tab id="plotTab" header="Plots &amp; Charts">                                                                       
+                <div id="chartdiv" />                                                               
+            </rich:tab>                                                        
+            <h:outputScript library="jqPlot" name="plots.js" />             
+            <!--h:form>
+                <a4j:poll id="poll" interval="2000" enabled="{pollBean.pollEnabled}" render="poll,grid" />
+            </h:form-->
             
             <rich:tab header="Conf">
                 <p>The rich:tabPanel component is used to create "tabbed" sections or pages. 

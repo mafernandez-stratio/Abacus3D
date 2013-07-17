@@ -49,6 +49,7 @@ public class UserBean implements Serializable {
     private String dn;
     private String ldapAuthType;
     private List<SelectItem> ldapAuthTypes = new ArrayList<SelectItem>();
+    private String activeTab;
     
     
     private final String hostLDAP = "10.129.129.148";
@@ -139,6 +140,15 @@ public class UserBean implements Serializable {
     public void setLdapAuthTypes(List<SelectItem> ldapAuthTypes) {
         this.ldapAuthTypes = ldapAuthTypes;
     }        
+
+    public String getActiveTab() {
+        return activeTab;
+    }
+
+    public void setActiveTab(String activeTab) {
+        System.out.println("activeTab = "+activeTab);
+        this.activeTab = activeTab;
+    }                
     
     public void login() {        
         try {            
@@ -348,6 +358,10 @@ public class UserBean implements Serializable {
     public String getPassword() {
         return password;
     }    
+    
+    public void updateTab(String tab){
+        setActiveTab(tab);
+    }
     
     public void checkLoggedin() throws IOException {
         //System.out.println("Checking Loggedin...");
