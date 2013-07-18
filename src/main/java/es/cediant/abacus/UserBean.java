@@ -145,9 +145,9 @@ public class UserBean implements Serializable {
         return activeTab;
     }
 
-    public void setActiveTab(String activeTab) {
-        System.out.println("activeTab = "+activeTab);
-        this.activeTab = activeTab;
+    public void setActiveTab(String activeTab) {                
+        this.activeTab = activeTab.substring(activeTab.lastIndexOf(":")+1);
+        System.out.println("activeTab = "+getActiveTab());
     }                
     
     public void login() {        
@@ -357,11 +357,7 @@ public class UserBean implements Serializable {
     
     public String getPassword() {
         return password;
-    }    
-    
-    public void updateTab(String tab){
-        setActiveTab(tab);
-    }
+    }        
     
     public void checkLoggedin() throws IOException {
         //System.out.println("Checking Loggedin...");
