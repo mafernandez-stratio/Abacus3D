@@ -100,8 +100,12 @@
             <c:forEach var="i" begin="0" end="#{userBean.roles.size()-1}">
                 <rich:tab header="#{userBean.roles.get(i)}"
                           id="#{userBean.roles.get(i).concat('Tab')}"
-                          onenter="setActiveTab()">
+                          onenter="setActiveTab(this.id)">
                     <h:outputText value="#{userBean.roles.get(i)}" />
+                    <br />
+                    <c:if test="#{userBean.roles.get(i).equalsIgnoreCase('Admin')}">
+                        <h:outputText value="Table"/>
+                    </c:if>
                 </rich:tab>
             </c:forEach>
             
@@ -364,12 +368,12 @@
                 </h:form>
             </rich:tab>
                                  
-            <!--div id="externdiv" style="width: 98%;" /-->
+            <div id="externdiv" style="width: 98%;" />
             
             <rich:tab id="PlotsTab" header="Plots &amp; Charts" onenter="setActiveTab('PlotsTab')">                                                                       
                 <div id="chartdiv" />                                                               
             </rich:tab>                                                        
-            <!--h:outputScript library="jqPlot" name="plots.js" /-->             
+            <h:outputScript library="jqPlot" name="plots.js" />             
             <!--h:form>
                 <a4j:poll id="poll" interval="2000" enabled="{pollBean.pollEnabled}" render="poll,grid" />
             </h:form-->

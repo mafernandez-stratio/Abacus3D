@@ -145,9 +145,15 @@ public class UserBean implements Serializable {
         return activeTab;
     }
 
-    public void setActiveTab(String activeTab) {                
-        this.activeTab = activeTab.substring(activeTab.lastIndexOf(":")+1);
-        System.out.println("activeTab = "+getActiveTab());
+    public void setActiveTab(String activeTab) {      
+        //System.out.println("activeTab = "+activeTab);
+        //System.out.println(tabPos);
+        String tmp = activeTab.substring(0, activeTab.indexOf("Tab")+3);
+        //System.out.println(tmp);
+        //System.out.println(tmp);
+        //this.activeTab = activeTab.substring(activeTab.lastIndexOf(":")+1);
+        this.activeTab = tmp.substring(tmp.lastIndexOf(":")+1);
+        //System.out.println("activeTab = "+getActiveTab());
     }                
     
     public void login() {        
@@ -244,32 +250,25 @@ public class UserBean implements Serializable {
                         addRole(entry.getDN().substring(3, entry.getDN().indexOf(",")));
                         //System.out.println(getRoles().toString());
                     }
-                    //System.out.println(membersArray.toString());                    
-                    /*
-                    System.out.println(entry.getAttribute("objectClass"));
-                    System.out.println(entry.getAttribute("objectCategory"));
-                    System.out.println(entry.getDN());
-                    System.out.println(entry.getAttribute("objectCategory").getStringValue());                    
-                    System.out.println(entry.getDN());
-                    System.out.println(entry.getAttribute("name").getStringValue());
-                    System.out.println(entry.getAttribute("objectCategory").getStringValue());    
-                    System.out.println(entry.getAttribute("displayName").getStringValue());
-                    */                  
+                    //System.out.println(membersArray.toString());                                     
                 }
             }
         } catch (LDAPException ex) {
             Logger.getLogger(UserBean.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
+            //System.out.println(getRoles().toString());
             return result;
         }
     }
     
     public boolean loginUID(){
+        System.out.println("Login with UID");
         boolean result = false;
         try {
             ldapc = new LDAPConnection();
             ldapc.connect(hostLDAP, portLDAP);                  
             if(!ldapc.isConnected()){
+                System.out.println("Connected");
                 return false;
             }            
             if(group.equalsIgnoreCase("")){
@@ -285,17 +284,22 @@ public class UserBean implements Serializable {
                         LDAPConnection.SCOPE_SUB,
                         "uid="+username,
                         null,
-                        false);            
+                        false); 
+            System.out.println("Count(rs)="+rs.getCount());
             if(rs.getCount()<1){
                 return false;
             }            
-            LDAPEntry entry = rs.next();
-            dn = entry.getDN();            
+            LDAPEntry entry = rs.next();            
+            dn = entry.getDN(); 
+            System.out.println("DN="+dn);
+            System.out.println("Attributes="+entry.getAttributeSet().toString());
             ldapc.bind(com.novell.ldap.LDAPConnection.LDAP_V3, dn, password.getBytes());
             if (ldapc.isBound()){
+                System.out.println("Bound");
                 result = true; 
-                // Extract CN
-                setUid(dn.substring(3, dn.indexOf(",")));                
+                // Extract UID                   
+                setUid(entry.getAttributeSet().getAttribute("uid").getStringValue());
+                setUid(username);
                 // Figure out roles
                 rs = ldapc.search(
                         "ou=Groups,"+dcsStr, 
@@ -304,36 +308,58 @@ public class UserBean implements Serializable {
                         null, 
                         Boolean.FALSE);
                 while(rs.hasMore()){ 
-                    entry = rs.next();   
+                    entry = rs.next();  
+                    System.out.println("DN="+entry.getDN());
                     LDAPAttributeSet as = entry.getAttributeSet();
+                    System.out.println("AS="+as.toString());
                     LDAPAttribute members = as.getAttribute("memberUid");
+                    System.out.println("members="+members.getStringValues());
                     Enumeration membersList = members.getStringValues();
+                    System.out.println("membersList="+membersList.toString());
                     ArrayList<String> membersArray = new ArrayList<String>();
-                    membersArray = Collections.list(membersList);                    
+                    membersArray = Collections.list(membersList); 
+                    System.out.println("membersArray="+membersArray.toString());
+                    System.out.println("UID="+getUid());
                     if(membersArray.contains(getUid())){
                         addRole(entry.getDN().substring(3, entry.getDN().indexOf(",")));
+                        System.out.println("Adding role="+entry.getDN().substring(3, entry.getDN().indexOf(",")));
                     }                                     
                 }
             }
         } catch (LDAPException ex) {
             Logger.getLogger(UserBean.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
+            System.out.println("Roles="+getRoles().toString());
             return result;
         }
     }
     
     public void logout(){        
         setLoggedin(false);
+        System.out.println("Loggedin? "+isLoggedin());
         if(ldapAuthentication){
             try {
                 ldapc.disconnect();
+                if(ldapc.isConnected()){
+                    System.out.println("Still conected");
+                }
+                if(ldapc.isConnectionAlive()){
+                    System.out.println("Still alive");
+                }
             } catch (LDAPException ex) {
                 Logger.getLogger(UserBean.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
         redirectToLogin();
+        try {
+            this.finalize();
+        } catch (Throwable ex) {
+            Logger.getLogger(UserBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
+    
+    
     
     public void unregister(){        
         UserHelper uh = new UserHelper();
