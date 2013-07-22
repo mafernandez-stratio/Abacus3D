@@ -28,12 +28,12 @@ public class StringUtil {
         return strArray;
     }
     
-    public static String formatDCs(String[] dcsArray){
+    public static String formatDCs(String[] dcsArray, char symbol){
         StringBuilder sb = new StringBuilder();
         for(int i=0; i<dcsArray.length; i++){
             sb.append("dc=");
             sb.append(dcsArray[i]);
-            sb.append(",");
+            sb.append(symbol);
         }
         sb=sb.deleteCharAt(sb.length()-1);
         return sb.toString();
