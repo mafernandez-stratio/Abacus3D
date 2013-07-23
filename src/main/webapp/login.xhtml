@@ -31,7 +31,7 @@
                          modal="true" 
                          resizeable="true" 
                          style="background-color: #B0C4DE;" 
-                         minHeight="250" >
+                         minHeight="150" >
             <f:facet name="header">
                 <h:outputText value="ABACUS Login" />
             </f:facet>
@@ -45,8 +45,8 @@
                 <rich:messages globalOnly="true" />
                 <h:panelGrid columns="2">
                     <h:outputText value="Username: " rendered="#{!userBean.ldapAuthentication}"/>
-                    <h:outputText value="Username (CN) / UID: " rendered="#{userBean.ldapAuthentication}"/>
-                    <h:inputText value="#{userBean.username}" id="userText" autocomplete="off" /> 
+                    <h:outputText value="Username (UID): " rendered="#{userBean.ldapAuthentication}"/>                    
+                    <h:inputText value="#{userBean.username}" id="userText" /> 
                     <h:outputText value="Password:" />
                     <h:inputSecret value="#{userBean.password}" id="passText" />                    
                     <h:selectBooleanCheckbox value="#{userBean.ldapAuthentication}">
@@ -55,17 +55,17 @@
                     </h:selectBooleanCheckbox>
                     <h:outputText value="LDAP Authentication" />
                     
-                    <h:outputText value="Option: " rendered="#{userBean.ldapAuthentication}"/>
-                    <h:selectOneMenu value="#{userBean.ldapAuthType}" rendered="#{userBean.ldapAuthentication}" >
-                        <f:selectItems value="#{userBean.ldapAuthTypes}" />
-                    </h:selectOneMenu>
-                    
-                    <h:outputText value="Group (OU): " rendered="#{userBean.ldapAuthentication}" />
-                    <h:inputText value="#{userBean.group}" rendered="#{userBean.ldapAuthentication}" />
-                    <h:outputText value="DCs: " rendered="#{userBean.ldapAuthentication}" />
-                    <h:inputText value="#{userBean.dcs}" rendered="#{userBean.ldapAuthentication}" />
-                                        
+                    <!--h:outputText value="Option: " rendered="{userBean.ldapAuthentication}"/>
+                    <h:selectOneMenu value="{userBean.ldapAuthType}" rendered="{userBean.ldapAuthentication}" >
+                        <f:selectItems value="{userBean.ldapAuthTypes}" />
+                    </h:selectOneMenu>                    
+                    <h:outputText value="Group (OU): " rendered="{userBean.ldapAuthentication}" />
+                    <h:inputText value="{userBean.group}" rendered="{userBean.ldapAuthentication}" />
+                    <h:outputText value="DCs: " rendered="{userBean.ldapAuthentication}" />
+                    <h:inputText value="{userBean.dcs}" rendered="{userBean.ldapAuthentication}" /-->
+                                         
                     <a4j:commandButton value="Log In" action="#{userBean.login}" />
+                    <h:outputText value=" " />
                     <h:outputLink value="registration.xhtml">
                         New User
                     </h:outputLink>

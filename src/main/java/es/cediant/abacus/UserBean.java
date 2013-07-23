@@ -1,28 +1,14 @@
 
 package es.cediant.abacus;
 
-import com.novell.ldap.LDAPAttribute;
-import com.novell.ldap.LDAPAttributeSet;
-import com.novell.ldap.LDAPConnection;
-import com.novell.ldap.LDAPEntry;
-import com.novell.ldap.LDAPException;
-import com.novell.ldap.LDAPSearchResults;
 import es.cediant.db.UserHelper;
 import es.cediant.encryption.MD5Util;
-import es.cediant.util.StringUtil;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import es.cediant.util.LdapConnection;
+import es.cediant.util.LdapPropReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
@@ -31,7 +17,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
 import javax.servlet.ServletContext;
 
 /**
@@ -48,40 +33,29 @@ public class UserBean implements Serializable {
     private String password;    
     private boolean loggedin = false;   
     private boolean ldapAuthentication = false;
-    private String group;      
-    private String dcs;    
+    //private String group;      
+    //private String dcs;    
     private ArrayList<String> roles = new ArrayList<String>();
-    private LDAPConnection ldapc;
-    private String uid;    
-    private String dn;
-    private String ldapAuthType;
-    private List<SelectItem> ldapAuthTypes = new ArrayList<SelectItem>();
+    private LdapConnection ldapc;
+    //private String uid;    
+    //private String dn;
+    //private String ldapAuthType;
+    //private List<SelectItem> ldapAuthTypes = new ArrayList<SelectItem>();
     private String activeTab;
-    Properties ldapProp;
-    
-    
-    private final String hostLDAP = "10.129.129.148";
-    private final int portLDAP = 389;    
+    //Properties ldapProp;
+    LdapPropReader lpr;
+        
+    //private final String hostLDAP = "10.129.129.148";
+    //private final int portLDAP = 389;    
     
     public UserBean() {   
-        try {
-            //System.out.println("New UserBean");
-            SelectItem item = new SelectItem("CN", "CN"); 
-            ldapAuthTypes.add(item);
-            item = new SelectItem("UID", "UID"); 
-            ldapAuthTypes.add(item);
-            ldapProp = new Properties();           
-            ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-            ldapProp.load(servletContext.getResourceAsStream("/resources/conf/ldap.properties"));
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(UserBean.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(UserBean.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalArgumentException ex) {
-            Logger.getLogger(UserBean.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Throwable ex){
-            Logger.getLogger(UserBean.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        //System.out.println("New UserBean");
+        /*SelectItem item = new SelectItem("CN", "CN"); 
+        ldapAuthTypes.add(item);
+        item = new SelectItem("UID", "UID"); 
+        ldapAuthTypes.add(item);
+        ldapProp = new Properties();*/           
+        //ldapProp.load(servletContext.getResourceAsStream("/resources/conf/ldap.properties"));        
     }
     
     public boolean isLoggedin() {
@@ -102,7 +76,7 @@ public class UserBean implements Serializable {
         this.ldapAuthentication = ldapAuthentication;
     }
     
-    public String getGroup() {
+    /*public String getGroup() {
         return group;
     }
 
@@ -116,7 +90,7 @@ public class UserBean implements Serializable {
 
     public void setDcs(String dcs) {
         this.dcs = dcs;
-    }
+    }*/
     
     public ArrayList<String> getRoles() {
         return roles;
@@ -130,7 +104,7 @@ public class UserBean implements Serializable {
         roles.add(newRole);
     }
 
-    public String getUid() {
+    /*public String getUid() {
         return uid;
     }
 
@@ -160,7 +134,7 @@ public class UserBean implements Serializable {
 
     public void setLdapAuthTypes(List<SelectItem> ldapAuthTypes) {
         this.ldapAuthTypes = ldapAuthTypes;
-    }        
+    }*/        
 
     public String getActiveTab() {
         return activeTab;
@@ -193,8 +167,10 @@ public class UserBean implements Serializable {
                 //setRoles(new ArrayList<String>(Arrays.asList("admin", "usuario")));
                 if(!ldapAuthentication){
                     setRoles(uh.getRoles(username));
-                }
-                uh.updateLastConnection(username, new Date());                
+                    uh.updateLastConnection(username, new Date()); 
+                } else {
+                    addRole("User");
+                }                              
                 //
                 //uh.addRole(username, "Master");
                 //
@@ -212,7 +188,7 @@ public class UserBean implements Serializable {
         }   
     }
     
-    public boolean loginLDAP() {
+    /*public boolean loginLDAP() {
         if(getLdapAuthType().equalsIgnoreCase("UID")){
             return loginUID();
         }
@@ -230,16 +206,18 @@ public class UserBean implements Serializable {
             String cnStr = "cn="+username;
             String ouStr = "ou="+group;
             String[] dcsArray = StringUtil.splitDCs(dcs);
-            /*StringBuilder sb = new StringBuilder();
-            for(int i=0; i<dcsArray.length; i++){
-                sb.append(",dc=");
-                sb.append(dcsArray[i]);
-            }
-            String dcsStr = sb.substring(1);*/           
+            
+//            StringBuilder sb = new StringBuilder();
+//            for(int i=0; i<dcsArray.length; i++){
+//                sb.append(",dc=");
+//                sb.append(dcsArray[i]);
+//            }
+//            String dcsStr = sb.substring(1);
+            
             String dcsStr = StringUtil.formatDCs(dcsArray, ',');
             String dnStr = cnStr+","+ouStr+","+dcsStr;
             //System.out.println("dn: "+dnStr);
-            ldapc.bind(com.novell.ldap.LDAPConnection.LDAP_V3, dnStr, password.getBytes());
+            ldapc.bind(LDAPConnection.LDAP_V3, dnStr, password.getBytes());
             if (ldapc.isBound()){
                 result = true; 
                 // Figure out User Name
@@ -280,9 +258,9 @@ public class UserBean implements Serializable {
             //System.out.println(getRoles().toString());
             return result;
         }
-    }
+    }*/
     
-    public boolean loginUID(){
+    /*public boolean loginUID(){
         System.out.println("Login with UID");
         boolean result = false;
         try {
@@ -365,67 +343,35 @@ public class UserBean implements Serializable {
             System.out.println("Roles="+getRoles().toString());
             return result;
         }
-    }
+    }*/
     
-    private boolean loginLDAPwithUID() {
+    private boolean loginLDAPwithUID() {      
         System.out.println("Login LDAP with UID");
-        try {
-            if(!ldapc.isConnected()){            
-                ldapc = new LDAPConnection();
-                ldapc.connect(ldapProp.getProperty("host"), 
-                              Integer.parseInt(ldapProp.getProperty("port")));           
-            } 
-            if(!ldapc.isConnected()){
-                return false;
-            }
-            System.out.println("Connected");
-            StringBuilder sb = new StringBuilder("uid=");
-            sb.append(username);
-            sb.append("@");
-            sb.append(StringUtil.formatDCs(StringUtil.splitDCs(ldapProp.getProperty("dcs")), '.'));
-            sb.append(",ou=");
-            sb.append(ldapProp.get("group"));
-            System.out.println(sb.toString());
-            //cn=cediant UAX,ou=users,dc=abacus,dc=cediant,dc=es
-            ldapc.bind(com.novell.ldap.LDAPConnection.LDAP_V3, sb.toString(), password.getBytes());
-            //ldapc.bind(dn, authzId, props, cbh);
-            if(ldapc.isBound()){
-                return true;
-            }
-        } catch (LDAPException ex) {
-            Logger.getLogger(UserBean.class.getName()).log(Level.SEVERE, null, ex);
+        ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+        lpr = new LdapPropReader(servletContext.getResourceAsStream("/resources/conf/ldap.properties")); 
+        ldapc = new LdapConnection(lpr);      
+        /*boolean con = !ldapc.connect();
+        System.out.println(con);
+        boolean bou = !ldapc.bind();
+        System.out.println(bou);
+        System.out.println(con || bou);*/
+        if((!ldapc.connect()) || (!ldapc.bind())){
+            System.out.println("Error");
             return false;
-        } finally {
-            return false;
-        }        
+        }
+        System.out.println("Connected and bound");  
+        return ldapc.authenticate(username, password);                     
     }
     
     public void logout(){        
         setLoggedin(false);
         System.out.println("Loggedin? "+isLoggedin());
         if(ldapAuthentication){
-            try {
-                ldapc.disconnect();
-                if(ldapc.isConnected()){
-                    System.out.println("Still conected");
-                }
-                if(ldapc.isConnectionAlive()){
-                    System.out.println("Still alive");
-                }
-            } catch (LDAPException ex) {
-                Logger.getLogger(UserBean.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            ldapc.disconnect();
         }
         FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
         redirectToLogin();
-        /*try {
-            this.finalize();
-        } catch (Throwable ex) {
-            Logger.getLogger(UserBean.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
-    }
-    
-    
+    }        
     
     public void unregister(){        
         UserHelper uh = new UserHelper();

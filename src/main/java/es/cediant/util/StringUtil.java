@@ -39,6 +39,10 @@ public class StringUtil {
         return sb.toString();
     }
     
+    public static String formatDN(String cn, String ou, String[] dcs){
+        return "cn="+cn+",ou="+ou+","+formatDCs(dcs, ',');
+    }
+    
 }
 
 

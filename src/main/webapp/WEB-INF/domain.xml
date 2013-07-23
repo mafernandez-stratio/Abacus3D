@@ -4,6 +4,11 @@ To change this template, choose Tools | Templates
 and open the template in the editor.
 -->
 
+<auth-realm name="test" classname="com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm">
+    <property name="default-digest-algorithm" value="MD5"></property> 
+    <property name="digest-algorithm" value="MD5"></property>
+</auth-realm> 
+
 <!--auth-realm name="ADREALM" classname="com.sun.enterprise.security.auth.realm.ldap.LDAPRealm">
     <property name="directory" value="LDAP://http://10.129.129.148/"></property>
     <property name="search-filter" value="(&amp;(objectClass=user)(sAMAccountName=%s))"></property>
