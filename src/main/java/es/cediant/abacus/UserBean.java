@@ -1,6 +1,7 @@
 
 package es.cediant.abacus;
 
+import es.cediant.db.User;
 import es.cediant.db.UserHelper;
 import es.cediant.encryption.MD5Util;
 import es.cediant.util.LdapConnection;
@@ -165,14 +166,19 @@ public class UserBean implements Serializable {
                                  "Welcome!"));
                 setLoggedin(true);                
                 //setRoles(new ArrayList<String>(Arrays.asList("admin", "usuario")));
-                if(!ldapAuthentication){
+                if(ldapAuthentication){
+                    addRole("User");
+                    // Check if LDAP user already exists in the User table from MySQL
+                    User user = uh.getUser(username);
+                    if (user == null){ // Add user to the User table from MySQL
+                        uh.addUser(username, md5util.encrypt(password));
+                    }
+                } else {                    
                     setRoles(uh.getRoles(username));
                     uh.updateLastConnection(username, new Date()); 
-                } else {
-                    addRole("User");
                 }                              
                 //
-                //uh.addRole(username, "Master");
+                // uh.addRole(username, "Master");
                 //
                 FacesContext.getCurrentInstance().getExternalContext().redirect("/main.xhtml");
             } else {

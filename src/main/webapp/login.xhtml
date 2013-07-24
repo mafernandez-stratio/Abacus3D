@@ -43,15 +43,15 @@
             <h:form id="loginForm">
                 <rich:messages for="gv" />
                 <rich:messages globalOnly="true" />
-                <h:panelGrid columns="2">
-                    <h:outputText value="Username: " rendered="#{!userBean.ldapAuthentication}"/>
-                    <h:outputText value="Username (UID): " rendered="#{userBean.ldapAuthentication}"/>                    
-                    <h:inputText value="#{userBean.username}" id="userText" /> 
+                <!-- rendered=!userBean.ldapAuthentication value=Username (UID): rendered=userBean.ldapAuthentication -->
+                <h:panelGrid columns="2">                                  
+                    <h:outputText value="Username: " />                   
+                    <h:inputText value="#{userBean.username}" id="userText" />                                                            
                     <h:outputText value="Password:" />
                     <h:inputSecret value="#{userBean.password}" id="passText" />                    
                     <h:selectBooleanCheckbox value="#{userBean.ldapAuthentication}">
-                        <a4j:ajax event="click" 
-                                  render="loginForm" />
+                        <!--a4j:ajax event="click" 
+                                  render="loginForm" /-->
                     </h:selectBooleanCheckbox>
                     <h:outputText value="LDAP Authentication" />
                     

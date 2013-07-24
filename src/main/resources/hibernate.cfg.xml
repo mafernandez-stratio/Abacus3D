@@ -10,5 +10,7 @@
     <property name="hibernate.show_sql">true</property>
     <property name="hibernate.current_session_context_class">thread</property>
     <mapping resource="es/cediant/db/User.hbm.xml"/>
+    <mapping resource="es/cediant/db/Role.hbm.xml"/>
+    <mapping resource="es/cediant/db/UsersRole.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>

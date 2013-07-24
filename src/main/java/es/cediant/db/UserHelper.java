@@ -8,7 +8,9 @@ import es.cediant.util.StringUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -88,16 +90,25 @@ public class UserHelper {
     }
 
     public ArrayList<String> getRoles(String username) {
-        User user = getUser(username);
-        String strRoles = user.getRole();
         ArrayList<String> roles = new ArrayList<String>();
-        String[] result = StringUtil.splitDCs(strRoles);
-        roles.addAll(Arrays.asList(result));
+        User user = getUser(username);
+        Set setRoles = user.getUsersRoles();
+        for(Iterator iter = setRoles.iterator(); iter.hasNext();){
+            Role role = (Role) iter.next();
+            roles.add(role.getRoleName());
+        }        
         return roles;
     }
     
-    public void addRole(String username, String role){
-        ArrayList<String> roles = new ArrayList<String>();
+    public void addRole(String username, String rolename){
+        User user = getUser(username);
+        int idUser = user.getIdUser();
+        RoleHelper roleHelper = new RoleHelper();
+        Role role = roleHelper.getRole(rolename);
+        int idRole = role.getIdRole();
+        UsersRoleHelper usersRoleHelper = new UsersRoleHelper();        
+        usersRoleHelper.addEntry(idUser, idRole);
+        /*ArrayList<String> roles = new ArrayList<String>();
         roles = getRoles(username);
         if(!roles.contains(role)){            
             Transaction tx = null;
@@ -108,7 +119,8 @@ public class UserHelper {
             query.executeUpdate();
             //System.out.println(roles.toString().substring(1, roles.toString().length()-1)+", "+role);
             tx.commit();
-        }
+        }*/
+        
     }
     
 }

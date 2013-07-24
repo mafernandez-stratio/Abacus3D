@@ -1,18 +1,21 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated Jul 4, 2013 12:30:46 PM by Hibernate Tools 3.2.1.GA -->
+<!-- Generated Jul 24, 2013 3:32:38 PM by Hibernate Tools 3.2.1.GA -->
 <hibernate-mapping>
     <class name="es.cediant.db.User" table="User" catalog="AbacusDB">
-        <id name="userName" type="string">
-            <column name="userName" length="20" />
-            <generator class="assigned" />
+        <id name="idUser" type="java.lang.Integer">
+            <column name="idUser" />
+            <generator class="identity" />
         </id>
+        <property name="userName" type="string">
+            <column name="userName" length="45" not-null="true" unique="true" />
+        </property>
         <property name="password" type="string">
             <column name="password" length="45" not-null="true" />
         </property>
-        <property name="role" type="string">
-            <column name="Role" length="20" />
+        <property name="created" type="timestamp">
+            <column name="created" length="19" />
         </property>
         <property name="lastConnection" type="timestamp">
             <column name="lastConnection" length="19" />
@@ -20,5 +23,11 @@
         <property name="comment" type="string">
             <column name="Comment" length="45" />
         </property>
+        <set name="usersRoles" inverse="true">
+            <key>
+                <column name="idUser" />
+            </key>
+            <one-to-many class="es.cediant.db.UsersRole" />
+        </set>
     </class>
 </hibernate-mapping>

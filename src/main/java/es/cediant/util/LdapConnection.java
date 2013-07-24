@@ -84,16 +84,18 @@ public class LdapConnection {
             LDAPEntry entry = rs.next();
             System.out.println(entry.toString());
             String dn = entry.getDN(); 
-            String passwordMD5 = null;
+            /*String passwordMD5 = null;
             if(uid.equalsIgnoreCase("tabacus")){
                 MD5Util md5util = new MD5Util();
                 passwordMD5 = md5util.encrypt(password);                
             }
-            passwordMD5 = "{MD5}"+passwordMD5;
+            passwordMD5 = "{MD5}"+passwordMD5;*/
             System.out.println(dn);
-            System.out.println(passwordMD5); //{MD5}CY9rzUYh03PK3k6DJie09g==
-            //ldapc.bind(LDAPConnection.LDAP_V3, dn, passwordMD5.getBytes("UTF8"));
+            //System.out.println(passwordMD5); {MD5}CY9rzUYh03PK3k6DJie09g==
+            System.out.println(password);
+            ldapc.bind(LDAPConnection.LDAP_V3, dn, password.getBytes());
             ////////////////////////////////////////////////////////////////////
+            /*
             Security.addProvider(new com.novell.sasl.client.SaslProvider());
             String[]  mechanisms = {"DIGEST-MD5"};
             ldapc.bind(dn, 
@@ -101,6 +103,7 @@ public class LdapConnection {
                        mechanisms, 
                        null, 
                        new BindCallbackHandler(password));
+                       * */
             ////////////////////////////////////////////////////////////////////
             System.out.println(ldapc.getAuthenticationDN());
             return dn.compareToIgnoreCase(ldapc.getAuthenticationDN()) == 0;
