@@ -4,9 +4,7 @@
  */
 package es.cediant.db;
 
-import es.cediant.util.StringUtil;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -94,7 +92,8 @@ public class UserHelper {
         User user = getUser(username);
         Set setRoles = user.getUsersRoles();
         for(Iterator iter = setRoles.iterator(); iter.hasNext();){
-            Role role = (Role) iter.next();
+            UsersRole userRole = (UsersRole) iter.next();
+            Role role = userRole.getRole();            
             roles.add(role.getRoleName());
         }        
         return roles;
@@ -102,12 +101,10 @@ public class UserHelper {
     
     public void addRole(String username, String rolename){
         User user = getUser(username);
-        int idUser = user.getIdUser();
         RoleHelper roleHelper = new RoleHelper();
         Role role = roleHelper.getRole(rolename);
-        int idRole = role.getIdRole();
         UsersRoleHelper usersRoleHelper = new UsersRoleHelper();        
-        usersRoleHelper.addEntry(idUser, idRole);
+        usersRoleHelper.addEntry(user, role);
         /*ArrayList<String> roles = new ArrayList<String>();
         roles = getRoles(username);
         if(!roles.contains(role)){            
@@ -121,6 +118,13 @@ public class UserHelper {
             tx.commit();
         }*/
         
+    }
+
+    public List<User> getUsers() {
+        Transaction tx = session.beginTransaction();
+        List users = session.createQuery("FROM User").list();
+        tx.commit();
+        return users;
     }
     
 }

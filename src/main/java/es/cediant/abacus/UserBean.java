@@ -172,6 +172,7 @@ public class UserBean implements Serializable {
                     User user = uh.getUser(username);
                     if (user == null){ // Add user to the User table from MySQL
                         uh.addUser(username, md5util.encrypt(password));
+                        uh.addRole(username, "User");
                     }
                 } else {                    
                     setRoles(uh.getRoles(username));

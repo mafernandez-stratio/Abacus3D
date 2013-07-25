@@ -59,7 +59,8 @@
                 <!--/ui:insert-->                
             <!--/div-->
         </rich:popupPanel>
-
+        <!--a4j:status onstart="{rich:component('statPane')}.show()" 
+                    onstop="{rich:component('statPane')}.hide()" /-->
         <h:form>
         <a4j:jsFunction name="setActiveTab">
               <a4j:param name="activeTab" assignTo="#{userBean.activeTab}"/>
@@ -67,9 +68,115 @@
         <rich:tabPanel switchType="client" 
                        style="min-height: 75%"
                        activeItem="#{userBean.activeTab==null?'OverviewTab':userBean.activeTab}">
+            
+            <rich:tab header="Dashboard"
+                      id="Dashboard"
+                      onenter="setActiveTab('Dashboard')">                
+            </rich:tab>
+            
+            <rich:tab header="Management"
+                      id="Management"
+                      onenter="setActiveTab('Management')">
+                <rich:dataTable value="#{usersBean.allUsers}" 
+                                var="user" 
+                                iterationStatusVar="it" 
+                                id="usersTable" 
+                                rows="15">
+                    <rich:column>
+                        <f:facet name="header">#</f:facet>
+                        #{it.index}
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">Username</f:facet>
+                        <h:outputText value="#{user.userName}" />
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">Created</f:facet>
+                        <h:outputText value="#{user.created}" />
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">Last Connection</f:facet>
+                        <h:outputText value="#{user.lastConnection}" />
+                    </rich:column> 
+                    <rich:column>
+                        <f:facet name="header">Comment</f:facet>
+                        <h:outputText value="#{user.comment}" />
+                    </rich:column> 
+                    <rich:column>  
+                        <f:facet name="header">Roles</f:facet>
+                        <a4j:commandLink styleClass="no-decor" 
+                                         render="editGrid" 
+                                         execute="@this"
+                                         oncomplete="#{rich:component('editPane')}.show()">
+                            <h:graphicImage library="img"
+                                            name="edit.png" 
+                                            alt="edit" />
+                            <a4j:param value="#{it.index}" 
+                                       assignTo="#{usersBean.currentUserIndex}" />
+                            <f:setPropertyActionListener target="#{usersBean.editedUser}" 
+                                                         value="#{user}" />
+                        </a4j:commandLink>
+                    </rich:column>
+                    <f:facet name="footer">
+                        <rich:dataScroller page="#{usersBean.page}" />
+                    </f:facet>
+                </rich:dataTable>                
+
+                <rich:popupPanel id="statPane" autosized="true">
+                    <!--h:graphicImage library="img" name="ai.gif" alt="ai" /-->
+                    <!--Please wait...-->
+                </rich:popupPanel>                
+
+                <rich:popupPanel header="Edit User Roles" 
+                                 id="editPane" 
+                                 domElementAttachment="parent" 
+                                 width="400" 
+                                 height="170"
+                                 left="50"
+                                 top="50">
+                    <h:panelGrid columns="3" id="editGrid">                                                
+                        <rich:panel style="width:560px;">
+                            <f:facet name="header">
+                                <h:outputText value="Roles"></h:outputText>
+                            </f:facet>
+                            <rich:pickList value="#{listSelectBean.selectedRoles}" 
+                                           sourceCaption="Available roles" 
+                                           targetCaption="Selected roles" 
+                                           listWidth="165px" 
+                                           listHeight="100px" 
+                                           orderable="true">
+                                <f:selectItems value="#{listSelectBean.roles}" 
+                                               var="role" 
+                                               itemValue="#{role}" 
+                                               itemLabel="#{role.roleName}" />
+                                <f:converter converterId="CapitalsConverter" />
+                            </rich:pickList>
+                        </rich:panel>                                                
+                    </h:panelGrid>
+                    <a4j:commandButton value="Store" 
+                                       action="#{usersBean.store}" 
+                                       render="usersTable" 
+                                       execute="editPane"
+                                       oncomplete="if (#{facesContext.maximumSeverity==null}) {#{rich:component('editPane')}.hide();}" />
+                    <a4j:commandButton value="Cancel" 
+                                       onclick="#{rich:component('editPane')}.hide(); return false;" />
+                </rich:popupPanel>               
+            </rich:tab>
+            
+            <rich:tab header="Tasks"
+                      id="Tasks"
+                      onenter="setActiveTab('Tasks')">                
+            </rich:tab>
+            
+            <rich:tab header="My account"
+                      id="MyAccount"
+                      onenter="setActiveTab('MyAccount')">                
+            </rich:tab>
+            
             <rich:tab header="Overview"
                       id="OverviewTab"
-                      onenter="setActiveTab('OverviewTab')">        
+                      onenter="setActiveTab('OverviewTab')"
+                      rendered="false">        
                 <h:outputText id="overviewDate" value="Date: #{overviewBean.date}"
                               style="font-size:16px; font-weight: bold"/> 
                 <br />
@@ -100,7 +207,8 @@
             <c:forEach var="i" begin="0" end="#{userBean.roles.size()-1}">
                 <rich:tab header="#{userBean.roles.get(i)}"
                           id="#{userBean.roles.get(i).concat('Tab')}"
-                          onenter="setActiveTab(this.id)">
+                          onenter="setActiveTab(this.id)"
+                          rendered="false">
                     <h:outputText value="#{userBean.roles.get(i)}" />
                     <br />
                     <c:if test="#{userBean.roles.get(i).equalsIgnoreCase('Admin')}">
@@ -111,7 +219,8 @@
             
             <rich:tab header="Manager"
                       id="ManagerTab"
-                      onenter="setActiveTab('ManagerTab')">
+                      onenter="setActiveTab('ManagerTab')"
+                      rendered="false">
                 <p>The rich:panel component creates a rectangle shaped area on the page that 
                    may contain any content including other panels. Panel's have a header 
                    (optional) and a body. The default look-n-feel is based on the current 
@@ -155,7 +264,8 @@
             
             <rich:tab header="Graphs"
                       id="GraphsTab"
-                      onenter="setActiveTab('GraphsTab')">
+                      onenter="setActiveTab('GraphsTab')"
+                      rendered="false">
                 <p>We are working hard on RichFaces 4.0 which will have full JSF 2 integration. That is not all though, here is
                     a summary of updates and features:</p>
                 <ul>
@@ -243,7 +353,8 @@
                                     
             <rich:tab header="NBody"
                       id="NBodyTab"
-                      onenter="setActiveTab('NBodyTab')">
+                      onenter="setActiveTab('NBodyTab')"
+                      rendered="false">
                 <h:form id="formnbody">
                     <rich:panel style="max-width: 40%;">
                         <f:facet name="header">
@@ -251,7 +362,7 @@
                             <h:outputText value="Data for simulation" />
                                 <!--a4j:status>
                                     <f:facet name="start">
-                                        <h:graphicImage value="/images/ai.gif" alt="ai" style="height:12px;width:12px;" />
+                                        <h:graphicImage value="/resources/img/ai.gif" alt="ai" style="height:12px;width:12px;" />
                                     </f:facet>
                                 </a4j:status-->
                             <!--/h:panelGroup-->
@@ -368,19 +479,23 @@
                 </h:form>
             </rich:tab>
                                  
-            <div id="externdiv" style="width: 98%;" />
+            <!--div id="externdiv" style="width: 98%;" /-->
             
-            <rich:tab id="PlotsTab" header="Plots &amp; Charts" onenter="setActiveTab('PlotsTab')">                                                                       
+            <rich:tab id="PlotsTab" 
+                      header="Plots &amp; Charts" 
+                      onenter="setActiveTab('PlotsTab')"
+                      rendered="false">                                                                       
                 <div id="chartdiv" />                                                               
             </rich:tab>                                                        
-            <h:outputScript library="jqPlot" name="plots.js" />             
+            <h:outputScript library="jqPlot" name="plots.js" rendered="false" />             
             <!--h:form>
                 <a4j:poll id="poll" interval="2000" enabled="{pollBean.pollEnabled}" render="poll,grid" />
             </h:form-->
             
             <rich:tab header="Conf"
                       id="ConfTab"
-                      onenter="setActiveTab('ConfTab')">
+                      onenter="setActiveTab('ConfTab')"
+                      rendered="false">
                 <p>The rich:tabPanel component is used to create "tabbed" sections or pages. 
                    RichFaces tab panel can be switched in the 3 ways detailed in the 
                    rich:togglePanel example.</p>         

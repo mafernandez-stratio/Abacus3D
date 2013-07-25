@@ -5,6 +5,7 @@
 package es.cediant.db;
 
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 /**
  *
@@ -18,4 +19,12 @@ class UsersRoleHelper {
         //UserHelper.session = HibernateUtil.getSessionFactory().getCurrentSession(); 
         session = HibernateUtil.getSessionFactory().openSession();
     }
+
+    public void addEntry(User user, Role role) {
+        Transaction tx = session.beginTransaction();
+        UsersRole usersRole = new UsersRole(user, role);
+        session.save(usersRole);
+        tx.commit();
+    }
+
 }
