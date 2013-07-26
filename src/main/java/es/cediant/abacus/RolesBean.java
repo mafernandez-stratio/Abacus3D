@@ -47,9 +47,7 @@ public class RolesBean {
         ArrayList<UsersRole> rolesUser = new ArrayList<UsersRole>();  
         int userId = 3;
         rolesUser = urh.getRoles(userId);
-        Iterator iter = rolesUser.iterator();
-        while(iter.hasNext()){
-            UsersRole roleUser = (UsersRole) iter.next();
+        for(UsersRole roleUser : rolesUser){
             selectedRoles.add(roleUser.getRole());
         }
     }
