@@ -47,7 +47,7 @@ public class RolesBean {
         ArrayList<UsersRole> rolesUser = new ArrayList<UsersRole>();  
         int userId = 3;
         rolesUser = urh.getRoles(userId);
-        for(UsersRole roleUser : rolesUser){
+        for(UsersRole roleUser: rolesUser){
             selectedRoles.add(roleUser.getRole());
         }
     }
