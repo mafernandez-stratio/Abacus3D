@@ -6,6 +6,7 @@ package es.cediant.abacus;
 
 import es.cediant.db.Role;
 import es.cediant.db.RoleHelper;
+import es.cediant.db.UsersRole;
 import es.cediant.db.UsersRoleHelper;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -43,13 +44,13 @@ public class RolesBean {
         // Get roles for current user
         selectedRoles = new ArrayList<Role>();
         UsersRoleHelper urh = new UsersRoleHelper();
-        ArrayList rolesUser = new ArrayList<Role>();  
+        ArrayList<UsersRole> rolesUser = new ArrayList<UsersRole>();  
         int userId = 3;
         rolesUser = urh.getRoles(userId);
         Iterator iter = rolesUser.iterator();
         while(iter.hasNext()){
-            Role roleUser = (Role) iter.next();
-            selectedRoles.add(roleUser);
+            UsersRole roleUser = (UsersRole) iter.next();
+            selectedRoles.add(roleUser.getRole());
         }
     }
 
