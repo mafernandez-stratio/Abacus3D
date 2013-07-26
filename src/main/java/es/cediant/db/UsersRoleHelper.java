@@ -30,12 +30,12 @@ public class UsersRoleHelper {
         tx.commit();
     }
 
-    public ArrayList<UsersRole> getRoles(int userId) {
-        ArrayList<UsersRole> roles = new ArrayList<UsersRole>();
+    public ArrayList<Role> getRoles(int userId) {
+        ArrayList<Role> roles = new ArrayList<Role>();
         Transaction tx = session.beginTransaction();
         Query q = session.createQuery("FROM UsersRole U WHERE U.user.idUser = "+userId);
         System.out.println(q.list().toString());
-        roles = (ArrayList<UsersRole>) q.list();
+        roles = (ArrayList<Role>) q.list();
         tx.commit();
         if(roles.size()>0){
             return roles;
