@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" 
-                       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-                       xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
     <display-name>Abacus Application</display-name>
     <context-param>
         <param-name>javax.faces.PROJECT_STAGE</param-name>
@@ -16,6 +14,11 @@
         <welcome-file>index.xhtml</welcome-file>
     </welcome-file-list>
     <!-- JavaServer Faces Servlet -->
+    <context-param>
+        <param-name>javax.faces.CONFIG_FILES</param-name>
+        <param-value>/WEB-INF/bean.xml,
+            /WEB-INF/bean.xml</param-value>
+    </context-param>
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
         <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
@@ -33,7 +36,7 @@
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.faces</url-pattern>
-    </servlet-mapping>       
+    </servlet-mapping>
     <!-- Session configuration -->
     <session-config>
         <session-timeout>
@@ -48,12 +51,12 @@
         <role-name>role1</role-name>
     </security-role-->
     <!--security-constraint-->
-      <!-- web resources that are protected -->
-      <!--web-resource-collection>
+    <!-- web resources that are protected -->
+    <!--web-resource-collection>
          <web-resource-name>All Resources</web-resource-name>
          <url-pattern>/*</url-pattern-->
-         <!-- All methods but OPTIONS must be authenticated. OPTIONS must work without authentication for cross domain in Firefox to work -->
-         <!--http-method>GETLIB</http-method>
+    <!-- All methods but OPTIONS must be authenticated. OPTIONS must work without authentication for cross domain in Firefox to work -->
+    <!--http-method>GETLIB</http-method>
          <http-method>COPY</http-method>
          <http-method>MOVE</http-method>
          <http-method>DELETE</http-method>
@@ -74,8 +77,8 @@
          <http-method>CANCELUPLOAD</http-method>
       </web-resource-collection>
       <auth-constraint-->
-          <!-- role-name indicates roles that are allowed to access the web resource specified above -->
-          <!--role-name>role1</role-name>
+    <!-- role-name indicates roles that are allowed to access the web resource specified above -->
+    <!--role-name>role1</role-name>
       </auth-constraint>
-   </security-constraint-->     
+   </security-constraint-->
 </web-app>

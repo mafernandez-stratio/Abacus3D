@@ -17,8 +17,8 @@
         <h:outputScript library="jqPlot" name="jquery.min.js"/>
         <h:outputScript library="jqPlot" name="jquery.jqplot.min.js"/>
         
-        <h:graphicImage library="img" name="lightBlueBanner.png" 
-                        style="width: 100%; height: 12%" />        
+        <h:graphicImage library="img" name="header-blue-plain.jpg" 
+                        style="width: 100%; opacity: 0.4;" />        
         <rich:popupPanel id="resultPopup" modal="false" autosized="true" resizeable="false"> 
             <f:facet name="header">
                 <h:outputText value="Result" />
@@ -130,26 +130,27 @@
                 <rich:popupPanel header="Edit User Roles" 
                                  id="editPane" 
                                  domElementAttachment="parent" 
-                                 width="400" 
-                                 height="170"
+                                 width="600" 
+                                 height="219"
                                  left="50"
-                                 top="50">
+                                 top="50"
+                                 style="background-color: #FFDCDC">
                     <h:panelGrid columns="3" id="editGrid">                                                
                         <rich:panel style="width:560px;">
-                            <f:facet name="header">
-                                <h:outputText value="Roles"></h:outputText>
-                            </f:facet>
-                            <rich:pickList value="#{listSelectBean.selectedRoles}" 
+                            <!--f:facet name="header">
+                                <h:outputText value="Roles"/>
+                            </f:facet-->
+                            <rich:pickList value="#{rolesBean.selectedRoles}" 
                                            sourceCaption="Available roles" 
-                                           targetCaption="Selected roles" 
+                                           targetCaption="Current roles" 
                                            listWidth="165px" 
                                            listHeight="100px" 
                                            orderable="true">
-                                <f:selectItems value="#{listSelectBean.roles}" 
+                                <f:selectItems value="#{rolesBean.roles}" 
                                                var="role" 
                                                itemValue="#{role}" 
                                                itemLabel="#{role.roleName}" />
-                                <f:converter converterId="CapitalsConverter" />
+                                <!--f:converter converterId="RolesConverter" /-->
                             </rich:pickList>
                         </rich:panel>                                                
                     </h:panelGrid>
@@ -534,8 +535,8 @@
             </rich:tab>
         </rich:tabPanel>
         </h:form>
-        <h:graphicImage library="img" name="bottomBanner.png" 
-                        style="width: 100%; height: 12%; opacity: 0.8;"/>
+        <h:graphicImage library="img" name="silver-footer.jpg" 
+                        style="width: 100%; opacity: 0.4;"/>
     </h:body>
 </f:view>
 </html>    

@@ -31,7 +31,8 @@ public class UserBean implements Serializable {
     private static final long serialVersionUID = 4474970058733848377L;
     
     private String username;
-    private String password;    
+    private String password;
+    private Integer userId;
     private boolean loggedin = false;   
     private boolean ldapAuthentication = false;
     //private String group;      
@@ -58,6 +59,14 @@ public class UserBean implements Serializable {
         ldapProp = new Properties();*/           
         //ldapProp.load(servletContext.getResourceAsStream("/resources/conf/ldap.properties"));        
     }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }        
     
     public boolean isLoggedin() {
         return loggedin;
@@ -174,13 +183,13 @@ public class UserBean implements Serializable {
                         uh.addUser(username, md5util.encrypt(password));
                         uh.addRole(username, "User");
                     }
-                } else {                    
-                    setRoles(uh.getRoles(username));
-                    uh.updateLastConnection(username, new Date()); 
-                }                              
-                //
-                // uh.addRole(username, "Master");
-                //
+                }                     
+                setRoles(uh.getRoles(username));
+                uh.updateLastConnection(username, new Date());                              
+                // Get userId
+                User user = uh.getUser(username);
+                setUserId(user.getIdUser());     
+                System.out.println("userId="+userId);
                 FacesContext.getCurrentInstance().getExternalContext().redirect("/main.xhtml");
             } else {
                 FacesContext.getCurrentInstance().addMessage(null,

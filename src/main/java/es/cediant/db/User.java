@@ -23,7 +23,6 @@ public class User  implements java.io.Serializable {
 
     public User() {
     }
-
 	
     public User(String userName, String password) {
         this.userName = userName;
