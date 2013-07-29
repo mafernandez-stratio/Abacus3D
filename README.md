@@ -38,3 +38,15 @@ Scripts to create MySQL tables:
   CONSTRAINT `fk_userId` FOREIGN KEY (`idUser`) REFERENCES `User` (`idUser`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=big5
 
+===========
+
+Examples to create data:
+
+- INSERT INTO `AbacusDB`.`Role` (`roleName`) VALUES ('Tester');
+
+- INSERT INTO `AbacusDB`.`User` (`userName`, `password`) VALUES ('test', '098f6bcd4621d373cade4e832627b4f6'); 
+  // Password: 'test' crypted in MD5
+
+- INSERT INTO `AbacusDB`.`UsersRole` (`idUsersRole`, `idUser`, `idRole`) VALUES ('', '1', '1');
+
+
