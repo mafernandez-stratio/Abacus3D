@@ -28,18 +28,19 @@ public class UsersBean implements Serializable {
     private static final int DECIMALS = 1;
     private static final int CLIENT_ROWS_IN_AJAX_MODE = 15;
     private static final int ROUNDING_MODE = BigDecimal.ROUND_HALF_UP;
-    private List<User> allUsers = null;
-    private List<InventoryUserList> inventoryUserLists = null;
+    private List<User> allUsers = new ArrayList<User>();
+    private List<InventoryUserList> inventoryUserLists = new ArrayList<InventoryUserList>();
     private int currentUserIndex;
     private User editedUser;
     private int page = 1;
- 
     private int clientRows;
-
+    private UserHelper uh = new UserHelper();
+    
     /**
      * Creates a new instance of UsersBean
      */
-    public UsersBean() {
+    public UsersBean() {        
+        allUsers.addAll(uh.getUsers());
     }
     
     public void switchAjaxLoading(ValueChangeEvent event) {
@@ -47,11 +48,19 @@ public class UsersBean implements Serializable {
     }
  
     public void remove() {
-        allUsers.remove(allUsers.get(currentUserIndex));
+        //allUsers.remove(allUsers.get(currentUserIndex));
+        User user = allUsers.get(currentUserIndex);
+        String usernameToRemove = user.getUserName();
+        uh.removeUser(usernameToRemove);
+        allUsers.addAll(uh.getUsers());
     }
  
-    public void store() {
-        allUsers.set(currentUserIndex, editedUser);
+    public void store() {        
+        //allUsers.set(currentUserIndex, editedUser);        
+        System.out.println(" === STORE === ");
+        uh.updateUser(currentUserIndex+1, editedUser);
+        allUsers.addAll(uh.getUsers());
+        System.out.println(" === /STORE === ");
     }
  
     /*

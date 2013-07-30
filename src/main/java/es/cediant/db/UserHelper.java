@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -121,10 +122,36 @@ public class UserHelper {
     }
 
     public List<User> getUsers() {
-        Transaction tx = session.beginTransaction();
-        List users = session.createQuery("FROM User").list();
-        tx.commit();
-        return users;
+        try {
+            Transaction tx = session.beginTransaction();
+            List users = session.createQuery("FROM User").list();
+            tx.commit();
+            return users;
+        } catch (HibernateException ex) {
+            session = HibernateUtil.getSessionFactory().getCurrentSession();
+            return getUsers();
+        }
+    }
+
+    public void updateUser(int i, User editedUser) {         
+        // UPDATE `AbacusDB`.`User` SET `created`='2013-07-01 10:00:01', `lastConnection`='2013-07-30 08:52:44' WHERE `idUser`='3';
+        System.out.println(" === UpdateUser ==== ");
+        try {
+            //Transaction tx = session.beginTransaction();        
+            User user = (User) session.get(User.class, i);
+            user.setUsersRoles(editedUser.getUsersRoles());  
+            Set tmpSet = editedUser.getUsersRoles();
+            Iterator iter = tmpSet.iterator();
+            while(iter.hasNext()){
+                UsersRole usersRole = (UsersRole) iter.next();
+                System.out.println(usersRole.getRole().getRoleName());
+            }
+            //tx.commit();
+        } catch (HibernateException ex) {
+            session = HibernateUtil.getSessionFactory().getCurrentSession();
+            updateUser(i, editedUser);
+        }
+        System.out.println(" === UpdateUser ==== ");
     }
     
 }

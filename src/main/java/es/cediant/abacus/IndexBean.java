@@ -15,6 +15,7 @@ import javax.faces.bean.SessionScoped;
 @ManagedBean
 @SessionScoped
 public class IndexBean implements Serializable {
+    
     private static final long serialVersionUID = -2636970407579942147L;
 
     /**

@@ -32,7 +32,7 @@ public class UserBean implements Serializable {
     
     private String username;
     private String password;
-    private Integer userId;
+    private String userId;
     private boolean loggedin = false;   
     private boolean ldapAuthentication = false;
     //private String group;      
@@ -60,11 +60,11 @@ public class UserBean implements Serializable {
         //ldapProp.load(servletContext.getResourceAsStream("/resources/conf/ldap.properties"));        
     }
 
-    public int getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }        
     
@@ -188,8 +188,8 @@ public class UserBean implements Serializable {
                 uh.updateLastConnection(username, new Date());                              
                 // Get userId
                 User user = uh.getUser(username);
-                setUserId(user.getIdUser());     
-                System.out.println("userId="+userId);
+                setUserId(user.getIdUser().toString());     
+                System.out.println("userId="+userId); 
                 FacesContext.getCurrentInstance().getExternalContext().redirect("/main.xhtml");
             } else {
                 FacesContext.getCurrentInstance().addMessage(null,

@@ -10,15 +10,14 @@ import java.util.Set;
  */
 public class Role  implements java.io.Serializable {
     
-     private static final long serialVersionUID = -1073516299568581649L;
+    private static final long serialVersionUID = -1073516299568581649L;
 
-     private Integer idRole;
-     private String roleName;
-     private Set usersRoles = new HashSet(0);
+    private Integer idRole;
+    private String roleName;
+    private Set usersRoles = new HashSet(0);
 
     public Role() {
     }
-
 	
     public Role(String roleName) {
         this.roleName = roleName;
@@ -49,9 +48,6 @@ public class Role  implements java.io.Serializable {
     public void setUsersRoles(Set usersRoles) {
         this.usersRoles = usersRoles;
     }
-
-
-
 
 }
 

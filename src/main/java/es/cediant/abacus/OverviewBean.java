@@ -16,6 +16,8 @@ import javax.faces.bean.SessionScoped;
 @ManagedBean
 @SessionScoped
 public class OverviewBean implements Serializable {
+    
+    private static final long serialVersionUID = -4291905383097992691L;
 
     /**
      * Creates a new instance of OverviewBean

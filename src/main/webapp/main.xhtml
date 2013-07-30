@@ -107,6 +107,7 @@
                         <a4j:commandLink styleClass="no-decor" 
                                          render="editGrid" 
                                          execute="@this"
+                                         action="#{rolesBean.setCurrentIndex(it.index)}"
                                          oncomplete="#{rich:component('editPane')}.show()">
                             <h:graphicImage library="img"
                                             name="edit.png" 
@@ -150,7 +151,7 @@
                                                var="role" 
                                                itemValue="#{role}" 
                                                itemLabel="#{role.roleName}" />
-                                <!--f:converter converterId="RolesConverter" /-->
+                                <f:converter converterId="RolesConverter" />
                             </rich:pickList>
                         </rich:panel>                                                
                     </h:panelGrid>

@@ -16,7 +16,9 @@ import javax.faces.bean.ViewScoped;
 @ManagedBean
 @ViewScoped
 public class ProgressBarBean implements Serializable {
-    private static final long serialVersionUID = 1L;
+    
+    private static final long serialVersionUID = 6901990644999027473L;
+
     private boolean buttonRendered = true;
     private boolean enabled = false;
     private int currentValue;

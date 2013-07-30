@@ -27,6 +27,8 @@ public class User  implements java.io.Serializable {
     public User(String userName, String password) {
         this.userName = userName;
         this.password = password;
+        this.created = new Date();
+        this.lastConnection = new Date();
     }
     public User(String userName, String password, Date created, Date lastConnection, String comment, Set usersRoles) {
        this.userName = userName;
@@ -79,6 +81,7 @@ public class User  implements java.io.Serializable {
     public void setComment(String comment) {
         this.comment = comment;
     }
+    
     public Set getUsersRoles() {
         return this.usersRoles;
     }

@@ -24,6 +24,8 @@ public class GraphBean implements Serializable {
     public static final int EXEC_LOCAL = 0;
     public static final int EXEC_REMOTE = 1;
     
+    private static final long serialVersionUID = 6783819063820893238L;
+    
     private String sphereRadius;
     private String numbFocus;   
     private long startTime;

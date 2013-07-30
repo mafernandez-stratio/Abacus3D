@@ -8,11 +8,10 @@ import es.cediant.db.Role;
 import es.cediant.db.RoleHelper;
 import es.cediant.db.UsersRole;
 import es.cediant.db.UsersRoleHelper;
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 
 /**
@@ -21,43 +20,36 @@ import javax.faces.bean.SessionScoped;
  */
 @ManagedBean
 @SessionScoped
-public class RolesBean {
-
-    private List<Role> roles;
-    private List<Role> selectedRoles;
+public class RolesBean implements Serializable {
     
-    @ManagedProperty(value="#{userBean.username}")
-    private String username;
+    private static final long serialVersionUID = 2955806248343336613L;
+
+    private List<Role> roles = new ArrayList<Role>();
+    private List<Role> selectedRoles = new ArrayList<Role>();
+    
+    //@ManagedProperty(value="#{userBean.userId}")
+    private String userId;
+    private int currentIndex;
     
     /**
      * Creates a new instance of RolesBean
      */
     public RolesBean() {  
-        System.out.println("Roles Bean");
-        // Get all available roles
-        roles = new ArrayList<Role>();        
+        //System.out.println("Roles Bean");
+        // Get all available roles       
         RoleHelper rh = new RoleHelper();
         roles = rh.getRoles();
-        for (Role role: roles) {
+        /*for (Role role: roles) {
             System.out.println(role.getRoleName());
-        }
-        // Get roles for current user
-        selectedRoles = new ArrayList<Role>();
-        UsersRoleHelper urh = new UsersRoleHelper();
-        ArrayList<UsersRole> rolesUser = new ArrayList<UsersRole>();  
-        int userId = 3;
-        rolesUser = urh.getRoles(userId);
-        for(UsersRole roleUser: rolesUser){
-            selectedRoles.add(roleUser.getRole());
-        }
+        }*/        
     }
 
-    public String getUsername() {
-        return username;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }    
     
     public List<Role> getRoles() {        
@@ -69,9 +61,62 @@ public class RolesBean {
         this.roles = roles;
     }
 
-    public List<Role> getSelectedRoles() {        
+    public int getCurrentIndex() {
+        return currentIndex;
+    }    
+    
+    public void setCurrentIndex(int currentIndex){
+        System.out.println("Current Index = "+currentIndex);
+        this.currentIndex = currentIndex;
+    }
+    
+    public List<Role> getSelectedRoles() {
+        // Get roles for current user
+        selectedRoles = new ArrayList<Role>();
+        UsersRoleHelper urh = new UsersRoleHelper();
+        ArrayList<UsersRole> rolesUser = new ArrayList<UsersRole>();                        
+        rolesUser = urh.getRoles(currentIndex+1);
+        ArrayList<Integer> userRolesIds = new ArrayList<Integer>();
+        //System.out.println("=============");
+        for(UsersRole userRole: rolesUser){
+            userRolesIds.add(userRole.getRole().getIdRole());
+            //System.out.println(userRole.getRole().getRoleName());
+        }
+        //System.out.println(userRolesIds.toString());
+        //System.out.println("=============");
+        for (Role role: roles) {  
+            //System.out.println(role.getRoleName());
+            if(userRolesIds.contains(role.getIdRole())){
+                selectedRoles.add(role);
+                //System.out.print("   ==> Adding: "+role.getIdRole());
+            }            
+        }
+        //System.out.println("=============");
+        /*selectedRoles = new ArrayList<Role>();
+        UsersRoleHelper urh = new UsersRoleHelper();
+        ArrayList<UsersRole> rolesUser = new ArrayList<UsersRole>();  
+        UserBean userBean = (UserBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("userBean");
+        setUserId(userBean.getUserId());   
+        System.out.println(userId);
+        rolesUser = urh.getRoles(Integer.parseInt(userId));
+        for(UsersRole roleUser: rolesUser){
+            selectedRoles.add(roleUser.getRole());
+            System.out.println(roleUser.getRole().getRoleName());
+        }*/        
         return selectedRoles;
     }
+    
+    /*public List<SelectItem> getSelectedRoles() {  
+        List<SelectItem> sItems = new ArrayList<SelectItem>(); 
+        RoleHelper rh = new RoleHelper();
+        List<Role> someRoles = rh.getRoles();
+        someRoles.remove(1);
+        for(Role sRole : someRoles){
+            SelectItem sItem = new SelectItem(sRole, sRole.getRoleName());
+            sItems.add(sItem);
+        }
+        return sItems;
+    }*/
 
     public void setSelectedRoles(List<Role> selectedRoles) {
         this.selectedRoles = selectedRoles;

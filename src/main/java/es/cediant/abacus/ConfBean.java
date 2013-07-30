@@ -15,6 +15,8 @@ import javax.faces.bean.SessionScoped;
 @ManagedBean
 @SessionScoped
 public class ConfBean implements Serializable {
+    
+    private static final long serialVersionUID = -1857671428356447099L;
 
     /**
      * Creates a new instance of ConfBean
