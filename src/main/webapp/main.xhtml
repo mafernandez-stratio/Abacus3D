@@ -151,7 +151,7 @@
                                                var="role" 
                                                itemValue="#{role}" 
                                                itemLabel="#{role.roleName}" />
-                                <f:converter converterId="RolesConverter" />
+                                <f:converter converterId="rolesConverter" />
                             </rich:pickList>
                         </rich:panel>                                                
                     </h:panelGrid>
@@ -159,7 +159,7 @@
                                        action="#{usersBean.store}" 
                                        render="usersTable" 
                                        execute="editPane"
-                                       oncomplete="if (#{facesContext.maximumSeverity==null}) {#{rich:component('editPane')}.hide();}" />
+                                       oncomplete="#{rich:component('editPane')}.hide(); return false;" />
                     <a4j:commandButton value="Cancel" 
                                        onclick="#{rich:component('editPane')}.hide(); return false;" />
                 </rich:popupPanel>               

@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated Jul 31, 2013 4:59:05 PM by Hibernate Tools 3.2.1.GA -->
+<!-- Generated Jul 31, 2013 4:24:33 PM by Hibernate Tools 3.2.1.GA -->
 <hibernate-mapping>
-    <class name="es.cediant.db.User" table="User" catalog="AbacusDB">
-        <id name="idUser" type="java.lang.Integer">
+    <class name="es.cediant.abacus.User" table="User" catalog="AbacusDB">
+        <id name="idUser" type="int">
             <column name="idUser" />
-            <generator class="identity" />
+            <generator class="assigned" />
         </id>
         <property name="userName" type="string">
             <column name="userName" length="45" not-null="true" unique="true" />
@@ -27,7 +27,7 @@
             <key>
                 <column name="idUser" />
             </key>
-            <one-to-many class="es.cediant.db.UsersRole" />
+            <one-to-many class="es.cediant.abacus.UsersRole" />
         </set>
     </class>
 </hibernate-mapping>

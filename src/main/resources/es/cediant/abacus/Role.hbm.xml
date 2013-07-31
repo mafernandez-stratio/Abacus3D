@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated Jul 31, 2013 4:59:05 PM by Hibernate Tools 3.2.1.GA -->
+<!-- Generated Jul 31, 2013 4:24:33 PM by Hibernate Tools 3.2.1.GA -->
 <hibernate-mapping>
-    <class name="es.cediant.db.Role" table="Role" catalog="AbacusDB">
+    <class name="es.cediant.abacus.Role" table="Role" catalog="AbacusDB">
         <id name="idRole" type="java.lang.Integer">
             <column name="idRole" />
             <generator class="identity" />
@@ -15,7 +15,7 @@
             <key>
                 <column name="idRole" />
             </key>
-            <one-to-many class="es.cediant.db.UsersRole" />
+            <one-to-many class="es.cediant.abacus.UsersRole" />
         </set>
     </class>
 </hibernate-mapping>

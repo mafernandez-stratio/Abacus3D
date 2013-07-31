@@ -4,12 +4,12 @@
  */
 package es.cediant.db;
 
+import es.cediant.abacus.RolesBean;
 import java.util.Iterator;
 import java.util.List;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.faces.context.FacesContext;
 
 /**
  *
@@ -19,9 +19,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @ApplicationScoped
 public class RolesParser {
     
-    private List<UsersRole> rolesList;
+    private List<Role> rolesList;
 
-    @XmlRootElement(name = "roles")
+    /*@XmlRootElement(name = "roles")
     private static final class RolesHolder {
         
         private List<Role> roles;
@@ -35,18 +35,24 @@ public class RolesParser {
         public void setRoles(List<Role> roles) {
             this.roles = roles;
         }
-    }
+    }*/
     
     
     public synchronized Iterable<Role> getRolesList() {
         System.out.println(" === /getRoleList ===");
         if (rolesList == null) {
-            RoleHelper rh = new RoleHelper();
-            rolesList = rh.getRoles();
+            //RoleHelper ur = new RoleHelper();
+            //rolesList = ur.getRoles();
+                                    
+            RolesBean rolesBean = (RolesBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("rolesBean");
+            rolesList = rolesBean.getRoles();
+                        
+            rolesBean.removeNewRoles();
             
             Iterator iter = rolesList.iterator();            
             while(iter.hasNext()){
-                System.out.println(((Role) iter.next()).getRoleName());
+                Role role = ((Role) iter.next());
+                System.out.println(role.getRoleName());
             }
             
             /*ClassLoader ccl = Thread.currentThread().getContextClassLoader();

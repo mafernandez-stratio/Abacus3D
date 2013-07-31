@@ -5,14 +5,20 @@
 package es.cediant.abacus;
 
 import es.cediant.db.InventoryUserList;
+import es.cediant.db.Role;
+import es.cediant.db.RolesParser;
 import es.cediant.db.User;
 import es.cediant.db.UserHelper;
+import es.cediant.db.UsersRoleHelper;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import javax.el.ELContext;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 
 /**
@@ -58,7 +64,36 @@ public class UsersBean implements Serializable {
     public void store() {        
         //allUsers.set(currentUserIndex, editedUser);        
         System.out.println(" === STORE === ");
-        uh.updateUser(currentUserIndex+1, editedUser);
+        ELContext elContext = FacesContext.getCurrentInstance().getELContext();
+        RolesBean rolesBean = (RolesBean) elContext.getELResolver().getValue(elContext, null, "rolesBean");        
+        
+        //List<Role> selectedRoles = rolesBean.getSelectedRoles();
+        List<Role> newRoles = rolesBean.getNewRoles();
+        
+        Iterator iter = newRoles.iterator();
+        while(iter.hasNext()){
+            System.out.println(((Role) iter.next()).getRoleName());
+        }                
+        System.out.println("editedUser="+editedUser.getUserName());
+        System.out.println("editedUser="+editedUser.getUsersRoles().size());
+        
+        //INSERT INTO `AbacusDB`.`UsersRole` (`idUser`, `idRole`) VALUES ('4', '3');
+        
+        //uh.updateUser(currentUserIndex+1, editedUser);
+        //uh.updateRoles(currentUserIndex+1, newRoles);
+        
+        UsersRoleHelper urh = new UsersRoleHelper();
+        
+        // Remove all the previous roles of the user
+        urh.removeAllRolesOfUser(editedUser.getIdUser());
+        
+        // Loop for adding the new roles
+        for(Role role: newRoles){
+            //urh.addEntry(editedUser.getIdUser(), role.getIdRole());
+            urh.addEntry(editedUser, role);
+        }        
+        
+        // Update information for the GUI
         allUsers.addAll(uh.getUsers());
         System.out.println(" === /STORE === ");
     }

@@ -6,6 +6,7 @@ package es.cediant.db;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -152,6 +153,17 @@ public class UserHelper {
             updateUser(i, editedUser);
         }
         System.out.println(" === UpdateUser ==== ");
+    }
+
+    public void updateRoles(int i, List<Role> selectedRoles) {
+        try {
+            User user = (User) session.get(User.class, i);
+            Set set = new HashSet(selectedRoles);        
+            user.setUsersRoles(set);
+        } catch (HibernateException ex) {
+            session = HibernateUtil.getSessionFactory().getCurrentSession();
+            updateRoles(i, selectedRoles);
+        }
     }
     
 }

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Jul 31, 2013 4:24:33 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="es.cediant.abacus.UsersRole" table="UsersRole" catalog="AbacusDB">
+        <id name="idUserRoles" type="java.lang.Integer">
+            <column name="idUserRoles" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="user" class="es.cediant.abacus.User" fetch="select">
+            <column name="idUser" />
+        </many-to-one>
+        <many-to-one name="role" class="es.cediant.abacus.Role" fetch="select">
+            <column name="idRole" />
+        </many-to-one>
+    </class>
+</hibernate-mapping>

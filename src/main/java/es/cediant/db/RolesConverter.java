@@ -4,6 +4,7 @@
  */
 package es.cediant.db;
 
+import es.cediant.abacus.RolesBean;
 import javax.el.ELContext;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -14,7 +15,7 @@ import javax.faces.convert.FacesConverter;
  *
  * @author miguel
  */
-@FacesConverter("RolesConverter")
+@FacesConverter("rolesConverter")
 public class RolesConverter implements Converter {
     
     private RolesParser rolesParser;
@@ -22,9 +23,18 @@ public class RolesConverter implements Converter {
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
         System.out.println(" === getAsObject === ");
-        for (Role role : getRolesParser(context).getRolesList()) {
+        for (Role role: getRolesParser(context).getRolesList()) {
             if (role.getRoleName().equals(value)) {
                 System.out.println(role.getRoleName());
+                
+                RolesBean rolesBean = (RolesBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("rolesBean");
+                if(!rolesBean.contains(role)){
+                    rolesBean.addNewRole(role);
+                }
+                
+                
+                
+                System.out.println(" === /getAsObject === ");
                 return role;
             }
         }
@@ -38,7 +48,8 @@ public class RolesConverter implements Converter {
         System.out.println(((Role) value).getRoleName());
         System.out.println(" === /getAsString === ");
         if (value == null) return null;
-        return ((Role) value).getRoleName();
+        Role role = ((Role) value);
+        return role.getRoleName();
     }
     
     private RolesParser getRolesParser(FacesContext facesContext) {

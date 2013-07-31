@@ -10,6 +10,7 @@ import es.cediant.db.UsersRole;
 import es.cediant.db.UsersRoleHelper;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -26,6 +27,7 @@ public class RolesBean implements Serializable {
 
     private List<Role> roles = new ArrayList<Role>();
     private List<Role> selectedRoles = new ArrayList<Role>();
+    private List<Role> newRoles = new ArrayList<Role>();
     
     //@ManagedProperty(value="#{userBean.userId}")
     private String userId;
@@ -68,6 +70,32 @@ public class RolesBean implements Serializable {
     public void setCurrentIndex(int currentIndex){
         System.out.println("Current Index = "+currentIndex);
         this.currentIndex = currentIndex;
+    }
+
+    public List<Role> getNewRoles() {
+        return newRoles;
+    }
+
+    public void setNewRoles(List<Role> newRoles) {
+        this.newRoles = newRoles;
+    }    
+    
+    public void addNewRole(Role role) {
+        newRoles.add(role);
+    }
+
+    public void removeNewRoles() {
+        newRoles.clear();
+    }    
+    
+    public boolean contains(Role role) {
+        Iterator iter = getNewRoles().iterator();
+        while(iter.hasNext()){
+            if(((Role) iter.next()).getRoleName().equalsIgnoreCase(role.getRoleName())){
+                return true;
+            }
+        }
+        return false;
     }
     
     public List<Role> getSelectedRoles() {
@@ -121,4 +149,5 @@ public class RolesBean implements Serializable {
     public void setSelectedRoles(List<Role> selectedRoles) {
         this.selectedRoles = selectedRoles;
     }
+
 }
