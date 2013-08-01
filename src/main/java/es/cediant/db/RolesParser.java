@@ -40,15 +40,18 @@ public class RolesParser {
     
     public synchronized Iterable<Role> getRolesList() {
         System.out.println(" === /getRoleList ===");
+        
+        RolesBean rolesBean = (RolesBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("rolesBean");
+        //rolesBean.removeNewRoles();        
+        
+        System.out.println("Size(newRoles)="+rolesBean.getNewRoles().size());
+        
         if (rolesList == null) {
             //RoleHelper ur = new RoleHelper();
             //rolesList = ur.getRoles();
-                                    
-            RolesBean rolesBean = (RolesBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("rolesBean");
-            rolesList = rolesBean.getRoles();
-                        
-            rolesBean.removeNewRoles();
             
+            rolesList = rolesBean.getRoles();
+                                                
             Iterator iter = rolesList.iterator();            
             while(iter.hasNext()){
                 Role role = ((Role) iter.next());

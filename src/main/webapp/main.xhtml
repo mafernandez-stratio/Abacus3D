@@ -16,9 +16,25 @@
     <h:body>      
         <h:outputScript library="jqPlot" name="jquery.min.js"/>
         <h:outputScript library="jqPlot" name="jquery.jqplot.min.js"/>
+                 
+        <rich:panel style="background-image: url(resources/img/header-blue-plain.jpg); 
+                           background-size: 100%;
+                           height: 100px;
+                           opacity: 0.7;">
+            <h:outputText value=" #{userBean.username} " 
+                          style="margin-left: 96%; 
+                                 font-weight: bolder; 
+                                 background-color: white;
+                                 border: 2px;" />
+            <h:outputLink value="logout.xhtml" 
+                          style=" margin-left: 98% ">
+                <h:graphicImage library="img" name="logout.png" width="32px" />
+            </h:outputLink>          
+        </rich:panel>
         
-        <h:graphicImage library="img" name="header-blue-plain.jpg" 
-                        style="width: 100%; opacity: 0.4;" />        
+        <!--h:graphicImage library="img" name="header-blue-plain.jpg" 
+                        style="width: 100%; opacity: 0.4;" /-->            
+        
         <rich:popupPanel id="resultPopup" modal="false" autosized="true" resizeable="false"> 
             <f:facet name="header">
                 <h:outputText value="Result" />
@@ -77,11 +93,14 @@
             <rich:tab header="Management"
                       id="Management"
                       onenter="setActiveTab('Management')">
+                <h:outputText value="Information not available for non-administrators"
+                              rendered="#{!userBean.isAdmin()}"/>
                 <rich:dataTable value="#{usersBean.allUsers}" 
                                 var="user" 
                                 iterationStatusVar="it" 
                                 id="usersTable" 
-                                rows="15">
+                                rows="15"
+                                rendered="#{userBean.isAdmin()}">
                     <rich:column>
                         <f:facet name="header">#</f:facet>
                         #{it.index}
@@ -121,7 +140,27 @@
                     <f:facet name="footer">
                         <rich:dataScroller page="#{usersBean.page}" />
                     </f:facet>
-                </rich:dataTable>                
+                </rich:dataTable>    
+                
+                <br/>
+                
+                <rich:panel style="width: 423px;" 
+                            rendered="#{userBean.isAdmin()}"
+                            id="ldapPanel">
+                    <f:facet name="header">
+                        <h:outputText value="LDAP Configuration" />
+                    </f:facet>
+                    <h:panelGrid columns="2">
+                        <h:outputText value="Group (OU): " />
+                        <h:inputText value="#{managerBean.group}" />
+                        <h:outputText value="DCs: " />
+                        <h:inputText value="#{managerBean.dcs}" />
+                        <h:outputText value=" "/>
+                        <a4j:commandButton value="Save" 
+                                           action="#{managerBean.saveLdapInfo()}"
+                                           render="ldapPanel"/>
+                    </h:panelGrid>
+                </rich:panel>
 
                 <rich:popupPanel id="statPane" autosized="true">
                     <!--h:graphicImage library="img" name="ai.gif" alt="ai" /-->
@@ -159,7 +198,7 @@
                                        action="#{usersBean.store}" 
                                        render="usersTable" 
                                        execute="editPane"
-                                       oncomplete="#{rich:component('editPane')}.hide(); return false;" />
+                                       oncomplete="#{rich:component('editPane')}.hide(); #{rolesBean.removeNewRoles()}; return false;" />
                     <a4j:commandButton value="Cancel" 
                                        onclick="#{rich:component('editPane')}.hide(); return false;" />
                 </rich:popupPanel>               

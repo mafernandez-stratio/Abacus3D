@@ -165,5 +165,16 @@ public class UserHelper {
             updateRoles(i, selectedRoles);
         }
     }
+
+    public void setCreationDate(String username, Date date) {
+        Transaction tx = null;
+        tx = session.beginTransaction();
+        Query query = session.createQuery("UPDATE User SET created = :created WHERE userName = :user");
+        query.setParameter("created", date);
+        query.setParameter("user", username);
+        //UPDATE `AbacusDB`.`User` SET `lastConnection`='2013-07-01 12:10:23' WHERE `userName`='admin';
+        query.executeUpdate();
+        tx.commit();
+    }
     
 }

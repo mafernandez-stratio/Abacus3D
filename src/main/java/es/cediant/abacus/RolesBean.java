@@ -84,8 +84,10 @@ public class RolesBean implements Serializable {
         newRoles.add(role);
     }
 
-    public void removeNewRoles() {
+    public void removeNewRoles() {        
         newRoles.clear();
+        newRoles = new ArrayList<Role>();
+        System.out.println("New Roles removed");
     }    
     
     public boolean contains(Role role) {
@@ -101,6 +103,7 @@ public class RolesBean implements Serializable {
     public List<Role> getSelectedRoles() {
         // Get roles for current user
         selectedRoles = new ArrayList<Role>();
+        selectedRoles.clear();
         UsersRoleHelper urh = new UsersRoleHelper();
         ArrayList<UsersRole> rolesUser = new ArrayList<UsersRole>();                        
         rolesUser = urh.getRoles(currentIndex+1);

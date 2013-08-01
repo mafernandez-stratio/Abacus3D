@@ -31,9 +31,7 @@ public class RolesConverter implements Converter {
                 if(!rolesBean.contains(role)){
                     rolesBean.addNewRole(role);
                 }
-                
-                
-                
+                                                
                 System.out.println(" === /getAsObject === ");
                 return role;
             }
@@ -54,6 +52,8 @@ public class RolesConverter implements Converter {
     
     private RolesParser getRolesParser(FacesContext facesContext) {
         System.out.println(" === getRolesParser === ");
+        //RolesBean rolesBean = (RolesBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("rolesBean");
+        //rolesBean.removeNewRoles();
         if (rolesParser == null) {
             ELContext elContext = facesContext.getELContext();
             rolesParser = (RolesParser) elContext.getELResolver().getValue(elContext, null, "rolesParser");

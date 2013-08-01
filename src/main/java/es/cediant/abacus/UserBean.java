@@ -5,11 +5,13 @@ import es.cediant.db.User;
 import es.cediant.db.UserHelper;
 import es.cediant.encryption.MD5Util;
 import es.cediant.util.LdapConnection;
-import es.cediant.util.LdapPropReader;
+import es.cediant.util.LdapPropHandler;
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
@@ -45,12 +47,13 @@ public class UserBean implements Serializable {
     //private List<SelectItem> ldapAuthTypes = new ArrayList<SelectItem>();
     private String activeTab;
     //Properties ldapProp;
-    LdapPropReader lpr;
+    private LdapPropHandler lph;
+    
         
     //private final String hostLDAP = "10.129.129.148";
     //private final int portLDAP = 389;    
     
-    public UserBean() {   
+    public UserBean(){         
         //System.out.println("New UserBean");
         /*SelectItem item = new SelectItem("CN", "CN"); 
         ldapAuthTypes.add(item);
@@ -182,6 +185,7 @@ public class UserBean implements Serializable {
                     if (user == null){ // Add user to the User table from MySQL
                         uh.addUser(username, md5util.encrypt(password));
                         uh.addRole(username, "User");
+                        uh.setCreationDate(username, new Date());
                     }
                 }                     
                 setRoles(uh.getRoles(username));
@@ -362,21 +366,29 @@ public class UserBean implements Serializable {
     }*/
     
     private boolean loginLDAPwithUID() {      
-        System.out.println("Login LDAP with UID");
-        ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-        lpr = new LdapPropReader(servletContext.getResourceAsStream("/resources/conf/ldap.properties")); 
-        ldapc = new LdapConnection(lpr);      
-        /*boolean con = !ldapc.connect();
-        System.out.println(con);
-        boolean bou = !ldapc.bind();
-        System.out.println(bou);
-        System.out.println(con || bou);*/
-        if((!ldapc.connect()) || (!ldapc.bind())){
-            System.out.println("Error");
+        try {
+            System.out.println("Login LDAP with UID");        
+            //lph = new LdapPropHandler(servletContext.getResourceAsStream("/resources/conf/ldap.properties"));
+            ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+            Properties ldapProp = new Properties();
+            ldapProp.load(servletContext.getResourceAsStream("/resources/conf/ldap.properties"));
+            lph = new LdapPropHandler(ldapProp); 
+            ldapc = new LdapConnection(lph);      
+            /*boolean con = !ldapc.connect();
+            System.out.println(con);
+            boolean bou = !ldapc.bind();
+            System.out.println(bou);
+            System.out.println(con || bou);*/
+            if((!ldapc.connect()) || (!ldapc.bind())){
+                System.out.println("Error");
+                return false;
+            }
+            System.out.println("Connected and bound");  
+            return ldapc.authenticate(username, password);
+        } catch (IOException ex) {
+            Logger.getLogger(UserBean.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
-        System.out.println("Connected and bound");  
-        return ldapc.authenticate(username, password);                     
     }
     
     public void logout(){        
@@ -412,6 +424,10 @@ public class UserBean implements Serializable {
     public String getPassword() {
         return password;
     }        
+    
+    public boolean isAdmin(){        
+        return roles.contains("Admin");
+    }
     
     public void checkLoggedin() throws IOException {
         //System.out.println("Checking Loggedin...");

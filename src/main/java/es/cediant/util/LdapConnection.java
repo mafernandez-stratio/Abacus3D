@@ -8,9 +8,6 @@ import com.novell.ldap.LDAPConnection;
 import com.novell.ldap.LDAPEntry;
 import com.novell.ldap.LDAPException;
 import com.novell.ldap.LDAPSearchResults;
-import es.cediant.encryption.MD5Util;
-import java.io.UnsupportedEncodingException;
-import java.security.Security;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,17 +18,17 @@ import java.util.logging.Logger;
 public class LdapConnection {
     
     LDAPConnection ldapc = new LDAPConnection();
-    LdapPropReader lpr;
+    LdapPropHandler lph;
     
-    public LdapConnection(LdapPropReader lpr){
-        this.lpr = lpr;
+    public LdapConnection(LdapPropHandler lph){
+        this.lph = lph;
     }
     
     public boolean connect(){
         System.out.println("Connecting");
         try {
-            System.out.println(lpr.getHost()+":"+lpr.getPort());
-            ldapc.connect(lpr.getHost(), lpr.getPort());
+            System.out.println(lph.getHost()+":"+lph.getPort());
+            ldapc.connect(lph.getHost(), lph.getPort());
             if(ldapc.isConnected()){    
                 System.out.println("Success");
             }
@@ -45,12 +42,14 @@ public class LdapConnection {
     public boolean bind(){
         System.out.println("Binding");
         try {
-            System.out.println(StringUtil.formatDN(lpr.getCn(), lpr.getGroup(), StringUtil.splitDCs(lpr.getDcs())));
+            System.out.println(StringUtil.formatDN(lph.getCn(), 
+                                                   lph.getGroup(), 
+                                                   StringUtil.splitDCs(lph.getDcs())));
             ldapc.bind(LDAPConnection.LDAP_V3, 
-                       StringUtil.formatDN(lpr.getCn(), 
-                                           lpr.getGroup(), 
-                                           StringUtil.splitDCs(lpr.getDcs())), 
-                       lpr.getPassword().getBytes());            
+                       StringUtil.formatDN(lph.getCn(), 
+                                           lph.getGroup(), 
+                                           StringUtil.splitDCs(lph.getDcs())), 
+                       lph.getPassword().getBytes());            
             if(ldapc.isBound()){    
                 System.out.println("Success");
             }
@@ -67,12 +66,12 @@ public class LdapConnection {
     public boolean authenticate(String uid, String password){
         System.out.println("Authenticating");
         try {
-            System.out.println("ou="+lpr.getGroup()+","+StringUtil.formatDCs(
-                    StringUtil.splitDCs(lpr.getDcs()),
+            System.out.println("ou="+lph.getGroup()+","+StringUtil.formatDCs(
+                    StringUtil.splitDCs(lph.getDcs()),
                     ','));
             System.out.println("uid="+uid);
             LDAPSearchResults rs = ldapc.search(
-                    "ou="+lpr.getGroup()+","+StringUtil.formatDCs(StringUtil.splitDCs(lpr.getDcs()),','),
+                    "ou="+lph.getGroup()+","+StringUtil.formatDCs(StringUtil.splitDCs(lph.getDcs()),','),
                     LDAPConnection.SCOPE_SUB,
                     "uid="+uid,
                     null, 
