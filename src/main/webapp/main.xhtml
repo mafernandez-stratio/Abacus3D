@@ -16,20 +16,20 @@
     <h:body>      
         <h:outputScript library="jqPlot" name="jquery.min.js"/>
         <h:outputScript library="jqPlot" name="jquery.jqplot.min.js"/>
-                 
+        <h:outputScript library="jqPlot" name="plugins/jqplot.pieRenderer.min.js"/>
+        
         <rich:panel style="background-image: url(resources/img/header-blue-plain.jpg); 
                            background-size: 100%;
                            height: 100px;
-                           opacity: 0.7;">
-            <h:outputText value=" #{userBean.username} " 
-                          style="margin-left: 96%; 
-                                 font-weight: bolder; 
-                                 background-color: white;
-                                 border: 2px;" />
-            <h:outputLink value="logout.xhtml" 
-                          style=" margin-left: 98% ">
-                <h:graphicImage library="img" name="logout.png" width="32px" />
-            </h:outputLink>          
+                           opacity: 0.7;
+                           text-align: right">  
+            <h:panelGrid columns="2" style="text-align: right; margin: auto 0 auto auto;">
+                <h:outputText value=" #{userBean.username} " 
+                              style="font-weight: bolder;" />
+                <h:outputLink value="logout.xhtml">
+                    <h:graphicImage library="img" name="logout.png" width="32px" />
+                </h:outputLink>                 
+            </h:panelGrid>
         </rich:panel>
         
         <!--h:graphicImage library="img" name="header-blue-plain.jpg" 
@@ -82,86 +82,119 @@
               <a4j:param name="activeTab" assignTo="#{userBean.activeTab}"/>
         </a4j:jsFunction>            
         <rich:tabPanel switchType="client" 
-                       style="min-height: 75%"
                        activeItem="#{userBean.activeTab==null?'OverviewTab':userBean.activeTab}">
             
+            <div id="externdiv" style="width: 48%;" />
+            <div id="piechart" style="width: 48%;" />
             <rich:tab header="Dashboard"
                       id="Dashboard"
-                      onenter="setActiveTab('Dashboard')">                
+                      onenter="setActiveTab('Dashboard')"
+                      onbegin="buildplots('#{dashboardBean.strOne}','#{dashboardBean.strTwo}')"> 
+                <h:panelGrid columns="2" style="width: 100%" id="dashboardGrid">
+                    <h:panelGrid>
+                        <div id="chartdiv" />
+                        <!--h:outputText value="First column" /-->
+                    </h:panelGrid>
+                    <h:panelGrid>
+                        <div id="piediv" />
+                        <!--h:outputText value="Second column" /-->
+                    </h:panelGrid>
+                </h:panelGrid>
             </rich:tab>
+            <h:outputScript library="jqPlot" name="plots.js" /> 
+            <h:form>
+                <a4j:poll id="poll" 
+                          interval="5000" 
+                          enabled="#{dashboardBean.pollEnabled}" 
+                          render="poll,Dashboard"
+                          action="#{dashboard.updateData()}"/>
+            </h:form>            
             
             <rich:tab header="Management"
                       id="Management"
                       onenter="setActiveTab('Management')">
                 <h:outputText value="Information not available for non-administrators"
                               rendered="#{!userBean.isAdmin()}"/>
-                <rich:dataTable value="#{usersBean.allUsers}" 
-                                var="user" 
-                                iterationStatusVar="it" 
-                                id="usersTable" 
-                                rows="15"
-                                rendered="#{userBean.isAdmin()}">
-                    <rich:column>
-                        <f:facet name="header">#</f:facet>
-                        #{it.index}
-                    </rich:column>
-                    <rich:column>
-                        <f:facet name="header">Username</f:facet>
-                        <h:outputText value="#{user.userName}" />
-                    </rich:column>
-                    <rich:column>
-                        <f:facet name="header">Created</f:facet>
-                        <h:outputText value="#{user.created}" />
-                    </rich:column>
-                    <rich:column>
-                        <f:facet name="header">Last Connection</f:facet>
-                        <h:outputText value="#{user.lastConnection}" />
-                    </rich:column> 
-                    <rich:column>
-                        <f:facet name="header">Comment</f:facet>
-                        <h:outputText value="#{user.comment}" />
-                    </rich:column> 
-                    <rich:column>  
-                        <f:facet name="header">Roles</f:facet>
-                        <a4j:commandLink styleClass="no-decor" 
-                                         render="editGrid" 
-                                         execute="@this"
-                                         action="#{rolesBean.setCurrentIndex(it.index)}"
-                                         oncomplete="#{rich:component('editPane')}.show()">
-                            <h:graphicImage library="img"
-                                            name="edit.png" 
-                                            alt="edit" />
-                            <a4j:param value="#{it.index}" 
-                                       assignTo="#{usersBean.currentUserIndex}" />
-                            <f:setPropertyActionListener target="#{usersBean.editedUser}" 
-                                                         value="#{user}" />
-                        </a4j:commandLink>
-                    </rich:column>
-                    <f:facet name="footer">
-                        <rich:dataScroller page="#{usersBean.page}" />
-                    </f:facet>
-                </rich:dataTable>    
                 
-                <br/>
+                <h:panelGrid columns="1">
                 
-                <rich:panel style="width: 423px;" 
-                            rendered="#{userBean.isAdmin()}"
-                            id="ldapPanel">
-                    <f:facet name="header">
-                        <h:outputText value="LDAP Configuration" />
-                    </f:facet>
-                    <h:panelGrid columns="2">
-                        <h:outputText value="Group (OU): " />
-                        <h:inputText value="#{managerBean.group}" />
-                        <h:outputText value="DCs: " />
-                        <h:inputText value="#{managerBean.dcs}" />
-                        <h:outputText value=" "/>
-                        <a4j:commandButton value="Save" 
-                                           action="#{managerBean.saveLdapInfo()}"
-                                           render="ldapPanel"/>
-                    </h:panelGrid>
-                </rich:panel>
+                    <rich:dataTable value="#{usersBean.allUsers}" 
+                                    var="user" 
+                                    iterationStatusVar="it" 
+                                    id="usersTable" 
+                                    rows="15"
+                                    rendered="#{userBean.isAdmin()}">
+                        <rich:column>
+                            <f:facet name="header">#</f:facet>
+                            #{it.index}
+                        </rich:column>
+                        <rich:column>
+                            <f:facet name="header">Username</f:facet>
+                            <h:outputText value="#{user.userName}" />
+                        </rich:column>
+                        <rich:column>
+                            <f:facet name="header">Created</f:facet>
+                            <h:outputText value="#{user.created}" />
+                        </rich:column>
+                        <rich:column>
+                            <f:facet name="header">Last Connection</f:facet>
+                            <h:outputText value="#{user.lastConnection}" />
+                        </rich:column> 
+                        <rich:column>
+                            <f:facet name="header">Comment</f:facet>
+                            <h:outputText value="#{user.comment}" />
+                        </rich:column> 
+                        <rich:column>  
+                            <f:facet name="header">Roles</f:facet>
+                            <a4j:commandLink styleClass="no-decor" 
+                                             render="editGrid" 
+                                             execute="@this"
+                                             action="#{rolesBean.setCurrentIndex(it.index)}"
+                                             oncomplete="#{rich:component('editPane')}.show()">
+                                <h:graphicImage library="img"
+                                                name="edit.png" 
+                                                alt="edit" />
+                                <a4j:param value="#{it.index}" 
+                                           assignTo="#{usersBean.currentUserIndex}" />
+                                <f:setPropertyActionListener target="#{usersBean.editedUser}" 
+                                                             value="#{user}" />
+                            </a4j:commandLink>
+                        </rich:column>
+                        <f:facet name="footer">
+                            <rich:dataScroller page="#{usersBean.page}" />
+                        </f:facet>
+                    </rich:dataTable>    
+                    
+                    <br />
 
+                    <rich:panel style="width: 423px;" 
+                                rendered="#{userBean.isAdmin()}"
+                                id="ldapPanel">
+                        <f:facet name="header">
+                            <h:outputText value="LDAP Configuration" />
+                        </f:facet>
+                        <h:panelGrid columns="2">                        
+                            <h:outputText value="Host: " />
+                            <h:inputText value="#{managerBean.host}" />
+                            <h:outputText value="Port: " />
+                            <h:inputText value="#{managerBean.port}" />
+                            <h:outputText value="cn: " />
+                            <h:inputText value="#{managerBean.cn}" />
+                            <h:outputText value="Password: " />
+                            <h:inputSecret value="#{managerBean.password}" redisplay="true" />
+                            <h:outputText value="Group (OU): " />
+                            <h:inputText value="#{managerBean.group}" />
+                            <h:outputText value="DCs: " />
+                            <h:inputText value="#{managerBean.dcs}" />
+                            <h:outputText value=" "/>
+                            <a4j:commandButton value="Save" 
+                                               action="#{managerBean.saveLdapInfo()}"
+                                               render="ldapPanel"/>
+                        </h:panelGrid>
+                    </rich:panel>
+
+                </h:panelGrid>
+                    
                 <rich:popupPanel id="statPane" autosized="true">
                     <!--h:graphicImage library="img" name="ai.gif" alt="ai" /-->
                     <!--Please wait...-->
@@ -528,7 +561,7 @@
                       rendered="false">                                                                       
                 <div id="chartdiv" />                                                               
             </rich:tab>                                                        
-            <h:outputScript library="jqPlot" name="plots.js" rendered="false" />             
+            <!--h:outputScript library="jqPlot" name="plots.js" rendered="false" /-->             
             <!--h:form>
                 <a4j:poll id="poll" interval="2000" enabled="{pollBean.pollEnabled}" render="poll,grid" />
             </h:form-->
@@ -575,8 +608,13 @@
             </rich:tab>
         </rich:tabPanel>
         </h:form>
-        <h:graphicImage library="img" name="silver-footer.jpg" 
-                        style="width: 100%; opacity: 0.4;"/>
+        <div style="position: absolute; bottom: 0; width: 99%;">
+            <h:graphicImage library="img" 
+                            name="silver-footer.jpg" 
+                            width="100%" 
+                            height="100px" 
+                            style="opacity: 0.5;"/>
+        </div>
     </h:body>
 </f:view>
 </html>    

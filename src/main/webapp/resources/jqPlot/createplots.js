@@ -1,15 +1,11 @@
 
-$(document).ready(function(){
-    $.jqplot('externdiv',  [[3,7,9,1,4,6,8,2,5]]);
+function buildplots(strOne, strTwo){
+    $.jqplot('externdiv',  strOne);
     var div = document.getElementById("chartdiv");  
     var plot = document.getElementById("externdiv");    
     div.appendChild(plot);
     
-    
-    /*var data = [['Heavy Industry', 12],['Retail', 9], ['Light Industry', 14], 
-                ['Out of home', 16],['Commuting', 7], ['Orientation', 9]];*/
-    var data = [12, 9, 14, 16, 7, 9];
-    $.jqplot ('piechart', [data], { 
+    $.jqplot ('piechart', strTwo, { 
         seriesDefaults: {
             // Make this a pie chart.
             renderer: jQuery.jqplot.PieRenderer, 
@@ -25,6 +21,6 @@ $(document).ready(function(){
     var piechart = document.getElementById("piechart");  
     var piediv = document.getElementById("piediv");    
     piediv.appendChild(piechart);
-    
-});
+}
+
 

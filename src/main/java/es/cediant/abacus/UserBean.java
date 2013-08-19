@@ -6,7 +6,6 @@ import es.cediant.db.UserHelper;
 import es.cediant.encryption.MD5Util;
 import es.cediant.util.LdapConnection;
 import es.cediant.util.LdapPropHandler;
-import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
