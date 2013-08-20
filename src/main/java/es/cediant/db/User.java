@@ -1,5 +1,5 @@
 package es.cediant.db;
-// Generated Jul 31, 2013 4:59:04 PM by Hibernate Tools 3.2.1.GA
+// Generated Aug 20, 2013 12:24:22 PM by Hibernate Tools 3.2.1.GA
 
 
 import java.util.Date;

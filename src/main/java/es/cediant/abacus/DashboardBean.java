@@ -28,7 +28,7 @@ public class DashboardBean implements Serializable {
     }
 
     public String getStrOne() {
-        throw new Exception("Not implemented yet");
+        return strOne;
     }
 
     public void setStrOne(String strOne) {
@@ -36,14 +36,13 @@ public class DashboardBean implements Serializable {
     }
 
     public String getStrTwo() {
-        throw new Exception("Not implemented yet");
+        return strTwo;
     }
 
     public void setStrTwo(String strTwo) {
         this.strTwo = strTwo;
     }
-    
-    
+        
     public boolean getPollEnabled() {
         FacesContext context = FacesContext.getCurrentInstance();
         UserBean userBean = (UserBean) context.getApplication().evaluateExpressionGet(context, "#{userBean}", UserBean.class);
