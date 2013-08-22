@@ -101,13 +101,13 @@
                     </h:panelGrid>
                 </h:panelGrid>
             </rich:tab>
-            <h:outputScript library="jqPlot" name="plots.js" /> 
+            <h:outputScript library="jqPlot" name="createplots.js" /> 
             <h:form>
                 <a4j:poll id="poll" 
                           interval="2000" 
                           enabled="#{dashboardBean.pollEnabled}" 
                           render="poll,Dashboard"
-                          action="#{dashboard.updateData()}"/>
+                          action="#{dashboardBean.updateData(5)}"/>
             </h:form>            
             
             <rich:tab header="Management"

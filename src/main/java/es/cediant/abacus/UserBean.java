@@ -44,7 +44,7 @@ public class UserBean implements Serializable {
     //private String dn;
     //private String ldapAuthType;
     //private List<SelectItem> ldapAuthTypes = new ArrayList<SelectItem>();
-    private String activeTab;
+    private String activeTab = "Dashboard";
     //Properties ldapProp;
     private LdapPropHandler lph;
     
