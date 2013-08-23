@@ -14,7 +14,7 @@
         <h:outputStylesheet library="jqPlot" name="jquery.jqplot.css" />
     </h:head>
     <h:body>      
-        <h:outputScript library="jqPlot" name="jquery.min.js"/>
+        <!--h:outputScript library="jqPlot" name="jquery.min.js"/-->
         <h:outputScript library="jqPlot" name="jquery.jqplot.min.js"/>
         <h:outputScript library="jqPlot" name="plugins/jqplot.pieRenderer.min.js"/>
         
@@ -81,15 +81,33 @@
         <a4j:jsFunction name="setActiveTab">
               <a4j:param name="activeTab" assignTo="#{userBean.activeTab}"/>
         </a4j:jsFunction>            
-        <rich:tabPanel switchType="client" 
+        <rich:tabPanel id="generalTabPanel"
+                       switchType="client" 
                        activeItem="#{userBean.activeTab==null?'OverviewTab':userBean.activeTab}">
             
             <div id="externdiv" style="width: 48%;" />
-            <div id="piechart" style="width: 48%;" />
+            <div id="piechart" style="width: 48%;" />                        
             <rich:tab header="Dashboard"
                       id="Dashboard"
-                      onenter="setActiveTab('Dashboard')"
-                      onbegin="buildplots('#{dashboardBean.strOne}','#{dashboardBean.strTwo}')"> 
+                      onenter="setActiveTab('Dashboard')"> 
+                <h:outputScript library="jqPlot" name="createplots.js"/> 
+                <!--f:ajax event="click" 
+                        execute="@form" 
+                        render="dashboardGrid" 
+                        listener="{dashboardBean.updateData(5)}"
+                        onevent="buildplots('{dashboardBean.strOne}','{dashboardBean.strTwo}')" /--> 
+                <!--
+                onbegin="buildplots('{dashboardBean.strOne}','{dashboardBean.strTwo}')"
+                render="poll"
+                execute="@form"
+                --> 
+                <!--h:form>
+                    <a4j:jsFunction name="buildplots" render="Dashboard">
+                        <a4j:param name="strOne" assignTo="{dashboardBean.strOne}" />
+                        <a4j:param name="strTwo" assignTo="{dashboardBean.strTwo}" />
+                    </a4j:jsFunction>
+                </h:form-->
+                
                 <h:panelGrid columns="2" style="width: 100%" id="dashboardGrid">
                     <h:panelGrid>
                         <div id="chartdiv" />
@@ -100,15 +118,18 @@
                         <!--h:outputText value="Second column" /-->
                     </h:panelGrid>
                 </h:panelGrid>
-            </rich:tab>
-            <h:outputScript library="jqPlot" name="createplots.js" /> 
-            <h:form>
-                <a4j:poll id="poll" 
-                          interval="2000" 
-                          enabled="#{dashboardBean.pollEnabled}" 
-                          render="poll,Dashboard"
-                          action="#{dashboardBean.updateData(5)}"/>
-            </h:form>            
+                <h:form id="pollForm">
+                    <a4j:poll id="poll" 
+                              interval="5000" 
+                              enabled="#{dashboardBean.pollEnabled}" 
+                              render="poll,Dashboard"
+                              action="#{dashboardBean.updateData(5)}"/>
+                    <div id="hiddenId">
+                        <h:inputHidden id="hiddenOne" value="#{dashboardBean.strOne}" />
+                        <h:inputHidden id="hiddenTwo" value="#{dashboardBean.strTwo}" />
+                    </div>
+                </h:form>
+            </rich:tab>                                    
             
             <rich:tab header="Management"
                       id="Management"

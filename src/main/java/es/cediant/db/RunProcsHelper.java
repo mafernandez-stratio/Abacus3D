@@ -7,7 +7,6 @@ package es.cediant.db;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -59,27 +58,6 @@ public class RunProcsHelper {
         Transaction tx = session.beginTransaction();
         
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        
-        /*
-        Calendar cal = Calendar.getInstance();
-        StringBuilder startDate = new StringBuilder();
-        cal.setTime(start);
-        startDate.append(cal.get(Calendar.YEAR)+"-");
-        startDate.append(cal.get(Calendar.MONTH)+"-");
-        startDate.append(cal.get(Calendar.DAY_OF_MONTH)+" ");
-        startDate.append(cal.get(Calendar.HOUR_OF_DAY)+":");
-        startDate.append(cal.get(Calendar.MINUTE)+":");
-        startDate.append(cal.get(Calendar.SECOND));
-        
-        StringBuilder endDate = new StringBuilder();
-        cal.setTime(end);
-        endDate.append(cal.get(Calendar.YEAR)+"-");
-        endDate.append(cal.get(Calendar.MONTH)+"-");
-        endDate.append(cal.get(Calendar.DAY_OF_MONTH)+" ");
-        endDate.append(cal.get(Calendar.HOUR_OF_DAY)+":");
-        endDate.append(cal.get(Calendar.MINUTE)+":");
-        endDate.append(cal.get(Calendar.SECOND));
-        */
          
         String strQuery = "FROM RunProcs R WHERE R.date >= '"+dateFormat.format(start)+"' AND R.date <= '"+dateFormat.format(end)+"'";
         

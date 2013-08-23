@@ -11,11 +11,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import javax.el.ELContext;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
 /**
@@ -23,7 +22,7 @@ import javax.faces.context.FacesContext;
  * @author miguel
  */
 @ManagedBean
-@ViewScoped
+@SessionScoped
 public class DashboardBean implements Serializable {
     private static final long serialVersionUID = 648864815261749745L;
     private boolean pollEnabled = false;
@@ -34,6 +33,9 @@ public class DashboardBean implements Serializable {
      * Creates a new instance of DashboardBean
      */
     public DashboardBean() {
+        //////////////////
+        updateData(5); ///
+        //////////////////
     }
 
     public String getStrOne() {
@@ -126,8 +128,11 @@ public class DashboardBean implements Serializable {
             dataTwo=dataTwo.deleteCharAt(dataTwo.length()-1);
         } 
         
-        setStrOne(dataOne.toString());
-        setStrTwo(dataTwo.toString());        
+        setStrOne("["+dataOne.toString()+"]");
+        setStrTwo("["+dataTwo.toString()+"]"); 
+        
+        System.out.println(strOne);
+        System.out.println(strTwo);
         
     }
     

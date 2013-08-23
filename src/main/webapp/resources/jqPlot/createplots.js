@@ -1,11 +1,22 @@
 
+$(document).ready(function(){
+    alert("createplots.js loaded");
+    var tmp = document.getElementById('j_idt30:pollForm:hiddenOne').value; 
+    alert(tmp);
+    //var idstr=form["j_idt30:pollForm:hiddenOne"].value;  
+    //alert(idstr);
+});
+
 function buildplots(strOne, strTwo){
-    $.jqplot('externdiv',  strOne);
+    
+    window.alert("Building plots");        
+    
+    $.jqplot('externdiv',  [strOne]);
     var div = document.getElementById("chartdiv");  
     var plot = document.getElementById("externdiv");    
     div.appendChild(plot);
     
-    $.jqplot ('piechart', strTwo, { 
+    $.jqplot ('piechart', [strTwo], { 
         seriesDefaults: {
             // Make this a pie chart.
             renderer: jQuery.jqplot.PieRenderer, 
