@@ -89,8 +89,7 @@
             <div id="piechart" style="width: 48%;" />                        
             <rich:tab header="Dashboard"
                       id="Dashboard"
-                      onenter="setActiveTab('Dashboard')"> 
-                <h:outputScript library="jqPlot" name="createplots.js"/> 
+                      onenter="setActiveTab('Dashboard')">                 
                 <!--f:ajax event="click" 
                         execute="@form" 
                         render="dashboardGrid" 
@@ -109,6 +108,7 @@
                 </h:form-->
                 
                 <h:panelGrid columns="2" style="width: 100%" id="dashboardGrid">
+                    <h:outputScript library="jqPlot" name="createplots.js"/> 
                     <h:panelGrid>
                         <div id="chartdiv" />
                         <!--h:outputText value="First column" /-->
@@ -122,12 +122,12 @@
                     <a4j:poll id="poll" 
                               interval="5000" 
                               enabled="#{dashboardBean.pollEnabled}" 
-                              render="poll,Dashboard"
+                              render="poll,dashboardGrid"
                               action="#{dashboardBean.updateData(5)}"/>
-                    <div id="hiddenId">
-                        <h:inputHidden id="hiddenOne" value="#{dashboardBean.strOne}" />
-                        <h:inputHidden id="hiddenTwo" value="#{dashboardBean.strTwo}" />
-                    </div>
+                    <!--div id="hiddenId">
+                        <h:inputHidden id="hiddenOne" value="{dashboardBean.strOne}" />
+                        <h:inputHidden id="hiddenTwo" value="{dashboardBean.strTwo}" />
+                    </div-->
                 </h:form>
             </rich:tab>                                    
             

@@ -128,8 +128,11 @@ public class DashboardBean implements Serializable {
             dataTwo=dataTwo.deleteCharAt(dataTwo.length()-1);
         } 
         
-        setStrOne("["+dataOne.toString()+"]");
-        setStrTwo("["+dataTwo.toString()+"]"); 
+        //setStrOne("["+dataOne.toString()+"]");
+        setStrOne(dataOne.toString());
+        //setStrOne("3,7,9,1,4,6,8,2,5");
+        //setStrTwo("["+dataTwo.toString()+"]");
+        setStrTwo(dataTwo.toString());
         
         System.out.println(strOne);
         System.out.println(strTwo);
