@@ -161,6 +161,7 @@ public class UserBean implements Serializable {
         //this.activeTab = activeTab.substring(activeTab.lastIndexOf(":")+1);
         this.activeTab = tmp.substring(tmp.lastIndexOf(":")+1);
         //System.out.println("activeTab = "+getActiveTab());
+        System.out.println("Active tab = "+activeTab);
     }                
     
     public void login() {        

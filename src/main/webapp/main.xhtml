@@ -13,7 +13,7 @@
         <h:outputStylesheet library="css" name="main.css" />
         <h:outputStylesheet library="jqPlot" name="jquery.jqplot.css" />
     </h:head>
-    <h:body>      
+    <h:body onload="buildgraphs('#{dashboardBean.strOne}');">      
         <!--h:outputScript library="jqPlot" name="jquery.min.js"/-->
         <h:outputScript library="jqPlot" name="jquery.jqplot.min.js"/>
         <h:outputScript library="jqPlot" name="plugins/jqplot.pieRenderer.min.js"/>
@@ -89,7 +89,13 @@
             <div id="piechart" style="width: 48%;" />                        
             <rich:tab header="Dashboard"
                       id="Dashboard"
-                      onenter="setActiveTab('Dashboard')">                 
+                      onenter="setActiveTab('Dashboard')"
+                      render="poll,dashboardGrid"
+                      execute="@form">         
+                
+                <!--f:ajax event="click"  
+                        render="poll,dashboardGrid"/-->                 
+                
                 <!--f:ajax event="click" 
                         execute="@form" 
                         render="dashboardGrid" 
@@ -107,8 +113,8 @@
                     </a4j:jsFunction>
                 </h:form-->
                 
-                <h:panelGrid columns="2" style="width: 100%" id="dashboardGrid">
-                    <h:outputScript library="jqPlot" name="createplots.js"/> 
+                <h:outputScript library="jqPlot" name="createplots.js"/> 
+                <h:panelGrid columns="2" style="width: 100%" id="dashboardGrid">                                        
                     <h:panelGrid>
                         <div id="chartdiv" />
                         <!--h:outputText value="First column" /-->
@@ -116,18 +122,20 @@
                     <h:panelGrid>
                         <div id="piediv" />
                         <!--h:outputText value="Second column" /-->
-                    </h:panelGrid>
+                    </h:panelGrid>                    
                 </h:panelGrid>
                 <h:form id="pollForm">
                     <a4j:poll id="poll" 
-                              interval="5000" 
+                              interval="3000" 
                               enabled="#{dashboardBean.pollEnabled}" 
                               render="poll,dashboardGrid"
-                              action="#{dashboardBean.updateData(5)}"/>
-                    <!--div id="hiddenId">
-                        <h:inputHidden id="hiddenOne" value="{dashboardBean.strOne}" />
-                        <h:inputHidden id="hiddenTwo" value="{dashboardBean.strTwo}" />
-                    </div-->
+                              action="#{dashboardBean.updateData(5)}" 
+                              execute="@form"
+                              oncomplete="buildgraphs('#{dashboardBean.strOne}')"/>      
+                        <div id="hiddenId">
+                            <h:inputHidden id="hiddenOne" value="#{dashboardBean.strOne}" />
+                            <h:inputHidden id="hiddenTwo" value="#{dashboardBean.strTwo}" />
+                        </div>
                 </h:form>
             </rich:tab>                                    
             

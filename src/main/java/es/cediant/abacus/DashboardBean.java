@@ -39,6 +39,7 @@ public class DashboardBean implements Serializable {
     }
 
     public String getStrOne() {
+        System.out.println("strOne="+strOne);
         return strOne;
     }
 
@@ -60,7 +61,9 @@ public class DashboardBean implements Serializable {
         if(userBean == null){
             System.out.println("userBean not found");
         }
+        System.out.println("getPollEnabled()-->"+userBean.getActiveTab());
         setPollEnabled(userBean.getActiveTab().equalsIgnoreCase("Dashboard"));
+        System.out.println("PollEnabled="+this.pollEnabled);
         return pollEnabled;
     }
  
@@ -134,8 +137,20 @@ public class DashboardBean implements Serializable {
         //setStrTwo("["+dataTwo.toString()+"]");
         setStrTwo(dataTwo.toString());
         
-        System.out.println(strOne);
-        System.out.println(strTwo);
+        /////////////////
+        StringBuilder str = new StringBuilder();
+        for(int i=0; i<4; i++){
+            if(i>0){
+                str.append(",");
+            }
+            int randInt = (int) (Math.random()*100);
+            str.append(randInt);
+        }
+        setStrOne(str.toString());
+        /////////////////
+        
+        //System.out.println(strOne);
+        //System.out.println(strTwo);
         
     }
     

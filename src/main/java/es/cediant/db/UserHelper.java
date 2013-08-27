@@ -131,6 +131,9 @@ public class UserHelper {
         } catch (HibernateException ex) {
             session = HibernateUtil.getSessionFactory().getCurrentSession();
             return getUsers();
+        } catch (Exception ex){
+            session = HibernateUtil.getSessionFactory().getCurrentSession();
+            return getUsers();
         }
     }
 
