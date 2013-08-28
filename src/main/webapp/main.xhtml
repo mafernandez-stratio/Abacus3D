@@ -13,7 +13,7 @@
         <h:outputStylesheet library="css" name="main.css" />
         <h:outputStylesheet library="jqPlot" name="jquery.jqplot.css" />
     </h:head>
-    <h:body onload="buildgraphs('#{dashboardBean.strOne}');">      
+    <h:body onload="buildgraphs('#{dashboardBean.strOne}', 3000);">      
         <!--h:outputScript library="jqPlot" name="jquery.min.js"/-->
         <h:outputScript library="jqPlot" name="jquery.jqplot.min.js"/>
         <h:outputScript library="jqPlot" name="plugins/jqplot.pieRenderer.min.js"/>
@@ -78,18 +78,18 @@
         <!--a4j:status onstart="{rich:component('statPane')}.show()" 
                     onstop="{rich:component('statPane')}.hide()" /-->
         <h:form>
-        <a4j:jsFunction name="setActiveTab">
-              <a4j:param name="activeTab" assignTo="#{userBean.activeTab}"/>
+            <a4j:jsFunction name="setActiveTab" render="poll,dashboardGrid" execute="@form">
+            <a4j:param name="activeTab" assignTo="#{userBean.activeTab}"/>
         </a4j:jsFunction>            
         <rich:tabPanel id="generalTabPanel"
                        switchType="client" 
-                       activeItem="#{userBean.activeTab==null?'OverviewTab':userBean.activeTab}">
+                       activeItem="#{userBean.activeTab==null?'Dashboard':userBean.activeTab}">
             
             <div id="externdiv" style="width: 48%;" />
             <div id="piechart" style="width: 48%;" />                        
             <rich:tab header="Dashboard"
                       id="Dashboard"
-                      onenter="setActiveTab('Dashboard')"
+                      onenter="setActiveTab('Dashboard'); buildgraphs('#{dashboardBean.strOne}', 500);"                      
                       render="poll,dashboardGrid"
                       execute="@form">         
                 
@@ -125,13 +125,13 @@
                     </h:panelGrid>                    
                 </h:panelGrid>
                 <h:form id="pollForm">
-                    <a4j:poll id="poll" 
+                    <a4j:poll id="poll"                              
                               interval="3000" 
                               enabled="#{dashboardBean.pollEnabled}" 
                               render="poll,dashboardGrid"
                               action="#{dashboardBean.updateData(5)}" 
                               execute="@form"
-                              oncomplete="buildgraphs('#{dashboardBean.strOne}')"/>      
+                              oncomplete="buildgraphs('#{dashboardBean.strOne}', 3000)"/>      
                         <div id="hiddenId">
                             <h:inputHidden id="hiddenOne" value="#{dashboardBean.strOne}" />
                             <h:inputHidden id="hiddenTwo" value="#{dashboardBean.strTwo}" />

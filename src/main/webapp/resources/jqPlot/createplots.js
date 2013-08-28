@@ -1,4 +1,8 @@
 
+var currentTimer;
+var changeTimer;
+var newTimer;
+ 
 //var plot;
 //var chartdiv;
 //var externdiv;
@@ -72,12 +76,71 @@
     //window.alert("Plots created");
 //});
 
-function buildgraphs(strOne){  
+function buildgraphs(strOne, timer){ 
+    //window.alert("changeTimer="+changeTimer);
+    //window.alert("currentTimer="+currentTimer);
+    //window.alert("newTimer="+newTimer);
+    //window.alert("timer="+timer);
+    //var tmpPoll = document.getElementById('j_idt30:pollForm:poll');
+    //window.alert(tmpPoll);
     //window.alert("Building graphs...");
     var array = strOne.split(",");
     //window.alert("Array: "+array);
     plot = $.jqplot('chartdiv',  [array], {axes: {yaxis: {min:0, max: 100}}});
     //window.alert(plot);
+    //window.alert(tmpPoll.querySelectorAll("*"));
+    //for(var i=0;i<tmpPoll.attributes.length;i++){
+        //if(tmpPoll.attributes[i].specified){
+            //window.alert(tmpPoll.attributes[i].nodeName + " = " + tmpPoll.attributes[i].nodeValue);
+        //}
+   //}
+   
+   if(currentTimer == null){
+        //window.alert("currentTimer == null");
+        currentTimer = timer;
+        changeTimer = false;        
+    } else {
+        //window.alert("outer else");
+        if(currentTimer > timer){
+            //window.alert("currentTimer > timer");
+            newTimer = timer;
+            changeTimer = true;
+            new RichFaces.ui.Poll("j_idt30:pollForm:poll",{
+                    "enabled":true,
+                    "interval":timer,
+                    "ontimer":function(event){
+                        RichFaces.ajax("j_idt30:pollForm:poll",
+                                event,{
+                                    "incId":"1"
+                                }
+                        );
+                    }
+                }
+            );
+        } else { 
+            //window.alert("inner else");
+            if(changeTimer){
+                //window.alert("changeTimer");
+                changeTimer = false;
+                new RichFaces.ui.Poll("j_idt30:pollForm:poll",{
+                        "enabled":true,
+                        "interval":newTimer,
+                        "ontimer":function(event){
+                            RichFaces.ajax("j_idt30:pollForm:poll",
+                                    event,{
+                                        "incId":"1"
+                                    }
+                            );
+                        }
+                    }
+                );
+            }
+        }
+    }
+    
+
+   
+                
 }
 
 
