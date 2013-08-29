@@ -76,33 +76,85 @@ var newTimer;
     //window.alert("Plots created");
 //});
 
-function buildgraphs(strOne, timer){ 
+function buildgraphs(strOne, strTwo, timer){ 
+    //window.alert("Building graphs...");
     //window.alert("changeTimer="+changeTimer);
     //window.alert("currentTimer="+currentTimer);
     //window.alert("newTimer="+newTimer);
     //window.alert("timer="+timer);
     //var tmpPoll = document.getElementById('j_idt30:pollForm:poll');
     //window.alert(tmpPoll);
-    //window.alert("Building graphs...");
-    var array = strOne.split(",");
+    var arrayOne = strOne.split(",");
     //window.alert("Array: "+array);
-    plot = $.jqplot('chartdiv',  [array], {axes: {yaxis: {min:0, max: 100}}});
+    plot = $.jqplot('chartdiv',  [arrayOne], {axes: {yaxis: {min:0, max: 100}}});
     //window.alert(plot);
     //window.alert(tmpPoll.querySelectorAll("*"));
     //for(var i=0;i<tmpPoll.attributes.length;i++){
         //if(tmpPoll.attributes[i].specified){
             //window.alert(tmpPoll.attributes[i].nodeName + " = " + tmpPoll.attributes[i].nodeValue);
         //}
-   //}
+    //}
+        
+    //strTwo = "10,9,16,3,7,10";
+        
+    var arrayTwo = strTwo.split(",");
+    var tmpTwo = [];
+    //window.alert(arrayTwo);
+    //window.alert(arrayTwo.length);
+    //window.alert(parseInt(arrayTwo[0]));
+    for(var i=0; i<arrayTwo.length; i++){
+        tmpTwo.push(parseInt(arrayTwo[i]));        
+    }
+        
+    /*
+    tmpTwo.push(10);
+    tmpTwo.push(9);
+    tmpTwo.push(16);
+    tmpTwo.push(3);
+    tmpTwo.push(7);
+    tmpTwo.push(10);
+    */
    
+    //window.alert("arrayTwo="+arrayTwo);
+    
+    $.jqplot('piediv', [tmpTwo], { 
+        seriesDefaults: {
+            // Make this a pie chart.
+            renderer: jQuery.jqplot.PieRenderer, 
+            rendererOptions: {
+              // Put data labels on the pie slices.
+              // By default, labels show the percentage of the slice.
+              showDataLabels: true
+            }
+        }, 
+        legend: {show:false, location: 'e'}
+    });   
+    
+    if(timer > 0){
+        new RichFaces.ui.Poll("j_idt30:pollForm:poll",{
+                "enabled":true,
+                "interval":timer,
+                "ontimer":function(event){
+                    RichFaces.ajax("j_idt30:pollForm:poll",
+                            event,{
+                                "incId":"1"
+                            }
+                    );
+                }
+            }
+        );
+    }
+            
+   
+   /*
    if(currentTimer == null){
-        //window.alert("currentTimer == null");
+        window.alert("currentTimer == null");
         currentTimer = timer;
         changeTimer = false;        
     } else {
-        //window.alert("outer else");
+        window.alert("outer else");
         if(currentTimer > timer){
-            //window.alert("currentTimer > timer");
+            window.alert("currentTimer > timer");
             newTimer = timer;
             changeTimer = true;
             new RichFaces.ui.Poll("j_idt30:pollForm:poll",{
@@ -118,9 +170,9 @@ function buildgraphs(strOne, timer){
                 }
             );
         } else { 
-            //window.alert("inner else");
+            window.alert("inner else");
             if(changeTimer){
-                //window.alert("changeTimer");
+                window.alert("changeTimer");
                 changeTimer = false;
                 new RichFaces.ui.Poll("j_idt30:pollForm:poll",{
                         "enabled":true,
@@ -136,14 +188,11 @@ function buildgraphs(strOne, timer){
                 );
             }
         }
-    }
-    
-
-   
-                
+    }    
+    */         
 }
 
-
+/*
 function buildplots(strOne, strTwo){
     
     //window.alert("Building plots");        
@@ -171,4 +220,4 @@ function buildplots(strOne, strTwo){
     piediv.appendChild(piechart);
 }
 
-
+*/

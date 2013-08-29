@@ -6,4 +6,5 @@
   <table-filter match-name="User"/>
   <table-filter match-name="Role"/>
   <table-filter match-name="RunProcs"/>
+  <table-filter match-name="Process"/>
 </hibernate-reverse-engineering>

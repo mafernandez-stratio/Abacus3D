@@ -28,11 +28,13 @@ public class DashboardBean implements Serializable {
     private boolean pollEnabled = false;
     private String strOne;
     private String strTwo;
+    private int interval;
 
     /**
      * Creates a new instance of DashboardBean
      */
     public DashboardBean() {
+        interval=3000;
         //////////////////
         updateData(5); ///
         //////////////////
@@ -48,22 +50,31 @@ public class DashboardBean implements Serializable {
     }
 
     public String getStrTwo() {
+        System.out.println("strTwo="+strTwo);
         return strTwo;
     }
 
     public void setStrTwo(String strTwo) {
         this.strTwo = strTwo;
     }
-        
+
+    public int getInterval() {
+        return interval;
+    }
+
+    public void setInterval(int interval) {
+        this.interval = interval;
+    }            
+    
     public boolean getPollEnabled() {
         ELContext elContext = FacesContext.getCurrentInstance().getELContext();
         UserBean userBean = (UserBean) FacesContext.getCurrentInstance().getApplication().getELResolver().getValue(elContext, null, "userBean");
         if(userBean == null){
             System.out.println("userBean not found");
         }
-        System.out.println("getPollEnabled()-->"+userBean.getActiveTab());
+        //System.out.println("getPollEnabled()-->"+userBean.getActiveTab());
         setPollEnabled(userBean.getActiveTab().equalsIgnoreCase("Dashboard"));
-        System.out.println("PollEnabled="+this.pollEnabled);
+        //System.out.println("PollEnabled="+this.pollEnabled);
         return pollEnabled;
     }
  
@@ -98,14 +109,16 @@ public class DashboardBean implements Serializable {
         startTime = start;
         Map<String, Integer> map = new HashMap<String, Integer>();
         for(int i=1; i<secs; i++){
+            System.out.println("Start time = " + startTime.toString());            
             int count = 0;
             calendar = Calendar.getInstance();
-            calendar.setTime(start);
+            calendar.setTime(startTime);
             calendar.add(Calendar.SECOND, 1);
             endTime = calendar.getTime();
+            System.out.println("End time = " + endTime.toString());
             for (RunProcs runProcs: result){                
                 if((runProcs.getDate().after(startTime) && runProcs.getDate().before(endTime))
-                        || (runProcs.getDate().equals(startTime)) || (runProcs.getDate().equals(endTime))){
+                        || (runProcs.getDate().equals(startTime))){
                     count+=runProcs.getNum();
                 }
                 if(i==1){
@@ -137,6 +150,9 @@ public class DashboardBean implements Serializable {
         //setStrTwo("["+dataTwo.toString()+"]");
         setStrTwo(dataTwo.toString());
         
+        System.out.println("dataOne = " + dataOne.toString());
+        System.out.println("dataTwo = " + dataTwo.toString());
+        
         /////////////////
         StringBuilder str = new StringBuilder();
         for(int i=0; i<4; i++){
@@ -147,6 +163,19 @@ public class DashboardBean implements Serializable {
             str.append(randInt);
         }
         setStrOne(str.toString());
+        /////////////////
+        
+        /////////////////
+        str = new StringBuilder();
+        for(int i=0; i<6; i++){
+            if(i>0){
+                str.append(",");
+            }
+            int randInt = (int) (Math.random()*19);
+            randInt++;
+            str.append(randInt);
+        }        
+        setStrTwo(str.toString());        
         /////////////////
         
         //System.out.println(strOne);

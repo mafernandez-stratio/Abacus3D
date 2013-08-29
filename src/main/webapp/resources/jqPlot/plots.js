@@ -9,7 +9,7 @@ $(document).ready(function(){
     /*var data = [['Heavy Industry', 12],['Retail', 9], ['Light Industry', 14], 
                 ['Out of home', 16],['Commuting', 7], ['Orientation', 9]];*/
     var data = [12, 9, 14, 16, 7, 9];
-    $.jqplot ('piechart', [data], { 
+    $.jqplot ('piediv', [data], { 
         seriesDefaults: {
             // Make this a pie chart.
             renderer: jQuery.jqplot.PieRenderer, 

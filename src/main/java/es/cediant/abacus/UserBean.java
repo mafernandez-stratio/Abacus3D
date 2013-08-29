@@ -149,12 +149,12 @@ public class UserBean implements Serializable {
     }*/        
 
     public String getActiveTab() {
-        System.out.println("activeTab="+activeTab);
+        //System.out.println("activeTab="+activeTab);
         return activeTab;
     }
 
     public void setActiveTab(String activeTab) {      
-        System.out.println("<< Active tab = "+activeTab);
+        //System.out.println("<< Active tab = "+activeTab);
         //System.out.println(tabPos);
         String tmp = activeTab;
         if(activeTab.indexOf("Tab") >= 0){
@@ -165,7 +165,7 @@ public class UserBean implements Serializable {
         //this.activeTab = activeTab.substring(activeTab.lastIndexOf(":")+1);
         this.activeTab = tmp.substring(tmp.lastIndexOf(":")+1);
         //System.out.println("activeTab = "+getActiveTab());
-        System.out.println(">> Active tab = "+this.activeTab);
+        //System.out.println(">> Active tab = "+this.activeTab);
     }                
     
     public void login() {        
