@@ -5,8 +5,12 @@
 package es.cediant.db;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 /**
@@ -15,44 +19,80 @@ import org.hibernate.Transaction;
  */
 public class RoleHelper {
     
-    private static Session session = null;
+    private static SessionFactory factory = null;
     
     public RoleHelper(){
         //UserHelper.session = HibernateUtil.getSessionFactory().getCurrentSession(); 
-        session = HibernateUtil.getSessionFactory().openSession();
+        factory = HibernateUtil.getSessionFactory();
     }
 
     public Role getRole(String rolename) {
+        Session session = factory.openSession();
+        Transaction tx = null;
         List<Role> list = null;
-        Transaction tx = session.beginTransaction();
-        Query q = session.createQuery("FROM Role R WHERE R.roleName='"+rolename+"'");
-        list = (List<Role>) q.list();
-        session.getTransaction().commit();
-        if(list.size()>0){
-            return list.get(0);
-        } else {
-            return null;
+        try {
+            tx = session.beginTransaction();
+            Query q = session.createQuery("FROM Role R WHERE R.roleName='"+rolename+"'");
+            list = (List<Role>) q.list();
+            tx.commit();            
+        } catch (HibernateException ex) {
+            if (tx!=null){
+                tx.rollback();
+            }
+            Logger.getLogger(ProcessHelper.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            session.close(); 
+            if((list == null) || (list.size()<=0)){
+                return null;
+            } else {
+                return list.get(0);
+            } 
+            
         }        
     }
 
     public Role getRole(int roleInt) {
+        Session session = factory.openSession();
+        Transaction tx = null;
         List<Role> list = null;
-        Transaction tx = session.beginTransaction();
-        Query q = session.createQuery("FROM Role R WHERE R.idRole='"+roleInt+"'");
-        list = (List<Role>) q.list();
-        session.getTransaction().commit();
-        if(list.size()>0){
-            return list.get(0);
-        } else {
-            return null;
-        }
+        try {
+            tx = session.beginTransaction();
+            Query q = session.createQuery("FROM Role R WHERE R.idRole='"+roleInt+"'");
+            list = (List<Role>) q.list();
+            tx.commit();
+        } catch (HibernateException ex) {
+            if (tx!=null){
+                tx.rollback();
+            }
+            Logger.getLogger(ProcessHelper.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            session.close(); 
+            if((list == null) || (list.size()<=0)){
+                return null;
+            } else {
+                return list.get(0);
+            } 
+            
+        }   
     }
     
     public List<Role> getRoles() {
-        Transaction tx = session.beginTransaction();
-        List roles = session.createQuery("FROM Role").list();
-        tx.commit();
-        return roles;
+        Session session = factory.openSession();
+        Transaction tx = null;
+        List roles = null;
+        try {
+            tx = session.beginTransaction();
+            roles = session.createQuery("FROM Role").list();
+            tx.commit();        
+        } catch (HibernateException ex) {
+            if (tx!=null){
+                tx.rollback();
+            }
+            Logger.getLogger(ProcessHelper.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            session.close();
+            return roles;            
+        }
     }
     
 }

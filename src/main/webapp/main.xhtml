@@ -268,7 +268,58 @@
             
             <rich:tab header="Tasks"
                       id="Tasks"
-                      onenter="setActiveTab('Tasks')">                
+                      onenter="setActiveTab('Tasks')">  
+                <rich:dataTable value="#{processHelper.listProcesses()}" 
+                                var="process" 
+                                iterationStatusVar="it" 
+                                id="processesTable" 
+                                rows="20">
+                    <rich:column>
+                        <f:facet name="header">#</f:facet>
+                        #{it.index}
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">User</f:facet>
+                        <h:outputText value="#{process.user}" />
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">Name</f:facet>
+                        <h:outputText value="#{process.name}" />
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">Type</f:facet>
+                        <h:outputText value="#{process.type}" />
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">Priority</f:facet>
+                        <h:outputText value="#{process.priority}" />
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">Start time</f:facet>
+                        <h:outputText value="#{process.startTime}" />
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">End time</f:facet>
+                        <h:outputText value="#{process.endTime}" />
+                    </rich:column>
+                    <rich:column>
+                        <a4j:commandLink styleClass="no-decor" execute="@this" render="@none"
+                            oncomplete="#{rich:component('confirmPane')}.show()">
+                            <h:graphicImage value="/images/icons/delete.gif" alt="delete" />
+                            <a4j:param value="#{it.index}" assignTo="#{carsBean.currentCarIndex}" />
+                        </a4j:commandLink>
+                        <a4j:commandLink styleClass="no-decor" render="editGrid" execute="@this"
+                            oncomplete="#{rich:component('editPane')}.show()">
+                            <h:graphicImage value="/images/icons/edit.gif" alt="edit" />
+                            <a4j:param value="#{it.index}" assignTo="#{carsBean.currentCarIndex}" />
+                            <f:setPropertyActionListener target="#{carsBean.editedCar}" value="#{car}" />
+                        </a4j:commandLink>
+                    </rich:column>
+                    <f:facet name="footer">
+                        <rich:dataScroller page="#{carsBean.page}" />
+                    </f:facet>
+                </rich:dataTable>
+                
             </rich:tab>
             
             <rich:tab header="My account"

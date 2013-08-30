@@ -86,9 +86,5 @@ public class Process  implements java.io.Serializable {
         this.endTime = endTime;
     }
 
-
-
-
 }
-
 
