@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -191,7 +192,17 @@ public class UserBean implements Serializable {
                         uh.addRole(username, "User");
                         uh.setCreationDate(username, new Date());
                     }
-                }                     
+                }    
+                
+                /////////////////////////////////////////////////////
+                System.out.println("=== ROLES for "+username+" ===");
+                ArrayList<String> rolesAdmin = uh.getRoles(username);
+                for(String str: rolesAdmin){
+                    System.out.println(str);
+                }
+                System.out.println("==============================");
+                /////////////////////////////////////////////////////
+                
                 setRoles(uh.getRoles(username));
                 uh.updateLastConnection(username, new Date());                              
                 // Get userId

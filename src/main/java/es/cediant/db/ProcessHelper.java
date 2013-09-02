@@ -28,6 +28,7 @@ public class ProcessHelper {
     
     /* Method to  READ all the employees */
     public List listProcesses(){
+        System.out.println("Listing all processes...");
         Session session = factory.openSession();
         Transaction tx = null;
         List processes = null;
@@ -45,6 +46,9 @@ public class ProcessHelper {
             Logger.getLogger(ProcessHelper.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             session.close(); 
+            if(processes!=null){
+                System.out.println(processes.size()+" processes found");
+            }
             return processes;
         }
     }

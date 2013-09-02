@@ -39,12 +39,12 @@ public class RolesParser {
     
     
     public synchronized Iterable<Role> getRolesList() {
-        System.out.println(" === /getRoleList ===");
+        //System.out.println(" === /getRoleList ===");
         
         RolesBean rolesBean = (RolesBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("rolesBean");
         //rolesBean.removeNewRoles();        
         
-        System.out.println("Size(newRoles)="+rolesBean.getNewRoles().size());
+        //System.out.println("Size(newRoles)="+rolesBean.getNewRoles().size());
         
         if (rolesList == null) {
             //RoleHelper ur = new RoleHelper();
@@ -52,11 +52,11 @@ public class RolesParser {
             
             rolesList = rolesBean.getRoles();
                                                 
-            Iterator iter = rolesList.iterator();            
+            /*Iterator iter = rolesList.iterator();            
             while(iter.hasNext()){
                 Role role = ((Role) iter.next());
                 System.out.println(role.getRoleName());
-            }
+            }*/
             
             /*ClassLoader ccl = Thread.currentThread().getContextClassLoader();
             URL resource = ccl.getResource("org/richfaces/demo/data/roles/roles.xml");
@@ -69,7 +69,7 @@ public class RolesParser {
                 throw new FacesException(e.getMessage(), e);
             }*/
         }        
-        System.out.println(" === /getRoleList ===");
+        //System.out.println(" === /getRoleList ===");
         return rolesList;
     }
     

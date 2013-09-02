@@ -46,6 +46,7 @@ public class UserHelper {
             if((list != null) && (list.size()>0)){            
                 user = list.get(0);
             }
+            tx.commit();
         } catch (HibernateException ex) {
             if (tx!=null){
                 tx.rollback();
@@ -143,22 +144,26 @@ public class UserHelper {
     }
 
     public ArrayList<String> getRoles(String username) {
+        //System.out.println("Getting Roles...");
         Session session = factory.openSession();
         Transaction tx = null;
         ArrayList<String> roles = new ArrayList<String>();
         try {
-            User user = getUser(username);
-            Set setRoles = user.getUsersRoles();
-            for(Iterator iter = setRoles.iterator(); iter.hasNext();){
-                UsersRole userRole = (UsersRole) iter.next();
-                Role role = userRole.getRole();            
-                roles.add(role.getRoleName());
-            }        
-            return roles;
+            //System.out.println("Beginning transaction");
+            tx = session.beginTransaction();            
+            UsersRoleHelper urh = new UsersRoleHelper();
+            ArrayList<UsersRole> usersRoleList = urh.getRoles(getUser(username).getIdUser());            
+            RoleHelper rh = new RoleHelper();            
+            for(UsersRole usersRole: usersRoleList){
+                roles.add(rh.getRole(usersRole.getIdUsersRole()).getRoleName());
+            }                          
+            tx.commit();
         } catch (HibernateException ex) {
             if (tx!=null){
                 tx.rollback();
             }
+            Logger.getLogger(ProcessHelper.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Throwable ex) { 
             Logger.getLogger(ProcessHelper.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             session.close(); 

@@ -41,7 +41,7 @@ public class DashboardBean implements Serializable {
     }
 
     public String getStrOne() {
-        System.out.println("strOne="+strOne);
+        //System.out.println("strOne="+strOne);
         return strOne;
     }
 
@@ -50,7 +50,7 @@ public class DashboardBean implements Serializable {
     }
 
     public String getStrTwo() {
-        System.out.println("strTwo="+strTwo);
+        //System.out.println("strTwo="+strTwo);
         return strTwo;
     }
 
@@ -109,13 +109,13 @@ public class DashboardBean implements Serializable {
         startTime = start;
         Map<String, Integer> map = new HashMap<String, Integer>();
         for(int i=1; i<secs; i++){
-            System.out.println("Start time = " + startTime.toString());            
+            //System.out.println("Start time = " + startTime.toString());            
             int count = 0;
             calendar = Calendar.getInstance();
             calendar.setTime(startTime);
             calendar.add(Calendar.SECOND, 1);
             endTime = calendar.getTime();
-            System.out.println("End time = " + endTime.toString());
+            //System.out.println("End time = " + endTime.toString());
             for (RunProcs runProcs: result){                
                 if((runProcs.getDate().after(startTime) && runProcs.getDate().before(endTime))
                         || (runProcs.getDate().equals(startTime))){
@@ -150,8 +150,8 @@ public class DashboardBean implements Serializable {
         //setStrTwo("["+dataTwo.toString()+"]");
         setStrTwo(dataTwo.toString());
         
-        System.out.println("dataOne = " + dataOne.toString());
-        System.out.println("dataTwo = " + dataTwo.toString());
+        //System.out.println("dataOne = " + dataOne.toString());
+        //System.out.println("dataTwo = " + dataTwo.toString());
         
         /////////////////
         StringBuilder str = new StringBuilder();
