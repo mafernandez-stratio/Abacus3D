@@ -8,7 +8,7 @@
             <column name="idProcess" />
             <generator class="identity" />
         </id>
-        <many-to-one name="user" class="es.cediant.db.User" fetch="select">
+        <many-to-one name="user" class="es.cediant.db.User" fetch="select" lazy="false">
             <column name="idUser" not-null="true" />
         </many-to-one>
         <property name="name" type="string">

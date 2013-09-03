@@ -78,7 +78,7 @@
         <!--a4j:status onstart="{rich:component('statPane')}.show()" 
                     onstop="{rich:component('statPane')}.hide()" /-->
         <h:form>
-            <a4j:jsFunction name="setActiveTab" render="poll,dashboardGrid" execute="@form">
+            <a4j:jsFunction name="setActiveTab" render="poll,dashboardGrid">
             <a4j:param name="activeTab" assignTo="#{userBean.activeTab}"/>
         </a4j:jsFunction>            
         <rich:tabPanel id="generalTabPanel"
@@ -90,8 +90,7 @@
             <rich:tab header="Dashboard"
                       id="Dashboard"
                       onenter="setActiveTab('Dashboard'); buildgraphs('#{dashboardBean.strOne}', '#{dashboardBean.strTwo}', #{dashboardBean.interval});"                      
-                      render="poll,dashboardGrid"
-                      execute="@form">         
+                      render="poll,dashboardGrid">         
                 
                 <!--f:ajax event="click"  
                         render="poll,dashboardGrid"/-->                 
@@ -269,62 +268,126 @@
             <rich:tab header="Tasks"
                       id="Tasks"
                       onenter="setActiveTab('Tasks')">  
-                <rich:dataTable value="#{processHelper.listProcesses()}" 
-                                var="process" 
-                                iterationStatusVar="it" 
-                                id="processesTable" 
-                                rows="20">
-                    <rich:column>
-                        <f:facet name="header">#</f:facet>
-                        #{it.index}
-                    </rich:column>
-                    <rich:column>
-                        <f:facet name="header">User</f:facet>
-                        <h:outputText value="#{process.user.userName}" />
-                    </rich:column>
-                    <rich:column>
-                        <f:facet name="header">Name</f:facet>
-                        <h:outputText value="#{process.name}" />
-                    </rich:column>
-                    <rich:column>
-                        <f:facet name="header">Type</f:facet>
-                        <h:outputText value="#{process.type}" />
-                    </rich:column>
-                    <rich:column>
-                        <f:facet name="header">Priority</f:facet>
-                        <h:outputText value="#{process.priority}" />
-                    </rich:column>
-                    <rich:column>
-                        <f:facet name="header">Start time</f:facet>
-                        <h:outputText value="#{process.startTime}" />
-                    </rich:column>
-                    <rich:column>
-                        <f:facet name="header">End time</f:facet>
-                        <h:outputText value="#{process.endTime}" />
-                    </rich:column>
-                    <rich:column>
-                        <a4j:commandLink styleClass="no-decor" execute="@this" render="@none"
-                            oncomplete="#{rich:component('confirmPane')}.show()">
-                            <h:graphicImage value="/images/icons/delete.gif" alt="delete" />
-                            <a4j:param value="#{it.index}" assignTo="#{carsBean.currentCarIndex}" />
-                        </a4j:commandLink>
-                        <a4j:commandLink styleClass="no-decor" render="editGrid" execute="@this"
-                            oncomplete="#{rich:component('editPane')}.show()">
-                            <h:graphicImage value="/images/icons/edit.gif" alt="edit" />
-                            <a4j:param value="#{it.index}" assignTo="#{carsBean.currentCarIndex}" />
-                            <f:setPropertyActionListener target="#{carsBean.editedCar}" value="#{car}" />
-                        </a4j:commandLink>
-                    </rich:column>
-                    <f:facet name="footer">
-                        <rich:dataScroller page="#{carsBean.page}" />
-                    </f:facet>
-                </rich:dataTable>
-                
+                <h:form id="processesForm">
+                    <rich:dataTable value="#{processesBean.allProcesses}" 
+                                    var="process" 
+                                    iterationStatusVar="it" 
+                                    id="processesTable" 
+                                    rows="20">
+                        <rich:column>
+                            <f:facet name="header">#</f:facet>
+                            #{it.index}
+                        </rich:column>
+                        <rich:column>
+                            <f:facet name="header">User</f:facet>
+                            <h:outputText value="#{process.username}" />
+                        </rich:column>
+                        <rich:column>
+                            <f:facet name="header">Name</f:facet>
+                            <h:outputText value="#{process.name}" />
+                        </rich:column>
+                        <rich:column>
+                            <f:facet name="header">Type</f:facet>
+                            <h:outputText value="#{process.type}" />
+                        </rich:column>
+                        <rich:column>
+                            <f:facet name="header">Priority</f:facet>
+                            <h:outputText value="#{process.priority}" />
+                        </rich:column>
+                        <rich:column>
+                            <f:facet name="header">Start time</f:facet>
+                            <h:outputText value="#{process.startTime}" />
+                        </rich:column>
+                        <rich:column>
+                            <f:facet name="header">End time</f:facet>
+                            <h:outputText value="#{process.endTime}" />
+                        </rich:column>
+                        <rich:column>
+                            <f:facet name="header">Actions</f:facet>
+                            <h:selectOneMenu value="">
+                                <f:selectItem itemLabel="-" itemValue="-" />
+                                <f:selectItem itemLabel="Action 1" itemValue="1" />
+                                <f:selectItem itemLabel="Action 2" itemValue="2" />
+                            </h:selectOneMenu>
+                        </rich:column>                    
+                    </rich:dataTable>
+                    <h:panelGrid columns="2">
+                        <br />
+                        <br />
+                        <br />
+                        <a4j:commandButton value="Submit" render="processesTable" execute=":processesFrom" />
+                    </h:panelGrid>
+                </h:form>
             </rich:tab>
             
             <rich:tab header="My account"
                       id="MyAccount"
-                      onenter="setActiveTab('MyAccount')">                
+                      onenter="setActiveTab('MyAccount')">    
+                <h:form id="myAccountForm">
+                    <rich:dataTable value="#{appsBean.installedApps}"
+                                    var="app"
+                                    iterationStatusVar="it" 
+                                    id="myAccountTable" 
+                                    rows="20">
+                        <rich:column >
+                            <f:facet name="header">Logo</f:facet>
+                            <h:graphicImage name="#{app.logo}" 
+                                            library="img" 
+                                            height="24px"/>
+                        </rich:column>
+                        <rich:column>
+                            <f:facet name="header">App</f:facet>
+                            <h:outputText value="#{app.name}" />
+                        </rich:column>                        
+                        <rich:column>
+                            <f:facet name="header">Status</f:facet>
+                            <h:outputText value="#{app.status}" />
+                        </rich:column>
+                        <rich:column>
+                            <f:facet name="header">Actions</f:facet>
+                            <h:selectOneMenu value="">
+                                <f:selectItem itemLabel="-" itemValue="-" />
+                                <f:selectItem itemLabel="Action 1" itemValue="1" />
+                                <f:selectItem itemLabel="Action 2" itemValue="2" />
+                            </h:selectOneMenu>
+                        </rich:column>   
+                    </rich:dataTable>
+                    <h:panelGrid columns="2">
+                        <br />
+                        <br />
+                        <br />
+                        <a4j:commandButton value="Submit" render="myAccountTable" execute=":myAccountFrom" />                                                
+                        <br />
+                        <h:form id="pbForm">
+                            <rich:progressBar mode="ajax" 
+                                              value="50" 
+                                              interval="500" 
+                                              id="pb"
+                                              enabled="#{userBean.activeTab.equalsIgnoreCase('MyAccount')}" 
+                                              minValue="0" 
+                                              maxValue="100">
+                                <!--f:facet name="initial">
+                                    <h:panelGroup>
+                                        <h:outputText value="Process hasn't started yet" />
+                                        <a4j:commandButton action="{progressBarBean.startProcess}" value="Start Process" execute="@form"
+                                            render="pb" rendered="{progressBarBean.buttonRendered}" style="margin: 9px 0px 5px;" />
+                                    </h:panelGroup>
+                                </f:facet>
+                                <f:facet name="finish">
+                                    <h:panelGroup>
+                                        <h:outputText value="Process Done" />
+                                        <a4j:commandButton action="{progressBarBean.startProcess}" value="Restart Process" execute="@form"
+                                            render="pb" rendered="{progressBarBean.buttonRendered}" style="margin: 9px 0px 5px;" />
+                                    </h:panelGroup>
+                                </f:facet-->
+                                <h:outputText value="50 %" />
+
+                                <!-- Update the progress for each AJAX update -->
+                                <a4j:ajax event="begin" listener="#{progressBarBean.increment}" />
+                            </rich:progressBar>
+                        </h:form>
+                    </h:panelGrid>
+                </h:form>
             </rich:tab>
             
             <rich:tab header="Overview"

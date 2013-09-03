@@ -11,4 +11,14 @@
         <managed-bean-class>es.cediant.abacus.DashboardBean</managed-bean-class>
         <managed-bean-scope>view</managed-bean-scope>
     </managed-bean>
+    <managed-bean>
+        <managed-bean-name>processesBean</managed-bean-name>
+        <managed-bean-class>es.cediant.abacus.ProcessesBean</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>appsBean</managed-bean-name>
+        <managed-bean-class>es.cediant.abacus.AppsBean</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
 </faces-config>
