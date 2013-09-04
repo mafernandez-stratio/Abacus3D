@@ -118,9 +118,11 @@ public class ManagerBean implements Serializable {
             lph.setProperty("cn", cn);
             lph.setProperty("password", password);                        
             lph.setProperty("group", group);
+            System.out.println("group="+group);
             lph.setProperty("dcs", dcs);
             String absoluteDiskPath = servletContext.getRealPath("/resources/conf/ldap.properties");
             File file = new File(absoluteDiskPath); 
+            System.out.println("canWrite?="+file.canWrite());
             FileOutputStream out = new FileOutputStream(file);
             lph.getLdapProp().store(out, "ldapProp");
             out.flush();

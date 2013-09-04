@@ -23,7 +23,7 @@
         <property name="comment" type="string">
             <column name="Comment" length="45" />
         </property>
-        <set name="usersRoles" inverse="true">
+        <set name="usersRoles" inverse="true" fetch="select" lazy="false">
             <key>
                 <column name="idUser" />
             </key>

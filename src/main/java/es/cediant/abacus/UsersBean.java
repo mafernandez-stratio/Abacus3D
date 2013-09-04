@@ -95,7 +95,7 @@ public class UsersBean implements Serializable {
         
         // Update information for the GUI
         allUsers.addAll(uh.getUsers());
-        System.out.println(" === /STORE === ");
+        System.out.println(" === /STORE === " + System.currentTimeMillis());
     }
  
     /*

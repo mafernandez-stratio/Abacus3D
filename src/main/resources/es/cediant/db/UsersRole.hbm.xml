@@ -8,10 +8,10 @@
             <column name="idUsersRole" />
             <generator class="identity" />
         </id>
-        <many-to-one name="user" class="es.cediant.db.User" fetch="select">
+        <many-to-one name="user" class="es.cediant.db.User" fetch="select" lazy="false">
             <column name="idUser" />
         </many-to-one>
-        <many-to-one name="role" class="es.cediant.db.Role" fetch="select">
+        <many-to-one name="role" class="es.cediant.db.Role" fetch="select" lazy="false">
             <column name="idRole" />
         </many-to-one>
     </class>

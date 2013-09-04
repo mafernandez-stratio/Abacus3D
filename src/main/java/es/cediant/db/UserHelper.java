@@ -144,7 +144,7 @@ public class UserHelper {
     }
 
     public ArrayList<String> getRoles(String username) {
-        //System.out.println("Getting Roles...");
+        System.out.println("Getting Roles for '"+username+"'");
         Session session = factory.openSession();
         Transaction tx = null;
         ArrayList<String> roles = new ArrayList<String>();
@@ -152,10 +152,16 @@ public class UserHelper {
             //System.out.println("Beginning transaction");
             tx = session.beginTransaction();            
             UsersRoleHelper urh = new UsersRoleHelper();
-            ArrayList<UsersRole> usersRoleList = urh.getRoles(getUser(username).getIdUser());            
-            RoleHelper rh = new RoleHelper();            
+            ArrayList<UsersRole> usersRoleList = urh.getRoles(getUser(username).getIdUser());  
+            System.out.println(usersRoleList.size()+" roles found");
+            //RoleHelper rh = new RoleHelper();            
             for(UsersRole usersRole: usersRoleList){
-                roles.add(rh.getRole(usersRole.getIdUsersRole()).getRoleName());
+                Role tmpRole = usersRole.getRole();
+                String strRole = tmpRole.getRoleName();
+                /*int idUser = usersRole.getIdUsersRole();                
+                Role tmpRole = rh.getRole(idUser);
+                String strRole = tmpRole.getRoleName();*/
+                roles.add(strRole);
             }                          
             tx.commit();
         } catch (HibernateException ex) {

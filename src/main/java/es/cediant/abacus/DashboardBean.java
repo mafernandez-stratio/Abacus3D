@@ -25,7 +25,7 @@ import javax.faces.context.FacesContext;
 @SessionScoped
 public class DashboardBean implements Serializable {
     private static final long serialVersionUID = 648864815261749745L;
-    private boolean pollEnabled = false;
+    private boolean pollEnabled = true;
     private String strOne;
     private String strTwo;
     private int interval;
@@ -34,6 +34,7 @@ public class DashboardBean implements Serializable {
      * Creates a new instance of DashboardBean
      */
     public DashboardBean() {
+        System.out.println("new DashboardBean");
         interval=3000;
         //////////////////
         updateData(5); ///
@@ -74,11 +75,12 @@ public class DashboardBean implements Serializable {
         }
         //System.out.println("getPollEnabled()-->"+userBean.getActiveTab());
         setPollEnabled(userBean.getActiveTab().equalsIgnoreCase("Dashboard"));
-        System.out.println("PollEnabled="+this.pollEnabled);        
+        System.out.println("getPollEnabled="+pollEnabled);        
         return pollEnabled;
     }
  
     public void setPollEnabled(boolean pollEnabled) {
+        System.out.println("setPollEnabled="+pollEnabled);
         this.pollEnabled = pollEnabled;
     }
     
