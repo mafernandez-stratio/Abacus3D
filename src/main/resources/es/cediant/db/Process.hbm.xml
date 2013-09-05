@@ -20,6 +20,9 @@
         <property name="priority" type="int">
             <column name="priority" not-null="true" />
         </property>
+        <property name="status" type="string">
+            <column name="status" length="45" />
+        </property>
         <property name="startTime" type="timestamp">
             <column name="startTime" length="19" />
         </property>

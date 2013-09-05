@@ -15,6 +15,7 @@ public class Process implements Serializable {
     private String name;
     private String type;
     private int priority;
+    private String status;
     private Date startTime;
     private Date endTime;
 
@@ -81,6 +82,14 @@ public class Process implements Serializable {
     
     public void setPriority(int priority) {
         this.priority = priority;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
     
     public Date getStartTime() {

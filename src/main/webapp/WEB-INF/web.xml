@@ -40,7 +40,7 @@
     <!-- Session configuration -->
     <session-config>
         <session-timeout>
-            5
+            10
         </session-timeout>
     </session-config>
     <!--login-config>
