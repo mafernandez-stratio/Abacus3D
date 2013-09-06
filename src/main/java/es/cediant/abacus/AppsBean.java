@@ -17,16 +17,16 @@ public class AppsBean implements Serializable {
     
     private static final long serialVersionUID = -1161312516850622268L;
 
-    private List<App> installedApps;
-    private List<App> availableApps;
+    private List<App> installedApps = new ArrayList<App>();
+    private List<App> availableApps = new ArrayList<App>();
     
     public AppsBean() {
-        installedApps = new ArrayList<App>();
+        /*
         installedApps.add(new App("Octave", "Available", "octaveLogo.png"));
         installedApps.add(new App("OpenFOAM", "Available", "openFOAMlogo.gif"));
-        availableApps = new ArrayList<App>();
         availableApps.add(new App("Octave", "Available", "octaveLogo.png"));
         availableApps.add(new App("OpenFOAM", "Available", "openFOAMlogo.gif"));
+        */
     }
 
     public List<App> getInstalledApps() {

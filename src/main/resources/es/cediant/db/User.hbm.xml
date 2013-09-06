@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated Aug 29, 2013 4:45:29 PM by Hibernate Tools 3.2.1.GA -->
+<!-- Generated Sep 6, 2013 3:28:30 PM by Hibernate Tools 3.2.1.GA -->
 <hibernate-mapping>
     <class name="es.cediant.db.User" table="User" catalog="AbacusDB">
         <id name="idUser" type="java.lang.Integer">
@@ -29,7 +29,13 @@
             </key>
             <one-to-many class="es.cediant.db.UsersRole" />
         </set>
-        <set name="processes" inverse="true">
+        <set name="apps" inverse="true" fetch="select" lazy="false">
+            <key>
+                <column name="instUser" />
+            </key>
+            <one-to-many class="es.cediant.db.App" />
+        </set>
+        <set name="processes" inverse="true" fetch="select" lazy="false">
             <key>
                 <column name="idUser" not-null="true" />
             </key>

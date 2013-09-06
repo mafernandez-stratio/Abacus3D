@@ -284,7 +284,7 @@
                         </rich:column>
                         <rich:column>
                             <f:facet name="header">User</f:facet>
-                            <h:outputText value="#{process.username}" />
+                            <h:outputText value="#{process.user.userName}" />
                         </rich:column>
                         <rich:column>
                             <f:facet name="header">Name</f:facet>
@@ -349,10 +349,14 @@
                                 </rich:fileUpload>
                             </h:panelGrid>
                             <h:panelGrid id="typeScriptPanel">
-                                <h:selectOneMenu value="#{fileUploadBean.type}">
-                                    <f:selectItem itemLabel="Type 0" itemValue="0" />
+                                <h:selectOneMenu value="#{fileUploadBean.selectedType}">
+                                    <f:selectItems value="#{fileUploadBean.getInstTypes()}" 
+                                                   var="type"
+                                                   itemValue="#{type.idApp}"
+                                                   itemLabel="#{type.name}" />
+                                    <!--f:selectItem itemLabel="Type 0" itemValue="0" />
                                     <f:selectItem itemLabel="Type 1" itemValue="1" />
-                                    <f:selectItem itemLabel="Type 2" itemValue="2" />
+                                    <f:selectItem itemLabel="Type 2" itemValue="2" /-->
                                 </h:selectOneMenu>                                
                                 <a4j:commandButton value="Submit" 
                                                    action="#{fileUploadBean.clearUploadData}"

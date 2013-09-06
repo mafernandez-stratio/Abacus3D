@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Sep 6, 2013 3:28:30 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="es.cediant.db.App" table="App" catalog="AbacusDB">
+        <id name="idApp" type="java.lang.Integer">
+            <column name="idApp" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="user" class="es.cediant.db.User" fetch="select" lazy="false"> 
+            <column name="instUser" />
+        </many-to-one>
+        <property name="name" type="string">
+            <column name="name" length="45" not-null="true" unique="true" />
+        </property>
+        <property name="status" type="string">
+            <column name="status" length="45" />
+        </property>
+        <property name="instDate" type="timestamp">
+            <column name="instDate" length="19" />
+        </property>
+        <property name="logo" type="string">
+            <column name="logo" length="180" />
+        </property>
+    </class>
+</hibernate-mapping>

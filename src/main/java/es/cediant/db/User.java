@@ -1,8 +1,9 @@
 package es.cediant.db;
-// Generated Aug 29, 2013 4:45:28 PM by Hibernate Tools 3.2.1.GA
+// Generated Sep 6, 2013 3:28:29 PM by Hibernate Tools 3.2.1.GA
 
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -10,7 +11,7 @@ import java.util.Set;
  */
 public class User  implements java.io.Serializable {
     
-    private static final long serialVersionUID = -8145978217009799604L;
+    private static final long serialVersionUID = -9169228023287010230L;
 
     private Integer idUser;
     private String userName;
@@ -18,26 +19,26 @@ public class User  implements java.io.Serializable {
     private Date created;
     private Date lastConnection;
     private String comment;
-    //private Set<UsersRole> usersRoles = new HashSet<UsersRole>(0);
-    private Set<UsersRole> usersRoles;
-    //private Set<Process> processes = new HashSet<Process>(0);
-    private Set<Process> processes;
+    private Set<UsersRole> usersRoles = new HashSet<UsersRole>(0);
+    private Set<App> apps = new HashSet<App>(0);
+    private Set<Process> processes = new HashSet<Process>(0);
 
     public User() {
     }
-
 	
     public User(String userName, String password) {
         this.userName = userName;
         this.password = password;
     }
-    public User(String userName, String password, Date created, Date lastConnection, String comment, Set<UsersRole> usersRoles, Set<Process> processes) {
+    
+    public User(String userName, String password, Date created, Date lastConnection, String comment, Set<UsersRole> usersRoles, Set<App> apps, Set<Process> processes) {
        this.userName = userName;
        this.password = password;
        this.created = created;
        this.lastConnection = lastConnection;
        this.comment = comment;
        this.usersRoles = usersRoles;
+       this.apps = apps;
        this.processes = processes;
     }
    
@@ -48,6 +49,7 @@ public class User  implements java.io.Serializable {
     public void setIdUser(Integer idUser) {
         this.idUser = idUser;
     }
+    
     public String getUserName() {
         return this.userName;
     }
@@ -55,6 +57,7 @@ public class User  implements java.io.Serializable {
     public void setUserName(String userName) {
         this.userName = userName;
     }
+    
     public String getPassword() {
         return this.password;
     }
@@ -62,6 +65,7 @@ public class User  implements java.io.Serializable {
     public void setPassword(String password) {
         this.password = password;
     }
+    
     public Date getCreated() {
         return this.created;
     }
@@ -69,6 +73,7 @@ public class User  implements java.io.Serializable {
     public void setCreated(Date created) {
         this.created = created;
     }
+    
     public Date getLastConnection() {
         return this.lastConnection;
     }
@@ -76,6 +81,7 @@ public class User  implements java.io.Serializable {
     public void setLastConnection(Date lastConnection) {
         this.lastConnection = lastConnection;
     }
+    
     public String getComment() {
         return this.comment;
     }
@@ -83,18 +89,23 @@ public class User  implements java.io.Serializable {
     public void setComment(String comment) {
         this.comment = comment;
     }
+    
     public Set<UsersRole> getUsersRoles() {
-        /*HashSet<UsersRole> hashSet = new HashSet<UsersRole>();
-        for(Iterator it = usersRoles.iterator(); it.hasNext(); ){
-            hashSet.add((UsersRole) it.next());
-        }*/
-        //return hashSet;
-        return this.usersRoles;        
+        return this.usersRoles;
     }
     
     public void setUsersRoles(Set<UsersRole> usersRoles) {
         this.usersRoles = usersRoles;
     }
+    
+    public Set<App> getApps() {
+        return this.apps;
+    }
+    
+    public void setApps(Set<App> apps) {
+        this.apps = apps;
+    }
+    
     public Set<Process> getProcesses() {
         return this.processes;
     }
@@ -103,9 +114,5 @@ public class User  implements java.io.Serializable {
         this.processes = processes;
     }
 
-
-
-
 }
-
 

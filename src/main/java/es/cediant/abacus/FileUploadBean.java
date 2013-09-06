@@ -4,10 +4,13 @@
  */
 package es.cediant.abacus;
 
+import es.cediant.db.App;
+import es.cediant.db.AppHelper;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
@@ -22,7 +25,8 @@ public class FileUploadBean implements Serializable {
     private static final long serialVersionUID = 3213926339321138917L;
     
     private ArrayList<UploadedScript> files = new ArrayList<UploadedScript>();
-    private String type;
+    private App selectedType;
+    private ArrayList<App> availableTypes;
  
     public void show(OutputStream stream, Object object) {
         try {
@@ -43,7 +47,7 @@ public class FileUploadBean implements Serializable {
     }
  
     public String clearUploadData() {
-        System.out.println("Scripts' type: "+type);
+        System.out.println("Scripts' type: "+selectedType);
         files.clear();
         return null;
     }
@@ -68,12 +72,25 @@ public class FileUploadBean implements Serializable {
         this.files = files;
     }
 
-    public String getType() {
-        return type;
+    public App getSelectedType() {
+        return selectedType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setSelectedType(App selectedType) {
+        this.selectedType = selectedType;
     }
 
+    public ArrayList<App> getAvailableTypes() {
+        return availableTypes;
+    }
+
+    public void setAvailableTypes(ArrayList<App> availableTypes) {
+        this.availableTypes = availableTypes;
+    }   
+    
+    public List<App> getInstTypes(){
+        AppHelper ah = new AppHelper();
+        return ah.getInstApps();
+    }
+    
 }
