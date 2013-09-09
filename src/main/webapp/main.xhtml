@@ -320,10 +320,14 @@
                         </rich:column>
                         <rich:column>
                             <f:facet name="header">Actions</f:facet>
-                            <h:selectOneMenu value="">
-                                <f:selectItem itemLabel="-" itemValue="-" />
-                                <f:selectItem itemLabel="Action 1" itemValue="1" />
-                                <f:selectItem itemLabel="Action 2" itemValue="2" />
+                            <h:selectOneMenu value="#{processesBean.action}">
+                                <f:selectItem noSelectionOption="true"/>
+                                <f:selectItem itemLabel="Cancel" 
+                                              itemValue="cancel"
+                                              itemDisabled="#{processesBean.isFinished(process.idProcess)}"/>
+                                <f:selectItem itemLabel="Force Start" 
+                                              itemValue="force"
+                                              itemDisabled="#{!processesBean.isWaiting(process.idProcess)}"/>
                             </h:selectOneMenu>
                         </rich:column>
                         <f:facet name="footer">
@@ -345,8 +349,8 @@
                                 <rich:fileUpload fileUploadListener="#{fileUploadBean.listener}" 
                                                  id="upload"
                                                  maxFilesQuantity="10">
-                                    <a4j:ajax event="uploadcomplete" execute="@none" render="typeScriptPanel" />
-                                </rich:fileUpload>
+                                    <a4j:ajax event="uploadcomplete" execute="@none" render="typeScriptPanel" />                                    
+                                </rich:fileUpload>                               
                             </h:panelGrid>
                             <h:panelGrid id="typeScriptPanel">
                                 <h:selectOneMenu value="#{fileUploadBean.selectedType}">
@@ -359,9 +363,9 @@
                                     <f:selectItem itemLabel="Type 2" itemValue="2" /-->
                                 </h:selectOneMenu>                                
                                 <a4j:commandButton value="Submit" 
-                                                   action="#{fileUploadBean.clearUploadData}"
+                                                   action="#{fileUploadBean.executeScript}"
                                                    disabled="#{fileUploadBean.size &lt; 1}"
-                                                   render="scriptPanel"/>
+                                                   render="scriptPanel,processesForm" />
                             </h:panelGrid>
                         </h:panelGrid>                        
                     </rich:panel>
@@ -372,7 +376,7 @@
                       id="MyAccount"
                       onenter="setActiveTab('MyAccount')">    
                 <h:form id="myAccountForm">
-                    <rich:dataTable value="#{appsBean.installedApps}"
+                    <rich:dataTable value="#{appsBean.allApps}"
                                     var="app"
                                     iterationStatusVar="it" 
                                     id="myAccountTable" 
@@ -393,18 +397,25 @@
                         </rich:column>
                         <rich:column>
                             <f:facet name="header">Actions</f:facet>
-                            <h:selectOneMenu value="">
-                                <f:selectItem itemLabel="-" itemValue="-" />
-                                <f:selectItem itemLabel="Action 1" itemValue="1" />
-                                <f:selectItem itemLabel="Action 2" itemValue="2" />
+                            <h:selectOneMenu value="#{appsBean.action}">    
+                                <f:selectItem noSelectionOption="true"/>
+                                <f:selectItem itemLabel="Install" 
+                                              itemValue="install" 
+                                              itemDisabled="#{appsBean.isAvailable(app.name)}" />
+                                <f:selectItem itemLabel="Uninstall"
+                                              itemValue="uninstall"
+                                              itemDisabled="#{appsBean.isInstalled(app.name)}" />
                             </h:selectOneMenu>
-                        </rich:column>                                                                         
+                        </rich:column>                          
+                        <f:facet name="footer">
+                            <rich:column colspan="4">
+                                <a4j:commandButton value="Submit" render="myAccountTable" execute=":myAccountFrom" />
+                            </rich:column>
+                        </f:facet>                        
                     </rich:dataTable>
                     <h:panelGrid columns="2">
                         <br />
-                        <br />
-                        <br />
-                        <a4j:commandButton value="Submit" render="myAccountTable" execute=":myAccountFrom" />                                                
+                        <br />                                               
                         <br />
                         <h:form id="pbForm">
                             <rich:progressBar mode="ajax" 
@@ -437,7 +448,7 @@
                     </h:panelGrid>
                 </h:form>
             </rich:tab>
-            
+            <!-- ............................................................................. -->
             <rich:tab header="Overview"
                       id="OverviewTab"
                       onenter="setActiveTab('OverviewTab')"

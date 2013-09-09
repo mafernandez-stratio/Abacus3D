@@ -54,5 +54,24 @@ public class ProcessHelper {
             return processes;
         }
     }
+
+    public Process getProcess(int id) {        
+        Session session = factory.openSession();
+        Transaction tx = null;
+        Process proc = null;
+        try {
+            tx = session.beginTransaction();
+            proc = (Process) session.createQuery("FROM Process p WHERE p.idProcess="+id).list().get(0);            
+            tx.commit();
+        } catch (HibernateException ex) {
+            if (tx!=null){
+                tx.rollback();
+            }
+            Logger.getLogger(ProcessHelper.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            session.close();             
+            return proc;
+        }
+    }
     
 }

@@ -51,6 +51,11 @@ public class FileUploadBean implements Serializable {
         files.clear();
         return null;
     }
+    
+    public String executeScript() {        
+        Include new process in the DB;
+        return null;
+    }
  
     public int getSize() {
         if (getFiles().size() > 0) {

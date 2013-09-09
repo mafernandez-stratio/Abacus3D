@@ -18,6 +18,7 @@ public class ProcessesBean implements Serializable {
     private static final long serialVersionUID = 5651395627768122272L;
     
     private List<Process> allProcesses;
+    private String action;
 
     /**
      * Creates a new instance of ProcessesBean
@@ -34,5 +35,31 @@ public class ProcessesBean implements Serializable {
     public void setAllProcesses(List<Process> allProcesses) {
         this.allProcesses = allProcesses;
     }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }        
+    
+    public boolean isWaiting(int id){
+        ProcessHelper ph = new ProcessHelper();
+        Process process = ph.getProcess(id);
+        return process.getStatus().equalsIgnoreCase("waiting"); 
+    }
             
+    public boolean isRunning(int id){
+        ProcessHelper ph = new ProcessHelper();
+        Process process = ph.getProcess(id);
+        return process.getStatus().equalsIgnoreCase("running");  
+    }
+    
+    public boolean isFinished(int id){
+        ProcessHelper ph = new ProcessHelper();
+        Process process = ph.getProcess(id);
+        return process.getStatus().equalsIgnoreCase("finished"); 
+    }            
+    
 }
