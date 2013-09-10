@@ -6,15 +6,23 @@ package es.cediant.abacus;
 
 import es.cediant.db.App;
 import es.cediant.db.AppHelper;
+import es.cediant.db.Process;
+import es.cediant.db.ProcessHelper;
+import es.cediant.db.User;
+import es.cediant.db.UserHelper;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.el.ELContext;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ValueChangeEvent;
 import org.richfaces.event.FileUploadEvent;
 import org.richfaces.model.UploadedFile;
 
@@ -25,7 +33,7 @@ public class FileUploadBean implements Serializable {
     private static final long serialVersionUID = 3213926339321138917L;
     
     private ArrayList<UploadedScript> files = new ArrayList<UploadedScript>();
-    private App selectedType;
+    private String selectedType;
     private ArrayList<App> availableTypes;
  
     public void show(OutputStream stream, Object object) {
@@ -53,10 +61,41 @@ public class FileUploadBean implements Serializable {
     }
     
     public String executeScript() {        
-        Include new process in the DB;
+        System.out.println("Sending scripts");
+        System.out.println("selectedType: "+selectedType);
+        ELContext elContext = FacesContext.getCurrentInstance().getELContext();
+        UserBean userBean = (UserBean) FacesContext.getCurrentInstance().getApplication().getELResolver().getValue(elContext, null, "userBean");
+        String username = userBean.getUsername();
+        UserHelper uh = new UserHelper();
+        ProcessHelper ph = new ProcessHelper();
+        for(UploadedScript script: files){
+            User user = uh.getUser(username);
+            String name = script.getName();
+            System.out.println("Sending: "+name);
+            String type = selectedType;
+            int priority = 5;
+            String status = "running";
+            Date startTime = new Date();
+            Date endTime = null;
+            Process process = new Process(user, name, type, priority, status, startTime, endTime);            
+            ph.addProc(process);
+        }
+        //files.clear();
         return null;
     }
  
+    public boolean disableButton(){
+        System.out.println("Disable Button?");
+        System.out.println("files.size="+files.size());
+        System.out.println("null(selectedType)? "+(selectedType==null));
+        return ((files.size() < 1) || (selectedType == null));  
+    }
+    
+    public void valueChanged(ValueChangeEvent event) {
+        System.out.println("New Value");
+        selectedType = (String) event.getNewValue();     
+    }
+    
     public int getSize() {
         if (getFiles().size() > 0) {
             return getFiles().size();
@@ -77,11 +116,11 @@ public class FileUploadBean implements Serializable {
         this.files = files;
     }
 
-    public App getSelectedType() {
+    public String getSelectedType() {
         return selectedType;
     }
 
-    public void setSelectedType(App selectedType) {
+    public void setSelectedType(String selectedType) {
         this.selectedType = selectedType;
     }
 

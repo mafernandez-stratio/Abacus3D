@@ -73,5 +73,26 @@ public class ProcessHelper {
             return proc;
         }
     }
+
+    public int addProc(Process process) {
+        Session session = factory.openSession();
+        Transaction tx = null;
+        Process proc = null;
+        int procId = 0;
+        try {
+            tx = session.beginTransaction();
+            procId = (Integer) session.save(process); 
+            System.out.println("New process: "+procId);
+            tx.commit();
+        } catch (HibernateException ex) {
+            if (tx!=null){
+                tx.rollback();
+            }
+            Logger.getLogger(ProcessHelper.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            session.close();    
+            return procId;
+        }
+    }
     
 }

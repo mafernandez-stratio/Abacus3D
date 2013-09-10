@@ -332,44 +332,94 @@
                         </rich:column>
                         <f:facet name="footer">
                             <rich:column colspan="8">
-                                <a4j:commandButton value="Submit" render="processesTable" execute=":processesFrom" />
+                                <a4j:commandButton value="Submit" 
+                                                   render="processesTable" 
+                                                   execute=":processesFrom" />
                             </rich:column>
                         </f:facet>                        
                     </rich:dataTable>                    
                 </h:form>
-                <br />
-                <br />
+                <br />   
                 <h:form id="scriptForm">
-                    <rich:panel style="width: 50%" id="scriptPanel">
-                        <f:facet name="header">
-                            <h:outputText value="Execute scripts" />
-                        </f:facet>                                                
-                        <h:panelGrid columns="2">      
-                            <h:panelGrid>
-                                <rich:fileUpload fileUploadListener="#{fileUploadBean.listener}" 
-                                                 id="upload"
-                                                 maxFilesQuantity="10">
-                                    <a4j:ajax event="uploadcomplete" execute="@none" render="typeScriptPanel" />                                    
-                                </rich:fileUpload>                               
-                            </h:panelGrid>
-                            <h:panelGrid id="typeScriptPanel">
-                                <h:selectOneMenu value="#{fileUploadBean.selectedType}">
-                                    <f:selectItems value="#{fileUploadBean.getInstTypes()}" 
-                                                   var="type"
-                                                   itemValue="#{type.idApp}"
-                                                   itemLabel="#{type.name}" />
-                                    <!--f:selectItem itemLabel="Type 0" itemValue="0" />
-                                    <f:selectItem itemLabel="Type 1" itemValue="1" />
-                                    <f:selectItem itemLabel="Type 2" itemValue="2" /-->
-                                </h:selectOneMenu>                                
-                                <a4j:commandButton value="Submit" 
+                    <rich:panel style="width: 45%" id="scriptPanel">
+                        <f:facet name="header" >
+                            <h:outputText value="Execute scripts"/>
+                        </f:facet>
+                        <h:panelGrid> 
+                            <rich:fileUpload fileUploadListener="#{fileUploadBean.listener}" 
+                                             id="upload"
+                                             maxFilesQuantity="10">
+                                <a4j:ajax event="uploadcomplete" 
+                                          execute="@none"
+                                          render="scriptButton"/>  
+                                <a4j:ajax event="clear" 
+                                          execute="@none"
+                                          render="scriptButton"/> 
+                            </rich:fileUpload>
+                            <h:selectOneMenu value="#{fileUploadBean.selectedType}"
+                                             valueChangeListener="#{fileUploadBean.valueChanged}">
+                                <f:selectItem itemLabel="Select..." noSelectionOption="" />
+                                <f:selectItems value="#{fileUploadBean.instTypes}" 
+                                               var="type"
+                                               itemValue="#{type.idApp}"
+                                               itemLabel="#{type.name}" /> 
+                                <a4j:ajax event="valueChange" 
+                                          render="scriptButton" 
+                                          execute=":scriptForm" />
+                            </h:selectOneMenu>  
+                            <!--hr /-->
+                            <f:facet name="footer">
+                                <a4j:commandButton id="scriptButton"
+                                                   value="Submit" 
+                                                   disabled="#{fileUploadBean.disableButton()}"
                                                    action="#{fileUploadBean.executeScript}"
-                                                   disabled="#{fileUploadBean.size &lt; 1}"
-                                                   render="scriptPanel,processesForm" />
-                            </h:panelGrid>
+                                                   execute=":scriptForm"
+                                                   render="scriptPanel"/>
+                            </f:facet>
                         </h:panelGrid>                        
                     </rich:panel>
-                </h:form>                
+                </h:form>
+                <br />                
+                <!--h:form>                    
+                    <rich:panel style="width: 50%">
+                        <f:facet name="header">
+                            <h:outputText value="Execute scripts" />
+                        </f:facet>  
+                        <a4j:commandButton value="Submit" 
+                                           action="{fileUploadBean.executeScript()}"                                       
+                                           render="scriptPanel,processesTable"/>
+                        <h:panelGrid columns="2">    
+                            
+                            <h:panelGrid>
+                                
+                                <h:form id="uploadScriptForm">
+                                    <rich:fileUpload fileUploadListener="{fileUploadBean.listener}" 
+                                                     id="upload"
+                                                     maxFilesQuantity="10">
+                                        <a4j:ajax event="uploadcomplete" 
+                                                  execute="@none" />                                    
+                                    </rich:fileUpload>  
+                                </h:form>
+                            </h:panelGrid>
+                            <h:panelGrid>
+                                
+                                <h:form id="scriptForm">
+                                    <h:selectOneMenu value="{fileUploadBean.selectedType}">
+                                        <f:selectItems value="{fileUploadBean.instTypes}" 
+                                                       var="type"
+                                                       itemValue="{type.idApp}"
+                                                       itemLabel="{type.name}" />
+                                        <f:selectItem itemLabel="Type 0" itemValue="0" />
+                                        <f:selectItem itemLabel="Type 1" itemValue="1" />
+                                        <f:selectItem itemLabel="Type 2" itemValue="2" />
+                                    </h:selectOneMenu>    
+                                    <disabled="{fileUploadBean.size &lt; 1}">
+                                                
+                                </h:form>
+                            </h:panelGrid>                            
+                        </h:panelGrid>                          
+                    </rich:panel>                    
+                </h:form-->                 
             </rich:tab>
             
             <rich:tab header="My account"
