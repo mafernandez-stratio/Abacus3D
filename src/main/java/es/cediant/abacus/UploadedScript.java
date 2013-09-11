@@ -35,6 +35,7 @@ public class UploadedScript implements Serializable {
         } else {
             mime = "script/unknown";
         }
+        this.name = name;
     }
 
     public long getLength() {

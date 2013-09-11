@@ -19,6 +19,7 @@
         <!--h:outputScript library="jqPlot" name="jquery.min.js"/-->
         <h:outputScript library="jqPlot" name="jquery.jqplot.min.js"/>
         <h:outputScript library="jqPlot" name="plugins/jqplot.pieRenderer.min.js"/>
+        <h:outputScript library="js" name="abacus.js"/>
         
         <rich:panel style="background-image: url(resources/img/header-blue-plain.jpg); 
                            background-size: 100%;
@@ -67,9 +68,9 @@
             <!--h:graphicImage library="img" name="redSphere.png" /-->
             <!-- JavaScript -->
             <div id="nBodyDiv">
-                <h:outputScript library="js" name="three.min.js"/>
+                <h:outputScript library="threeJS" name="three.min.js"/>
                 <!--h:outputScript library="js" name="rotatingCube.js" /-->
-                <h:outputScript library="js" name="nbody.js" />
+                <h:outputScript library="threeJS" name="nbody.js" />
             </div>
             <!--div-->
                 <!--ui:insert id="JSResult"-->                    
@@ -273,10 +274,10 @@
                       id="Tasks"
                       onenter="setActiveTab('Tasks')">  
                 <h:form id="processesForm">
-                    <rich:dataTable value="#{processesBean.allProcesses}" 
+                    <rich:dataTable id="processesTable" 
+                                    value="#{processesBean.allProcesses}" 
                                     var="process" 
-                                    iterationStatusVar="it" 
-                                    id="processesTable" 
+                                    iterationStatusVar="it"                                     
                                     rows="20">
                         <rich:column>
                             <f:facet name="header">#</f:facet>
@@ -320,7 +321,8 @@
                         </rich:column>
                         <rich:column>
                             <f:facet name="header">Actions</f:facet>
-                            <h:selectOneMenu value="#{processesBean.action}">
+                            <h:selectOneMenu value="#{processesBean.action}"                                             
+                                             valueChangeListener="#{processesBean.valueChanged}">                                
                                 <f:selectItem noSelectionOption="true"/>
                                 <f:selectItem itemLabel="Cancel" 
                                               itemValue="cancel"
@@ -328,45 +330,91 @@
                                 <f:selectItem itemLabel="Force Start" 
                                               itemValue="force"
                                               itemDisabled="#{!processesBean.isWaiting(process.idProcess)}"/>
+                                  <a4j:ajax event="valueChange"                                             
+                                            execute=":processesForm" />
+                                  <a4j:ajax event="click" 
+                                            listener="#{processesBean.select(it.index)}" 
+                                            execute=":processesForm" />
                             </h:selectOneMenu>
                         </rich:column>
                         <f:facet name="footer">
                             <rich:column colspan="8">
-                                <a4j:commandButton value="Submit" 
-                                                   render="processesTable" 
-                                                   execute=":processesFrom" />
+                                <a4j:commandButton id="procButton"
+                                                   value="Submit" 
+                                                   action="#{processesBean.executeActions}"
+                                                   execute=":processesFrom"
+                                                   render="processesTable" />
+                                    <!--a4j:param value="{process.idProcess}" 
+                                               assignTo="{process.currentProc}" /-->
+                                
                             </rich:column>
                         </f:facet>                        
                     </rich:dataTable>                    
                 </h:form>
-                <br />   
+                <br />                                    
+                
                 <h:form id="scriptForm">
-                    <rich:panel style="width: 45%" id="scriptPanel">
+                    <rich:panel id="scriptPanel" style="width: 45%">
                         <f:facet name="header" >
                             <h:outputText value="Execute scripts"/>
                         </f:facet>
                         <h:panelGrid> 
                             <rich:fileUpload fileUploadListener="#{fileUploadBean.listener}" 
                                              id="upload"
-                                             maxFilesQuantity="10">
+                                             maxFilesQuantity="10"
+                                             onclear="onclear(event)">
                                 <a4j:ajax event="uploadcomplete" 
                                           execute="@none"
                                           render="scriptButton"/>  
                                 <a4j:ajax event="clear" 
                                           execute="@none"
                                           render="scriptButton"/> 
+                                
+                                <a4j:jsFunction name="removeFile" 
+                                                   render="info" 
+                                                   action="#{fileUploadBean.clearFile}">  
+                                    <a4j:param name="clearedFile" 
+                                               assignTo="#{fileUploadBean.clearedFile}" />  
+                                </a4j:jsFunction>                                
+                                
                             </rich:fileUpload>
-                            <h:selectOneMenu value="#{fileUploadBean.selectedType}"
-                                             valueChangeListener="#{fileUploadBean.valueChanged}">
-                                <f:selectItem itemLabel="Select..." noSelectionOption="" />
-                                <f:selectItems value="#{fileUploadBean.instTypes}" 
-                                               var="type"
-                                               itemValue="#{type.idApp}"
-                                               itemLabel="#{type.name}" /> 
-                                <a4j:ajax event="valueChange" 
-                                          render="scriptButton" 
-                                          execute=":scriptForm" />
-                            </h:selectOneMenu>  
+                            <h:panelGrid columns="6">
+                                <h:outputText value="Type: " />
+                                <h:selectOneMenu value="#{fileUploadBean.selectedType}"
+                                                 valueChangeListener="#{fileUploadBean.valueChanged}">
+                                    <f:selectItem itemLabel="Select..." noSelectionOption="" />
+                                    <f:selectItems value="#{fileUploadBean.instTypes}" 
+                                                   var="type"
+                                                   itemValue="#{type.idApp}"
+                                                   itemLabel="#{type.name}" /> 
+                                    <a4j:ajax event="valueChange" 
+                                              render="scriptButton" 
+                                              execute=":scriptForm" />
+                                </h:selectOneMenu>  
+                                
+                                <h:outputText value="Priority: " />
+                                <h:selectOneMenu value="#{fileUploadBean.selectedPrior}">
+                                    <f:selectItem itemLabel="Select..." noSelectionOption="" />
+                                    <f:selectItem itemLabel="1" itemValue="1" />
+                                    <f:selectItem itemLabel="2" itemValue="2" />
+                                    <f:selectItem itemLabel="3" itemValue="3" />
+                                    <f:selectItem itemLabel="4" itemValue="4" />
+                                    <f:selectItem itemLabel="5" itemValue="5" />
+                                    <f:selectItem itemLabel="6" itemValue="6" />
+                                    <f:selectItem itemLabel="7" itemValue="7" />
+                                    <f:selectItem itemLabel="8" itemValue="8" />
+                                    <f:selectItem itemLabel="9" itemValue="9" />
+                                    <f:selectItem itemLabel="10" itemValue="10" />
+                                </h:selectOneMenu>
+                                
+                                <h:outputText value="Start now? " />
+                                <h:selectOneMenu value="#{fileUploadBean.selectedStart}">
+                                    <f:selectItem itemLabel="Select..." noSelectionOption="" />
+                                    <f:selectItem itemLabel="true" itemValue="true" />
+                                    <f:selectItem itemLabel="false" itemValue="false" />
+                                </h:selectOneMenu>
+                                
+                            </h:panelGrid>
                             <!--hr /-->
                             <f:facet name="footer">
                                 <a4j:commandButton id="scriptButton"
@@ -374,7 +422,7 @@
                                                    disabled="#{fileUploadBean.disableButton()}"
                                                    action="#{fileUploadBean.executeScript}"
                                                    execute=":scriptForm"
-                                                   render="scriptPanel"/>
+                                                   render="scriptPanel,processesTable"/>
                             </f:facet>
                         </h:panelGrid>                        
                     </rich:panel>

@@ -15,12 +15,14 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.el.ELContext;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import org.richfaces.event.FileUploadEvent;
@@ -34,7 +36,10 @@ public class FileUploadBean implements Serializable {
     
     private ArrayList<UploadedScript> files = new ArrayList<UploadedScript>();
     private String selectedType;
+    private String selectedPrior;
+    private String selectedStart;
     private ArrayList<App> availableTypes;
+    private String clearedFile;    
  
     public void show(OutputStream stream, Object object) {
         try {
@@ -61,8 +66,8 @@ public class FileUploadBean implements Serializable {
     }
     
     public String executeScript() {        
-        System.out.println("Sending scripts");
-        System.out.println("selectedType: "+selectedType);
+        //System.out.println("Sending scripts");
+        //System.out.println("selectedType: "+selectedType);
         ELContext elContext = FacesContext.getCurrentInstance().getELContext();
         UserBean userBean = (UserBean) FacesContext.getCurrentInstance().getApplication().getELResolver().getValue(elContext, null, "userBean");
         String username = userBean.getUsername();
@@ -71,28 +76,38 @@ public class FileUploadBean implements Serializable {
         for(UploadedScript script: files){
             User user = uh.getUser(username);
             String name = script.getName();
-            System.out.println("Sending: "+name);
-            String type = selectedType;
+            //System.out.println("Sending: "+name);
+            String type = getInstType(Integer.parseInt(selectedType)-1);
             int priority = 5;
+            if(selectedPrior!=null){
+                priority = Integer.parseInt(selectedPrior);
+            }             
             String status = "running";
             Date startTime = new Date();
+            if((selectedStart!=null) && (!Boolean.parseBoolean(selectedStart))){
+                status = "waiting";
+                startTime = null;                
+            }
             Date endTime = null;
             Process process = new Process(user, name, type, priority, status, startTime, endTime);            
             ph.addProc(process);
         }
-        //files.clear();
+        files.clear();
+        selectedType = null;
+        selectedPrior = null;
+        selectedStart = null;
         return null;
     }
  
     public boolean disableButton(){
-        System.out.println("Disable Button?");
-        System.out.println("files.size="+files.size());
-        System.out.println("null(selectedType)? "+(selectedType==null));
+        //System.out.println("Disable Button?");
+        //System.out.println("files.size="+files.size());
+        //System.out.println("null(selectedType)? "+(selectedType==null));
         return ((files.size() < 1) || (selectedType == null));  
     }
     
     public void valueChanged(ValueChangeEvent event) {
-        System.out.println("New Value");
+        //System.out.println("New Value");
         selectedType = (String) event.getNewValue();     
     }
     
@@ -124,6 +139,22 @@ public class FileUploadBean implements Serializable {
         this.selectedType = selectedType;
     }
 
+    public String getSelectedPrior() {
+        return selectedPrior;
+    }
+
+    public void setSelectedPrior(String selectedPrior) {
+        this.selectedPrior = selectedPrior;
+    }
+
+    public String getSelectedStart() {
+        return selectedStart;
+    }
+
+    public void setSelectedStart(String selectedStart) {
+        this.selectedStart = selectedStart;
+    }        
+
     public ArrayList<App> getAvailableTypes() {
         return availableTypes;
     }
@@ -135,6 +166,34 @@ public class FileUploadBean implements Serializable {
     public List<App> getInstTypes(){
         AppHelper ah = new AppHelper();
         return ah.getInstApps();
+    }   
+    
+    public String getInstType(int i){
+        AppHelper ah = new AppHelper();
+        App app = (App) ah.getInstApps().get(i);
+        return app.getName();
+    }
+
+    public String getClearedFile() {
+        return clearedFile;
+    }
+
+    public void setClearedFile(String clearedFile) {
+        this.clearedFile = clearedFile;
+    }
+    
+    public void clearFile() {
+        //System.out.println("Files to clear: " + this.clearedFile);
+        Iterator<UploadedScript> i = files.iterator();
+        while (i.hasNext()) {
+            UploadedScript file = (UploadedScript) i.next();
+            //String tmpName = file.getName();
+            //System.out.println("tmpName="+tmpName);
+            if (file.getName().equals(this.clearedFile)) {
+                i.remove();
+                break;
+            }
+        }
     }
     
 }

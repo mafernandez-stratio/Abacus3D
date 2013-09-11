@@ -11,12 +11,12 @@ var newTimer;
 
 //$(document).ready(function(){
     //window.alert("Creating plots...");
-    //var tmpOne = document.getElementById('j_idt30:pollForm:hiddenOne').value;
-//    var tmpOne = document.getElementById('j_idt30:pollForm:hiddenOne').value;
-    //var tmpOne = $('#j_idt30:pollForm:hiddenOne').val();
+    //var tmpOne = document.getElementById('j_idt31:pollForm:hiddenOne').value;
+//    var tmpOne = document.getElementById('j_idt31:pollForm:hiddenOne').value;
+    //var tmpOne = $('#j_idt31:pollForm:hiddenOne').val();
     //tmpOne = [3,7,9,1,4,6,8,2,5];
-    //var tmpTwo = document.getElementById('j_idt30:pollForm:hiddenTwo').value;
-    //$.jqplot('externdiv',  [$('#j_idt30:pollForm:hiddenOne').val()]);    
+    //var tmpTwo = document.getElementById('j_idt31:pollForm:hiddenTwo').value;
+    //$.jqplot('externdiv',  [$('#j_idt31:pollForm:hiddenOne').val()]);    
     //$.jqplot('externdiv',[[3,7,9,1,4,6,8,2,5]]);
     //window.alert("String: "+tmpOne);   
 //    var array = tmpOne.split(",");
@@ -82,7 +82,7 @@ function buildgraphs(strOne, strTwo, timer){
     //window.alert("currentTimer="+currentTimer);
     //window.alert("newTimer="+newTimer);
     //window.alert("timer="+timer);
-    //var tmpPoll = document.getElementById('j_idt30:pollForm:poll');
+    //var tmpPoll = document.getElementById('j_idt31:pollForm:poll');
     //window.alert(tmpPoll);
     var arrayOne = strOne.split(",");
     //window.alert("Array: "+array);
@@ -131,11 +131,11 @@ function buildgraphs(strOne, strTwo, timer){
     });   
     
     if(timer > 0){
-        new RichFaces.ui.Poll("j_idt30:pollForm:poll",{
+        new RichFaces.ui.Poll("j_idt31:pollForm:poll",{
                 "enabled":true,
                 "interval":timer,
                 "ontimer":function(event){
-                    RichFaces.ajax("j_idt30:pollForm:poll",
+                    RichFaces.ajax("j_idt31:pollForm:poll",
                             event,{
                                 "incId":"1"
                             }
@@ -157,11 +157,11 @@ function buildgraphs(strOne, strTwo, timer){
             window.alert("currentTimer > timer");
             newTimer = timer;
             changeTimer = true;
-            new RichFaces.ui.Poll("j_idt30:pollForm:poll",{
+            new RichFaces.ui.Poll("j_idt31:pollForm:poll",{
                     "enabled":true,
                     "interval":timer,
                     "ontimer":function(event){
-                        RichFaces.ajax("j_idt30:pollForm:poll",
+                        RichFaces.ajax("j_idt31:pollForm:poll",
                                 event,{
                                     "incId":"1"
                                 }
@@ -174,11 +174,11 @@ function buildgraphs(strOne, strTwo, timer){
             if(changeTimer){
                 window.alert("changeTimer");
                 changeTimer = false;
-                new RichFaces.ui.Poll("j_idt30:pollForm:poll",{
+                new RichFaces.ui.Poll("j_idt31:pollForm:poll",{
                         "enabled":true,
                         "interval":newTimer,
                         "ontimer":function(event){
-                            RichFaces.ajax("j_idt30:pollForm:poll",
+                            RichFaces.ajax("j_idt31:pollForm:poll",
                                     event,{
                                         "incId":"1"
                                     }
