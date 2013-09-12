@@ -6,6 +6,10 @@
         <param-value>Development</param-value>
     </context-param>
     <context-param>
+        <param-name>com.sun.faces.enableRestoreView11Compatibility</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <context-param>
         <param-name>org.richfaces.push.jms.enabled</param-name>
         <param-value>true</param-value>
     </context-param>
@@ -40,9 +44,16 @@
     <!-- Session configuration -->
     <session-config>
         <session-timeout>
-            10
+            1
         </session-timeout>
     </session-config>
+    <error-page>
+        <exception-type>javax.faces.application.ViewExpiredException</exception-type>
+        <location>/login.xhtml</location>
+    </error-page>
+    <listener>
+	<listener-class>es.cediant.abacus.SessionListener</listener-class>
+    </listener>
     <!--login-config>
         <auth-method>BASIC</auth-method>
         <realm-name>LDAP</realm-name>

@@ -23,6 +23,7 @@ public class ProcessesBean implements Serializable {
     private List<Process> allProcesses;
     private String action;
     private HashMap<Integer, String> mapForms = new HashMap<Integer, String>();
+    private HashMap<Integer, Boolean> nullActions = new HashMap<Integer, Boolean>();
 
     /**
      * Creates a new instance of ProcessesBean
@@ -81,22 +82,35 @@ public class ProcessesBean implements Serializable {
         System.out.println("row="+row);
         mapForms.put(row, newValue);
         System.out.println("mapForms.size="+mapForms.size());
+        nullActions.put(row, Boolean.FALSE);
         System.out.println(" >>> valueChanged <<< ");
     }
     
     public void select(String itIndex){
         System.out.println("unselected="+itIndex);
         System.out.println("currentAction="+(action==null?"null":action));
-        mapForms.put(Integer.parseInt(itIndex), action);
+        boolean isNull = nullActions.get(Integer.parseInt(itIndex));
+        if(isNull){
+            mapForms.put(Integer.parseInt(itIndex), action);
+            System.out.println("Nulling...");
+        }
+        nullActions.put(Integer.parseInt(itIndex), Boolean.TRUE);
     }
     
     public void executeActions(){        
         System.out.println("Executing actions...");
-        for(int row: mapForms.keySet()){
+        ProcessHelper ph = new ProcessHelper();
+        String newAction = null;
+        for(int row: mapForms.keySet()){        
+            newAction = mapForms.get(row);
             System.out.println(" - "+row+": "+mapForms.get(row));
+            if((newAction!=null) && (!newAction.equalsIgnoreCase("null"))){
+                ph.modify(allProcesses.get(row).getIdProcess(), newAction);
+            }
         }
         action = null;
         mapForms.clear();
+        nullActions.clear();
     }
     
     

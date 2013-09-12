@@ -4,6 +4,7 @@
  */
 package es.cediant.db;
 
+import java.util.Date;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -77,12 +78,59 @@ public class ProcessHelper {
     public int addProc(Process process) {
         Session session = factory.openSession();
         Transaction tx = null;
-        Process proc = null;
         int procId = 0;
         try {
             tx = session.beginTransaction();
             procId = (Integer) session.save(process); 
             System.out.println("New process: "+procId);
+            tx.commit();
+        } catch (HibernateException ex) {
+            if (tx!=null){
+                tx.rollback();
+            }
+            Logger.getLogger(ProcessHelper.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            session.close();    
+            return procId;
+        }
+    }
+
+    public void modify(Integer idProcess, String newAction) {
+        if(newAction.equalsIgnoreCase("cancel")){
+            remove(idProcess);
+        } else if(newAction.equalsIgnoreCase("force")) {
+            start(idProcess);
+        }
+    }
+
+    private void remove(Integer idProcess) {
+        Session session = factory.openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            Process process = (Process) session.get(Process.class, idProcess);
+            session.delete(process);
+            tx.commit();
+        } catch (HibernateException ex) {
+            if (tx!=null){
+                tx.rollback();
+            }
+            Logger.getLogger(ProcessHelper.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            session.close();    
+        }
+    }
+
+    private int start(Integer idProcess) {
+        Session session = factory.openSession();
+        Transaction tx = null;
+        int procId = 0;
+        try {
+            tx = session.beginTransaction();
+            Process process = (Process) session.get(Process.class, idProcess);
+            process.setStartTime(new Date());
+            process.setStatus("running");
+            session.update(process);
             tx.commit();
         } catch (HibernateException ex) {
             if (tx!=null){

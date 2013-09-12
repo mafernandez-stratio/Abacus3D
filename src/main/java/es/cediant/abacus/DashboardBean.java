@@ -28,14 +28,13 @@ public class DashboardBean implements Serializable {
     private boolean pollEnabled = true;
     private String strOne;
     private String strTwo;
-    private int interval;
+    private int interval = 5000;
 
     /**
      * Creates a new instance of DashboardBean
      */
     public DashboardBean() {
         System.out.println("new DashboardBean");
-        interval=3000;
         //////////////////
         updateData(5); ///
         //////////////////
