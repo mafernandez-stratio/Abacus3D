@@ -44,12 +44,12 @@
     <!-- Session configuration -->
     <session-config>
         <session-timeout>
-            1
+            30
         </session-timeout>
     </session-config>
     <error-page>
         <exception-type>javax.faces.application.ViewExpiredException</exception-type>
-        <location>/login.xhtml</location>
+        <location>/login.xhtml</location>        
     </error-page>
     <listener>
 	<listener-class>es.cediant.abacus.SessionListener</listener-class>

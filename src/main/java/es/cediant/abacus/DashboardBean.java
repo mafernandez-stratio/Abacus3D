@@ -74,12 +74,12 @@ public class DashboardBean implements Serializable {
         }
         //System.out.println("getPollEnabled()-->"+userBean.getActiveTab());
         setPollEnabled(userBean.getActiveTab().equalsIgnoreCase("Dashboard"));
-        System.out.println("getPollEnabled="+pollEnabled);        
+        //System.out.println("getPollEnabled="+pollEnabled);        
         return pollEnabled;
     }
  
     public void setPollEnabled(boolean pollEnabled) {
-        System.out.println("setPollEnabled="+pollEnabled);
+        //System.out.println("setPollEnabled="+pollEnabled);
         this.pollEnabled = pollEnabled;
     }
     

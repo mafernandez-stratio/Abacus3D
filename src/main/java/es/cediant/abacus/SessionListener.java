@@ -28,8 +28,8 @@ public class SessionListener implements HttpSessionListener {
     public void sessionDestroyed(HttpSessionEvent se) {
         HttpSession httpSession = se.getSession();
         ServletContext servletContext = httpSession.getServletContext();
-        servletContext.getRequestDispatcher("login.xhtml");
+        RequestDispatcher tmp = servletContext.getRequestDispatcher("/login.xhtml");
         System.out.println("Session destroyed");
-        RequestDispatcher requestDispatcher = servletContext.getRequestDispatcher("login.xhtml");        
+        RequestDispatcher requestDispatcher = servletContext.getRequestDispatcher("/login.xhtml");        
     }
 }

@@ -19,7 +19,9 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -47,12 +49,13 @@ public class UserBean implements Serializable {
     private String activeTab = "Dashboard";
     //Properties ldapProp;
     private LdapPropHandler lph;
-    
+    private long lastAccesedTime;        
         
     //private final String hostLDAP = "10.129.129.148";
     //private final int portLDAP = 389;    
     
-    public UserBean(){         
+    public UserBean(){        
+        lastAccesedTime = System.currentTimeMillis();
         //System.out.println("New UserBean");
         /*SelectItem item = new SelectItem("CN", "CN"); 
         ldapAuthTypes.add(item);
@@ -473,5 +476,13 @@ public class UserBean implements Serializable {
             Logger.getLogger(UserBean.class.getName()).log(Level.SEVERE, null, ex);
         }
     }    
+    
+    public void pollSession(ActionEvent actionEvent){
+        HttpSession httpSession = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+        long newLastAccessedTime = httpSession.getLastAccessedTime();
+        long elapsedTime = newLastAccessedTime - lastAccesedTime;
+        System.out.println("Elapsed time="+elapsedTime);
+        lastAccesedTime = newLastAccessedTime;
+    }
     
 }
