@@ -49,12 +49,14 @@ public class UserBean implements Serializable {
     private String activeTab = "Dashboard";
     //Properties ldapProp;
     private LdapPropHandler lph;
-    private long lastAccesedTime;        
+    private long lastAccesedTime;  
+    private String logoImg;
         
     //private final String hostLDAP = "10.129.129.148";
     //private final int portLDAP = 389;    
     
     public UserBean(){        
+        logoImg = "logoHere.jpg";
         lastAccesedTime = System.currentTimeMillis();
         //System.out.println("New UserBean");
         /*SelectItem item = new SelectItem("CN", "CN"); 
@@ -65,6 +67,14 @@ public class UserBean implements Serializable {
         //ldapProp.load(servletContext.getResourceAsStream("/resources/conf/ldap.properties"));        
     }
 
+    public String getLogoImg() {
+        return logoImg;
+    }
+
+    public void setLogoImg(String logoImg) {
+        this.logoImg = logoImg;
+    }   
+    
     public String getUserId() {
         return userId;
     }

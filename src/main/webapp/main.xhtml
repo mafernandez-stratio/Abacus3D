@@ -24,15 +24,80 @@
         <h:outputScript library="jqPlot" name="plugins/jqplot.pieRenderer.min.js"/>
         <h:outputScript library="js" name="abacus.js"/>                        
         <rich:panel id="headerPanel">  
-            <h:panelGrid id="headerGrid"
-                         columns="2" style="text-align: right; margin: auto 0 auto auto;">
-                <h:outputText value="#{userBean.username} " 
-                              style="font-weight: bolder;" />
-                <h:outputLink value="logout.xhtml">
-                    <h:graphicImage library="img" name="logout.png" width="32px" />
-                </h:outputLink>                 
-            </h:panelGrid>
+            <h:panelGrid columns="2">
+                <h:panelGrid>
+                    <h:graphicImage library="img" 
+                                    name="#{userBean.logoImg}" 
+                                    height="32px" />
+                </h:panelGrid>
+                <h:panelGrid id="headerGrid" columns="7">    
+                    <h:outputLink styleClass="headerLinks">Language</h:outputLink>
+                    <h:outputLink styleClass="headerLinks">Help</h:outputLink>
+                    <h:outputLink styleClass="headerLinks">About</h:outputLink>
+                    <h:graphicImage id="separatorHeader" 
+                                    library="img" 
+                                    name="lineSeparator.png" 
+                                    height="32px" />
+                    <h:outputText id ="welcomeText" value="Welcome" />
+                    <h:outputText id="welcomeName"                              
+                                  value="#{userBean.username}"/>
+                    <h:outputLink value="logout.xhtml">
+                        <h:graphicImage library="img" name="logout.png" width="32px" />
+                    </h:outputLink>                 
+                </h:panelGrid>
+            </h:panelGrid>                        
         </rich:panel>
+        
+        
+        <rich:collapsiblePanel id="statusPanel" 
+                               header="Status" 
+                               switchType="client"
+                               bodyClass="statusStyle"
+                               headerClass="headerStatus">
+            <h:panelGrid id="outerStatusPanel" columns="4">
+                <h:panelGrid id="status_1_panel" columns="2">
+                    <h:panelGrid id="status_1_1_panel">
+                        <h:outputText value="INFO" styleClass="subStatusTitle" />
+                        <h:graphicImage library="img" name="serverIcon.png" height="48px;" />
+                    </h:panelGrid>
+                    <h:panelGrid id="status_1_2_panel" columns="2" columnClasses="subStatusCol">
+                        <h:outputText value="Name: " />
+                        <h:outputText value="miguel-Ubuntu" styleClass="subStatusTitle" />
+                        <h:outputText value="IP: " />
+                        <h:outputText value="192.10.0.100" styleClass="subStatusTitle" />
+                        <h:outputText value="Status: " />
+                        <h:graphicImage library="img" name="greenOkIcon.png" height="16px" />
+                        <h:outputText value="GPU: " />
+                        <h:outputText value="Nvidia" styleClass="subStatusTitle" />
+                    </h:panelGrid>
+                </h:panelGrid>
+                <h:panelGrid id="status_2_panel" >
+                    <h:outputText value="COMPUTER" styleClass="subStatusTitle" />
+                    <h:panelGrid columns="3" columnClasses="subStatusCol2,subStatusCol2,subStatusCol2">
+                        <h:graphicImage library="img" name="bar0.png" />
+                        <h:graphicImage library="img" name="bar32.png" />
+                        <h:graphicImage library="img" name="bar32.png" />
+                        <h:outputText value="CPU: 0%" />
+                        <h:outputText value="Mem: 32%" />
+                        <h:outputText value="SWAP: 32%" />
+                    </h:panelGrid>
+                </h:panelGrid>
+                <h:panelGrid id="status_3_panel" >
+                    <h:outputText value="GPU" styleClass="subStatusTitle" />
+                    <h:panelGrid columns="2" columnClasses="subStatusCol2,subStatusCol2">
+                        <h:graphicImage library="img" name="bar0.png" />
+                        <h:graphicImage library="img" name="bar32.png" />
+                        <h:outputText value="CPU: 0%" />
+                        <h:outputText value="Mem: 32%" />
+                    </h:panelGrid>                    
+                </h:panelGrid>
+                <h:panelGrid id="status_4_panel" >
+                    <h:outputText value="SYSTEM HEALTH" styleClass="subStatusTitle" />
+                </h:panelGrid>
+            </h:panelGrid>
+        </rich:collapsiblePanel>
+        
+        
         
         <!--h:graphicImage library="img" name="header-blue-plain.jpg" 
                         style="width: 100%; opacity: 0.4;" /-->            
@@ -127,7 +192,7 @@
                 </h:panelGrid>
                 <h:form id="pollForm">
                     <a4j:poll id="poll"                              
-                              interval="10" 
+                              interval="5000" 
                               enabled="#{dashboardBean.pollEnabled}" 
                               render="poll,dashboardGrid"
                               action="#{dashboardBean.updateData(5)}" 
@@ -912,12 +977,21 @@
                 </h:form>
             </rich:tab>
         </rich:tabPanel>
-        </h:form>
-        <div id="divFooter">
+        </h:form>        
+        <!--div id="divFooter">
             <h:graphicImage id="graphicFooter"
                             library="img" 
                             name="silver-footer.jpg"/>
-        </div>
+        </div-->
+        <rich:panel id="footerPanel">     
+            <h:panelGrid columns="3" columnClasses="footerleft,footercenter,footerright" >
+                <h:outputText value="v1.0" />
+                <h:outputText value="&#169;Copyright" />
+                <h:graphicImage library="img" 
+                                name="logocediant.png" 
+                                height="32px" />
+            </h:panelGrid>
+        </rich:panel>            
     </h:body>
 </f:view>
 </html>    
