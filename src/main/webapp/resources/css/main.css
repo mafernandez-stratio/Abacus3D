@@ -85,6 +85,13 @@ body {
 
 .headerLinks {
     color: #000 !important;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.panelLinks{
+    padding-bottom: 0px;
+    background: #CFDFFF;
 }
 
 #logoHeader {
@@ -105,14 +112,16 @@ body {
 
 .statusStyle {
     padding: 0px !important;
+    background: #CFDFFF;
 }
 
-#status_1_panel, #status_2_panel, #status_3_panel {
+#status_1_panel, #status_2_panel, #status_3_panel, #status_4_panel {
     border-right: #999 thin solid;
 }
 
 .subStatusTitle {
     font-weight: bolder;
+    padding-left: 10px;
 }
 
 .subStatusCol {
@@ -121,4 +130,29 @@ body {
 
 .subStatusCol2 {
     text-align: center;
+}
+
+.statusGraphic {
+    padding-left: 10px; 
+    padding-right: 10px;
+}
+
+.subStatusPanel {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.regularCol {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.topCol {
+    vertical-align: top; 
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.richTabContent {
+    padding-top: 0px !important;
 }

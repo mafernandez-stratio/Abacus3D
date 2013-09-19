@@ -47,6 +47,7 @@ public class UserBean implements Serializable {
     //private String ldapAuthType;
     //private List<SelectItem> ldapAuthTypes = new ArrayList<SelectItem>();
     private String activeTab = "Dashboard";
+    private String activeSub = "Main";
     //Properties ldapProp;
     private LdapPropHandler lph;
     private long lastAccesedTime;  
@@ -179,7 +180,21 @@ public class UserBean implements Serializable {
         this.activeTab = tmp.substring(tmp.lastIndexOf(":")+1);
         //System.out.println("activeTab = "+getActiveTab());
         //System.out.println(">> Active tab = "+this.activeTab);
-    }                
+    }       
+
+    public String getActiveSub() {
+        return activeSub;
+    }
+
+    public void setActiveSub(String activeSub) {
+        this.activeSub = activeSub;
+    }        
+    
+    public String changeSub(String newSub){
+        //System.out.println("New sub="+newSub);
+        setActiveSub(newSub);
+        return null;
+    }        
     
     public void login() {        
         try {            
