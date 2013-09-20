@@ -42,7 +42,7 @@
                     <h:outputText id="welcomeName"                              
                                   value="#{userBean.username}"/>
                     <h:outputLink value="logout.xhtml">
-                        <h:graphicImage library="img" name="logout.png" width="32px" />
+                        <h:graphicImage library="img" name="logout.png" height="32px" />
                     </h:outputLink>                 
                 </h:panelGrid>
             </h:panelGrid>                        
@@ -158,9 +158,12 @@
         <!--a4j:status onstart="{rich:component('statPane')}.show()" 
                     onstop="{rich:component('statPane')}.hide()" /-->
         <h:form>
-            <a4j:jsFunction name="setActiveTab" render="poll,dashboardGrid">
-            <a4j:param name="activeTab" assignTo="#{userBean.activeTab}"/>
-        </a4j:jsFunction>            
+            <a4j:jsFunction name="setActiveTab" render="poll,dashboardGrid,managementPanel,tasksPanel,myAccountPanel,myMonitorPanel">
+                <a4j:param name="activeTab" assignTo="#{userBean.activeTab}"/>
+            </a4j:jsFunction>
+            <a4j:jsFunction name="setActiveSub" render="subManagementPanel,subTasksPanel,subAccountPanel,subMonitorPanel">
+                <a4j:param name="activeSub" assignTo="#{userBean.activeSub}"/>
+            </a4j:jsFunction>
         <rich:tabPanel id="generalTabPanel"
                        switchType="client" 
                        activeItem="#{userBean.activeTab==null?'Dashboard':userBean.activeTab}">
@@ -170,7 +173,15 @@
             <rich:tab header="Dashboard"
                       id="Dashboard"
                       onenter="setActiveTab('Dashboard'); buildgraphs('#{dashboardBean.strOne}', '#{dashboardBean.strTwo}', #{dashboardBean.interval});"                      
-                      render="poll,dashboardGrid">         
+                      render="poll,dashboardGrid">  
+                <f:facet name="header">
+                    <h:panelGroup>
+                        <h:panelGrid columns="2" columnClasses="middleCol,bottomCol">
+                            <h:graphicImage library="img" name="dashboard.png" height="18px;"/>
+                            <h:outputLabel value="Dashboard"/>
+                        </h:panelGrid>
+                    </h:panelGroup>
+                </f:facet>
                 
                 <!--f:ajax event="click"  
                         render="poll,dashboardGrid"/-->                 
@@ -192,36 +203,75 @@
                     </a4j:jsFunction>
                 </h:form-->
                 
-                <h:outputScript library="jqPlot" name="createplots.js"/> 
-                <h:panelGrid columns="2" style="width: 100%" id="dashboardGrid">                                        
-                    <h:panelGrid style="width: 100%;">
-                        <div id="chartdiv" style="width: 100%;" />
-                        <!--h:outputText value="First column" /-->
+                <c:if test="false">
+                    <h:outputScript library="jqPlot" name="createplots.js"/> 
+                    <h:panelGrid columns="2" style="width: 100%" id="dashboardGrid">                                        
+                        <h:panelGrid style="width: 100%;">
+                            <div id="chartdiv" style="width: 100%;" />
+                        </h:panelGrid>
+                        <h:panelGrid style="width: 100%;">
+                            <div id="piediv" style="width: 100%;" />
+                        </h:panelGrid>                    
                     </h:panelGrid>
-                    <h:panelGrid style="width: 100%;">
-                        <div id="piediv" style="width: 100%;" />
-                        <!--h:outputText value="Second column" /-->
+                    <h:form id="pollForm">
+                        <a4j:poll id="poll"                              
+                                  interval="5000" 
+                                  enabled="#{dashboardBean.pollEnabled}" 
+                                  render="poll,dashboardGrid"
+                                  action="#{dashboardBean.updateData(5)}" 
+                                  execute="@form"
+                                  oncomplete="buildgraphs('#{dashboardBean.strOne}', '#{dashboardBean.strTwo}', #{dashboardBean.interval})"/>      
+                            <div id="hiddenId">
+                                <h:inputHidden id="hiddenOne" value="#{dashboardBean.strOne}" />
+                                <h:inputHidden id="hiddenTwo" value="#{dashboardBean.strTwo}" />
+                            </div>
+                    </h:form>
+                </c:if>
+                
+                <h:outputText value="TASKS" styleClass="title1" />
+                <h:panelGrid id="tasksDashboard" columns="2" styleClass="dashboardPanelAndSpace">                    
+                    <h:graphicImage library="img" name="Screenshot1.png" width="100%" />
+                    <h:graphicImage library="img" name="Screenshot3.png" width="100%" />
+                </h:panelGrid> 
+                <h:outputText value="SYSTEM" styleClass="title1" />
+                <h:panelGrid id="systemDashboard" columns="2" styleClass="dashboardPanel">
+                    <h:graphicImage library="img" name="Screenshot2.png" width="100%" />
+                    <h:graphicImage library="img" name="Screenshot4.png" width="100%" />
+                </h:panelGrid>                    
+                <h:panelGrid id="alertsUpdateDashboard" columns="2" styleClass="removeSpacing">                    
+                    <h:panelGrid id="alertsDashboard">
+                        <h:outputText value="ALERTS" styleClass="title1" />   
+                        <h:panelGrid columns="5">
+                            <h:graphicImage library="img" name="Screenshot5.png" width="100%" />
+                            <h:graphicImage library="img" name="Screenshot6.png" width="100%" />
+                            <h:graphicImage library="img" name="Screenshot7.png" width="100%" />
+                            <h:graphicImage library="img" name="Screenshot8.png" width="100%" />
+                            <h:graphicImage library="img" name="Screenshot9.png" width="100%" />
+                        </h:panelGrid>
                     </h:panelGrid>                    
+                    <h:panelGrid id="updateDashboard" styleClass="verticalSeparator">
+                        <h:panelGrid>
+                            <h:outputText value="OTHERS" styleClass="title1" />
+                            <h:graphicImage library="img" name="Screenshot10.png" width="100%" />
+                        </h:panelGrid>
+                    </h:panelGrid>
                 </h:panelGrid>
-                <h:form id="pollForm">
-                    <a4j:poll id="poll"                              
-                              interval="5000" 
-                              enabled="#{dashboardBean.pollEnabled}" 
-                              render="poll,dashboardGrid"
-                              action="#{dashboardBean.updateData(5)}" 
-                              execute="@form"
-                              oncomplete="buildgraphs('#{dashboardBean.strOne}', '#{dashboardBean.strTwo}', #{dashboardBean.interval})"/>      
-                        <div id="hiddenId">
-                            <h:inputHidden id="hiddenOne" value="#{dashboardBean.strOne}" />
-                            <h:inputHidden id="hiddenTwo" value="#{dashboardBean.strTwo}" />
-                        </div>
-                </h:form>
+                
             </rich:tab>                                    
             
             <rich:tab header="Management"
                       id="Management"
                       onenter="setActiveTab('Management')"
-                      contentClass="richTabContent">                
+                      onleave="setActiveSub('Main')"
+                      contentClass="richTabContent">
+                <f:facet name="header">
+                    <h:panelGroup>
+                        <h:panelGrid columns="2" columnClasses="middleCol,bottomCol">
+                            <h:graphicImage library="img" name="management.png" height="18px;"/>
+                            <h:outputLabel value="Management"/>
+                        </h:panelGrid>
+                    </h:panelGroup>
+                </f:facet>
                 <h:form id="subManagement">
                     <h:panelGrid id ="subManagementPanel" columns="4" styleClass="panelLinks" width="100%"                             
                              columnClasses="subStatusCol2,subStatusCol2,subStatusCol2,subStatusCol2">                    
@@ -378,7 +428,16 @@
             <rich:tab header="Tasks"
                       id="Tasks"
                       onenter="setActiveTab('Tasks')"
+                      onleave="setActiveSub('Main')"
                       contentClass="richTabContent">  
+                <f:facet name="header">
+                    <h:panelGroup>
+                        <h:panelGrid columns="2" columnClasses="middleCol,bottomCol">
+                            <h:graphicImage library="img" name="tasks.png" height="18px;"/>
+                            <h:outputLabel value="Tasks"/>
+                        </h:panelGrid>
+                    </h:panelGroup>
+                </f:facet>
                 <h:form id="subTasks">
                     <h:panelGrid id ="subTasksPanel" columns="4" styleClass="panelLinks" width="100%"                             
                              columnClasses="subStatusCol2,subStatusCol2,subStatusCol2,subStatusCol2">                    
@@ -409,8 +468,8 @@
                     </h:panelGrid>
                 </h:form>
                 <br />                
-                <h:panelGrid id="tasksPanel" columns="2" columnClasses="regularCol,topCol">                 
-                    <h:form id="scriptForm">
+                <h:panelGrid id="tasksPanel" width="100%">                 
+                    <h:form id="scriptForm" rendered="false">
                         <rich:panel id="scriptPanel" rendered="#{userBean.getActiveSub().equalsIgnoreCase('Main')}">
                             <f:facet name="header" >
                                 <h:outputText value="Execute scripts"/>
@@ -472,7 +531,6 @@
                                     </h:selectOneMenu>
 
                                 </h:panelGrid>
-                                <!--hr /-->
                                 <f:facet name="footer">
                                     <a4j:commandButton id="scriptButton"
                                                        value="Submit" 
@@ -484,8 +542,7 @@
                             </h:panelGrid>                        
                         </rich:panel>
                     </h:form>
-
-                    <h:form id="processesForm">
+                    <h:form id="processesForm" rendered="false">
                         <rich:dataTable id="processesTable" 
                                         value="#{processesBean.allProcesses}" 
                                         var="process" 
@@ -563,13 +620,20 @@
                                                        action="#{processesBean.executeActions}"
                                                        execute=":processesFrom"
                                                        render="processesTable" />
-                                        <!--a4j:param value="{process.idProcess}" 
-                                                   assignTo="{process.currentProc}" /-->
-
                                 </rich:column>
                             </f:facet>                        
                         </rich:dataTable>                    
-                    </h:form>                                  
+                    </h:form>     
+                    <h:panelGrid width="100%" rendered="#{userBean.getActiveSub().equalsIgnoreCase('Main')}">
+                        <h:outputText value="TASKS" styleClass="title1"/>
+                    </h:panelGrid>
+                    <h:panelGrid columns="2" columnClasses="topCol,topCol" width="100%" rendered="#{userBean.getActiveSub().equalsIgnoreCase('Main')}">
+                        <h:graphicImage library="img" name="tableTasks.png" />
+                        <h:panelGrid>
+                            <h:graphicImage library="img" name="Screenshot1.png" />
+                            <h:graphicImage library="img" name="search.png" />
+                        </h:panelGrid>
+                    </h:panelGrid>
                 
                 </h:panelGrid>
                 <!--br /-->                
@@ -615,11 +679,66 @@
                 </h:form-->                 
             </rich:tab>
             
+            <rich:tab header="Monitor"
+                      id="Monitor"
+                      onenter="setActiveTab('Monitor')"
+                      onleave="setActiveSub('Main')"
+                      contentClass="richTabContent">
+                <f:facet name="header">
+                    <h:panelGroup>
+                        <h:panelGrid columns="2" columnClasses="middleCol,bottomCol">
+                            <h:graphicImage library="img" name="monitor.png" height="18px;"/>
+                            <h:outputLabel value="Monitor"/>
+                        </h:panelGrid>
+                    </h:panelGroup>
+                </f:facet>                
+                <h:form id="subMonitor">
+                    <h:panelGrid id ="subMonitorPanel" columns="4" styleClass="panelLinks" width="100%"                             
+                             columnClasses="subStatusCol2,subStatusCol2,subStatusCol2,subStatusCol2">                    
+                        <a4j:commandLink styleClass="headerLinks" 
+                                         action="#{userBean.changeSub('Main')}" 
+                                         value="Main" 
+                                         render="subMonitorPanel,myMonitorPanel"
+                                         execute=":subMonitor"
+                                         disabled="#{userBean.activeSub.equalsIgnoreCase('Main')}"/>
+                        <a4j:commandLink styleClass="headerLinks" 
+                                         action="#{userBean.changeSub('Launch')}" 
+                                         value="Launch" 
+                                         render="subMonitorPanel,myMonitorPanel"
+                                         execute=":subMonitor"
+                                         disabled="#{userBean.activeSub.equalsIgnoreCase('Launch')}"/>
+                        <a4j:commandLink styleClass="headerLinks" 
+                                         action="#{userBean.changeSub('Monitor')}" 
+                                         value="Monitor" 
+                                         render="subMonitorPanel,myMonitorPanel"
+                                         execute=":subMonitor"
+                                         disabled="#{userBean.activeSub.equalsIgnoreCase('Monitor')}"/>
+                        <a4j:commandLink styleClass="headerLinks" 
+                                         action="#{userBean.changeSub('Tests')}" 
+                                         value="Tests" 
+                                         render="subMonitorPanel,myMonitorPanel"
+                                         execute=":subMonitor"
+                                         disabled="#{userBean.activeSub.equalsIgnoreCase('Tests')}"/>                    
+                    </h:panelGrid>
+                </h:form>
+                <br />
+                    <h:panelGrid id="myMonitorPanel">
+                    </h:panelGrid>
+            </rich:tab>
+            
             <rich:tab header="My account"
                       id="MyAccount"
                       onenter="setActiveTab('MyAccount')"
+                      onleave="setActiveSub('Main')"
                       contentClass="richTabContent"> 
-                
+                <f:facet name="header">
+                    <h:panelGroup>
+                        <h:panelGrid columns="2" columnClasses="middleCol,bottomCol">
+                            <h:graphicImage library="img" name="account.png" height="18px;"/>
+                            <h:outputLabel value="My Account"/>
+                        </h:panelGrid>
+                    </h:panelGroup>
+                </f:facet>
                 <h:form id="subAccount">
                     <h:panelGrid id ="subAccountPanel" columns="4" styleClass="panelLinks" width="100%"                             
                              columnClasses="subStatusCol2,subStatusCol2,subStatusCol2,subStatusCol2">                    
@@ -650,7 +769,7 @@
                     </h:panelGrid>
                 </h:form>
                 <br />
-                <h:panelGrid id="myAccountPanel">
+                <h:panelGrid id="myAccountPanel" styleClass="appTable">
                     <h:form id="myAccountForm">
                         <rich:dataTable value="#{appsBean.allApps}"
                                         var="app"
@@ -1094,14 +1213,14 @@
                             name="silver-footer.jpg"/>
         </div-->
         <rich:panel id="footerPanel">     
-            <h:panelGrid columns="3" columnClasses="footerleft,footercenter,footerright" >
+            <h:panelGrid columns="3" columnClasses="footerleft,footercenter,footerright">
                 <h:outputText value="v1.0" />
                 <h:outputText value="&#169;Copyright" />
                 <h:graphicImage library="img" 
                                 name="logocediant.png" 
                                 height="32px" />
             </h:panelGrid>
-        </rich:panel>            
+        </rich:panel> 
     </h:body>
 </f:view>
 </html>    
