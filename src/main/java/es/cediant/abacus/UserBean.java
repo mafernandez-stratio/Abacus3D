@@ -52,6 +52,10 @@ public class UserBean implements Serializable {
     private LdapPropHandler lph;
     private long lastAccesedTime;  
     private String logoImg;
+    private boolean launchLoading = false;
+    private boolean deployLoading = false;
+    private Date startLaunch;
+    private Date startDeploy;
         
     //private final String hostLDAP = "10.129.129.148";
     //private final int portLDAP = 389;    
@@ -131,37 +135,75 @@ public class UserBean implements Serializable {
     }
 
     /*public String getUid() {
-        return uid;
+    return uid;
     }
-
     public void setUid(String uid) {
-        this.uid = uid;
+    this.uid = uid;
     }        
     
     public String getDn() {
-        return dn;
+    return dn;
     }
-
     public void setDn(String dn) {
-        this.dn = dn;
+    this.dn = dn;
     }
-
     public String getLdapAuthType() {
-        return ldapAuthType;
+    return ldapAuthType;
     }
-
     public void setLdapAuthType(String ldapAuthType) {
-        this.ldapAuthType = ldapAuthType;
+    this.ldapAuthType = ldapAuthType;
     }
-
     public List<SelectItem> getLdapAuthTypes() {
-        return ldapAuthTypes;
+    return ldapAuthTypes;
+    }
+    public void setLdapAuthTypes(List<SelectItem> ldapAuthTypes) {
+    this.ldapAuthTypes = ldapAuthTypes;
+    }*/        
+    
+    public boolean isLaunchLoading() {
+        if(launchLoading){
+            Date now = new Date();
+            long diff = now.getTime() - startLaunch.getTime();
+            if(diff > 5000){
+                setLaunchLoading(false);
+                startLaunch = null;
+            }
+        }
+        System.out.println("Is launch Loading ? "+launchLoading);
+        return launchLoading;
     }
 
-    public void setLdapAuthTypes(List<SelectItem> ldapAuthTypes) {
-        this.ldapAuthTypes = ldapAuthTypes;
-    }*/        
+    public void tmp(){
+        System.out.println("Temp");        
+    }
+    
+    public void setLaunchLoading(boolean launchLoading) {
+        if(startLaunch == null){
+            startLaunch = new Date();
+        }
+        System.out.println("New launch Loading = "+launchLoading);
+        this.launchLoading = launchLoading;
+    }    
 
+    public boolean isDeployLoading() {
+        if(deployLoading){
+            Date now = new Date();
+            long diff = now.getTime() - startDeploy.getTime();
+            if(diff > 5000){
+                setDeployLoading(false);
+                startDeploy = null;
+            }
+        }
+        return deployLoading;
+    }
+
+    public void setDeployLoading(boolean deployLoading) {
+        if(startDeploy == null){
+            startDeploy = new Date();
+        }
+        this.deployLoading = deployLoading;
+    }        
+    
     public String getActiveTab() {
         //System.out.println("activeTab="+activeTab);
         return activeTab;

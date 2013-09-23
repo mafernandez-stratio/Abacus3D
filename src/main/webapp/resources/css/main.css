@@ -117,8 +117,13 @@ body {
     background: #CFDFFF;
 }
 
-#status_1_panel, #status_2_panel, #status_3_panel, #status_4_panel {
+#status_1_panel, #status_2_panel, #status_3_panel, #status_4_panel, .regularColAndBorderLeft {
     border-right: #999 thin solid;
+}
+
+.regularColAndBorderLeft {
+    padding-left: 10px; 
+    padding-right: 10px;
 }
 
 .subStatusTitle {

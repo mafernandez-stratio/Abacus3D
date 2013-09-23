@@ -26,4 +26,9 @@
         <managed-bean-class>es.cediant.abacus.SessionListener</managed-bean-class>
         <managed-bean-scope>session</managed-bean-scope>
     </managed-bean>
+    <managed-bean>
+        <managed-bean-name>pollBean</managed-bean-name>
+        <managed-bean-class>es.cediant.abacus.PollBean</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
 </faces-config>
