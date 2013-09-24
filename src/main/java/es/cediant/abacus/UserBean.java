@@ -164,6 +164,7 @@ public class UserBean implements Serializable {
         if(launchLoading){
             Date now = new Date();
             long diff = now.getTime() - startLaunch.getTime();
+            System.out.println("diff="+diff);
             if(diff > 5000){
                 setLaunchLoading(false);
                 startLaunch = null;
@@ -171,10 +172,6 @@ public class UserBean implements Serializable {
         }
         System.out.println("Is launch Loading ? "+launchLoading);
         return launchLoading;
-    }
-
-    public void tmp(){
-        System.out.println("Temp");        
     }
     
     public void setLaunchLoading(boolean launchLoading) {
@@ -229,11 +226,12 @@ public class UserBean implements Serializable {
     }
 
     public void setActiveSub(String activeSub) {
+        System.out.println("New sub = "+activeSub);
         this.activeSub = activeSub;
     }        
     
     public String changeSub(String newSub){
-        //System.out.println("New sub="+newSub);
+        System.out.println("New sub="+newSub);
         setActiveSub(newSub);
         return null;
     }        

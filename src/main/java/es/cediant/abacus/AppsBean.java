@@ -22,6 +22,7 @@ public class AppsBean implements Serializable {
     private List<App> installedApps = new ArrayList<App>();
     private List<App> availableApps = new ArrayList<App>();
     private String action;
+    private String newParam;
     
     public AppsBean() {
         /*
@@ -100,5 +101,13 @@ public class AppsBean implements Serializable {
             return false;
         }
     }
+
+    public String getNewParam() {
+        return newParam;
+    }
+
+    public void setNewParam(String newParam) {
+        this.newParam = newParam;
+    }        
     
 }
