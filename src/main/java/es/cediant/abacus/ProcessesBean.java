@@ -7,6 +7,7 @@ package es.cediant.abacus;
 import es.cediant.db.ProcessHelper;
 import es.cediant.db.Process;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import javax.faces.component.UIComponent;
@@ -113,6 +114,15 @@ public class ProcessesBean implements Serializable {
         nullActions.clear();
     }
     
-    
+    public List<Process> getLastProcesses(int num){
+        List<Process> lastProcesses = new ArrayList<Process>();
+        getAllProcesses();
+        int maxSize = (allProcesses.size()>num?num:allProcesses.size());
+        for(int i=0; i<maxSize; i++){
+            lastProcesses.add(allProcesses.get(i));
+        }
+        return lastProcesses;
+    }
+        
 }
 

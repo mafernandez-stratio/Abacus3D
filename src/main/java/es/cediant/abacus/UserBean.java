@@ -54,8 +54,10 @@ public class UserBean implements Serializable {
     private String logoImg;
     private boolean launchLoading = false;
     private boolean deployLoading = false;
+    private boolean testLoading = false;
     private Date startLaunch;
     private Date startDeploy;
+    private Date startTest;
         
     //private final String hostLDAP = "10.129.129.148";
     //private final int portLDAP = 389;    
@@ -200,7 +202,26 @@ public class UserBean implements Serializable {
         }
         this.deployLoading = deployLoading;
     }        
-    
+
+    public boolean isTestLoading() {
+        if(testLoading){
+            Date now = new Date();
+            long diff = now.getTime() - startTest.getTime();
+            if(diff > 5000){
+                setTestLoading(false);
+                startTest = null;
+            }
+        }
+        return testLoading;
+    }
+
+    public void setTestLoading(boolean testLoading) {
+        if(startTest == null){
+            startTest = new Date();
+        }
+        this.testLoading = testLoading;
+    }
+            
     public String getActiveTab() {
         //System.out.println("activeTab="+activeTab);
         return activeTab;

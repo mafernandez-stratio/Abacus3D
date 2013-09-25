@@ -18,9 +18,14 @@
     </h:head>
     <h:body onload="buildgraphs('#{dashboardBean.strOne}', '#{dashboardBean.strTwo}', #{dashBoardBean.interval}); #{dashboardBean.setPollEnabled(true)}; #{userBean.setActiveTab('Dashboard')}; #{userBean.changeSub('Main')};" 
             onunload="#{dashboardBean.setPollEnabled(true)}; #{userBean.setActiveTab('Dashboard')}; #{userBean.changeSub('Main')};">                                      
-        <!--h:outputScript library="jqPlot" name="jquery.min.js"/-->
-        <!--h:outputScript library="jqPlot" name="jquery.jqplot.min.js"/-->
-        <!--h:outputScript library="jqPlot" name="plugins/jqplot.pieRenderer.min.js"/-->
+        <h:outputScript library="jqPlot" name="jquery.min.js"/>
+        <h:outputScript library="jqPlot" name="jquery.jqplot.min.js"/>
+        <h:outputScript library="jqPlot" name="plugins/jqplot.pieRenderer.min.js"/>
+        <h:outputScript library="jqPlot" name="plugins/jqplot.highlighter.min.js"/>
+        <h:outputScript library="jqPlot" name="plugins/jqplot.cursor.min.js"/>
+        <h:outputScript library="jqPlot" name="plugins/jqplot.cursor.min.js"/>
+        <h:outputScript library="jqPlot" name="plugins/jqplot.dateAxisRenderer.min.js"/>
+        <h:outputScript library="jqPlot" name="plugins/jqplot.enhancedLegendRenderer.min.js"/>
         <h:outputScript library="js" name="abacus.js"/>                        
         <rich:panel id="headerPanel">  
             <h:panelGrid columns="2">
@@ -227,16 +232,92 @@
                                 </div>
                         </h:form>
                     </c:if>
-
+                    
                     <h:outputText value="TASKS" styleClass="title1" />
-                    <h:panelGrid id="tasksDashboard" columns="2" styleClass="dashboardPanelAndSpace">                    
-                        <h:graphicImage library="img" name="Screenshot1.png" width="100%" />
-                        <h:graphicImage library="img" name="Screenshot3.png" width="100%" />
+                    <h:panelGrid id="tasksDashboard" columns="2" styleClass="dashboardPanelAndSpace">                                                                    
+                        <h:panelGrid>                            
+                            <div id="dashboardFirstDiv" style="height: 200px; width: 500px;" />
+                            <h:outputScript library="jqPlot" name="createTasksGraph.js"/>     
+                            <!--h:graphicImage library="img" name="Screenshot1.png" width="100%" /-->
+                        </h:panelGrid>                                                   
+                        <rich:dataTable id="procSummaryTable" 
+                                        value="#{processesBean.getLastProcesses(5)}" 
+                                        var="process" 
+                                        iterationStatusVar="it"                                     
+                                        rows="5">
+                            <rich:column>
+                                <f:facet name="header">ID</f:facet>
+                                <h:outputText value="#{process.idProcess}" />
+                            </rich:column>
+
+                            <rich:column>
+                                <f:facet name="header">User</f:facet>
+                                <h:outputText value="#{process.user.userName}" />
+                            </rich:column>
+                            <rich:column>
+                                <f:facet name="header">Name</f:facet>
+                                <h:outputText value="#{process.name}" />
+                            </rich:column>
+                            <rich:column>
+                                <f:facet name="header">Type</f:facet>
+                                <h:outputText value="#{process.type}" />
+                            </rich:column>
+                            <rich:column>
+                                <f:facet name="header">Priority</f:facet>
+                                <h:outputText value="#{process.priority}" />
+                            </rich:column>
+                            <rich:column>
+                                <f:facet name="header">Status</f:facet>                                                        
+                                <h:outputText value="#{process.status}" 
+                                              style="color: green;" 
+                                              rendered="#{process.status.equalsIgnoreCase('finished')}"/>
+                                <h:outputText value="#{process.status}" 
+                                              style="color: red;" 
+                                              rendered="#{process.status.equalsIgnoreCase('running')}"/>
+                                <h:outputText value="#{process.status}" 
+                                              style="color: blue;" 
+                                              rendered="#{process.status.equalsIgnoreCase('waiting')}"/>                                                      
+                            </rich:column>
+                            <rich:column>
+                                <f:facet name="header">Start time</f:facet>
+                                <h:outputText value="#{process.startTime}" />
+                            </rich:column>
+                            <rich:column>
+                                <f:facet name="header">End time</f:facet>
+                                <h:outputText value="#{process.endTime}" />
+                            </rich:column>
+                            <rich:column>
+                                <f:facet name="header">Actions</f:facet>
+                                <h:selectOneMenu value="#{processesBean.action}">
+                                    <f:selectItem noSelectionOption="true"
+                                                  id="noOption"/>
+                                    <f:selectItem itemLabel="Cancel" 
+                                                  itemValue="cancel"
+                                                  itemDisabled="#{processesBean.isFinished(process.idProcess)}"/>
+                                    <f:selectItem itemLabel="Force Start" 
+                                                  itemValue="force"
+                                                  itemDisabled="#{not processesBean.isWaiting(process.idProcess)}"/>
+                                </h:selectOneMenu>
+                            </rich:column>
+                            <f:facet name="footer">
+                                <rich:column colspan="8">
+                                    <a4j:commandButton id="procButton"
+                                                       value="Submit" 
+                                                       action="#{processesBean.executeActions}"                                                       
+                                                       render="procSummaryTable" />
+                                </rich:column>
+                            </f:facet>                        
+                        </rich:dataTable>  
+                        <!--h:graphicImage library="img" name="Screenshot3.png" width="100%" /-->
                     </h:panelGrid> 
                     <h:outputText value="SYSTEM" styleClass="title1" />
                     <h:panelGrid id="systemDashboard" columns="2" styleClass="dashboardPanel">
-                        <h:graphicImage library="img" name="Screenshot2.png" width="100%" />
-                        <h:graphicImage library="img" name="Screenshot4.png" width="100%" />
+                        <h:panelGrid>
+                            <div id="dashboardSecondDiv" style="height: 200px; width: 500px;" />
+                            <h:outputScript library="jqPlot" name="createSystemGraph.js"/>
+                            <!--h:graphicImage library="img" name="Screenshot2.png" width="100%" /-->
+                        </h:panelGrid>
+                        <h:graphicImage library="img" name="Screenshot4.png" width="100%" />                        
                     </h:panelGrid>                    
                     <h:panelGrid id="alertsUpdateDashboard" columns="2" styleClass="removeSpacing">                    
                         <h:panelGrid id="alertsDashboard">
@@ -466,7 +547,7 @@
                             <h:panelGrid columns="2" 
                                          columnClasses="topCol,topCol" 
                                          width="100%">
-                                <h:graphicImage library="img" name="tableTasks.png" styleClass="regularColAndBorderLeft" />
+                                <h:graphicImage library="img" name="tableTasks.png" styleClass="regularColAndBorderRight" />
                                 <h:panelGrid>
                                     <h:graphicImage library="img" name="Screenshot1.png" />
                                     <h:graphicImage library="img" name="search.png"/>                                
@@ -483,14 +564,14 @@
                             <h:panelGrid id="launchCol" columns="4">
                                 <!-- LAUNCH -->
                                 <h:panelGrid rendered="#{not userBean.launchLoading}" 
-                                             styleClass="regularColAndBorderLeft">
+                                             styleClass="regularColAndBorderRight">
                                     <h:graphicImage library="img" name="Screenshot11.png"/>
                                     <a4j:commandButton value="Submit" 
                                                        render="launchCol,launchPoll"
                                                        action="#{userBean.setLaunchLoading(true)}"/>                                        
                                 </h:panelGrid>
                                 <h:panelGrid rendered="#{userBean.launchLoading}" 
-                                             styleClass="regularColAndBorderLeft">
+                                             styleClass="regularColAndBorderRight">
                                     <h:graphicImage library="img" name="processing.gif"/>                                
                                 </h:panelGrid>
                                 <!-- DEPLOY -->
@@ -512,11 +593,24 @@
  
                         <h:panelGrid width="100%" 
                                      rendered="#{userBean.getActiveSub().equalsIgnoreCase('Tests')}">
-                            <h:panelGrid columns="2" 
+                            <h:panelGrid id="testsPanel"
+                                         columns="2" 
                                          columnClasses="topCol,topCol" 
                                          width="100%">
-                                <h:outputText value="Column #1"/>
-                                <h:outputText value="Column #2"/>
+                                <h:panelGrid styleClass="regularColAndBorderRight" 
+                                             rendered="#{not userBean.testLoading}">
+                                    <h:graphicImage library="img" name="testsForm.png"/>
+                                    <a4j:commandButton value="Submit"
+                                                       render="testsPanel,testPoll"
+                                                       action="#{userBean.setTestLoading(true)}"/>
+                                </h:panelGrid>
+                                <h:panelGrid styleClass="regularColAndBorderRight"
+                                             rendered="#{userBean.testLoading}">
+                                    <h:graphicImage library="img" name="processing.gif"/>
+                                </h:panelGrid>                                
+                                <h:panelGrid>
+                                    <h:graphicImage  library="img" name="testsTable.png"/>
+                                </h:panelGrid>
                             </h:panelGrid>      
                         </h:panelGrid>
                         
@@ -534,6 +628,11 @@
                               render="deployPoll,launchCol,deployedPopup"
                               oncomplete="if(#{not userBean.deployLoading}) #{rich:component('deployedPopup')}.show(); return false;"/>
                     
+                    <a4j:poll id="testPoll" 
+                              interval="2000" 
+                              enabled="#{userBean.testLoading}" 
+                              render="testPoll,testsPanel,testPopup"
+                              oncomplete="if(#{not userBean.testLoading}) #{rich:component('testPopup')}.show(); return false;"/>
                     
                     <a4j:jsFunction name="updateSub" render="launchCol">
                         <a4j:param name="activeSub" assignTo="#{userBean.activeSub}" />
@@ -579,6 +678,26 @@
                             <p>Task deployed</p>
                         </h:panelGrid>                        
                     </rich:popupPanel>
+                    
+                    <rich:popupPanel id="testPopup" 
+                                     modal="false" 
+                                     autosized="true" 
+                                     resizeable="false"       
+                                     onhide="updateSub('Tests');">
+                        <f:facet name="header">
+                            <h:outputText value="Test done" />
+                        </f:facet>
+                        <f:facet name="controls">
+                            <h:outputLink value="#" 
+                                          onclick="#{rich:component('testPopup')}.hide(); return false;">
+                                X
+                            </h:outputLink>
+                        </f:facet>
+                        <h:panelGrid columns="2">
+                            <h:graphicImage library="img" name="greenOkIcon.png" width="32" />
+                            <p>Test done</p>
+                        </h:panelGrid>                        
+                    </rich:popupPanel>                   
                     
                     <rich:popupPanel id="paramPopup" 
                                      modal="false" 
