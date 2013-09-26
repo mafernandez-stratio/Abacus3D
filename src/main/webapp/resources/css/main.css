@@ -139,6 +139,11 @@ body {
     text-align: center;
 }
 
+.subStatusCol3 {
+    text-align: center;
+    border-spacing: 0px !important;
+}
+
 .statusGraphic {
     padding-left: 10px; 
     padding-right: 10px;
@@ -196,4 +201,78 @@ body {
 .verticalSeparator {
     border-left: #C4C0C9 solid 1px;
     margin-left: 5px;
+}
+
+.alertPanel, .othersPanel {
+    border: #006699 solid 2px; 
+    border-radius: 18px;
+    background: lightgray;
+}
+
+.alertColPanel {
+    padding: 3px;
+    padding-top: 0px;
+}
+
+.alertColPanel table {
+    width: 100%;
+}
+
+.alertInnerPanel {
+    border: #006699 solid 2px; 
+    border-radius: 10px;
+    background: white; 
+    border-spacing: 0px !important;
+}
+
+.alertTitle {
+    font-size: 20px;
+}
+
+.alertInnerTitle {
+    font-size: 14px;
+}
+
+.alertCritPositNumber, .alertWarnPositNumber, .alertZeroNumber, .separator {
+    font-size: 32px;
+}
+
+.alertCritPositNumber, .alertWarnPositNumber, .alertZeroNumber {
+    font-weight: bold;
+}
+
+.alertCritPositNumber {
+    color: red;
+}
+
+.alertWarnPositNumber {
+    color: #f6a828;
+}
+
+.alertZeroNumber {
+    color: #006699;
+}
+
+.alertInnerBottomLeftCol {
+    text-align: center;
+    border-right: #006699 solid 1px;
+}
+
+.alertInnerLeftCol {
+    padding-right: 2px;
+}
+
+.separator {
+    color: #006699;
+    height: 100%;
+}
+
+.alertsCols {
+    padding-left: 2.5%;
+    padding-right: 2.5%;
+}
+
+.othersPanel {
+    margin-left: 10%;
+    margin-right: 10%;
 }

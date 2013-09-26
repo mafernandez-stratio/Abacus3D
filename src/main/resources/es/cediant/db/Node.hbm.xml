@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Sep 6, 2013 3:28:30 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="es.cediant.db.Node" table="Node" catalog="AbacusDB">
+        <id name="idNode" type="java.lang.Integer">
+            <column name="idNode" />
+            <generator class="identity" />
+        </id>
+        <property name="hostname" type="string">
+            <column name="hostname" length="45" unique="true" />
+        </property>       
+        <property name="ip" type="string">
+            <column name="ip" length="45" unique="true" />
+        </property>                        
+        <property name="status" type="string">
+            <column name="status" length="45" />
+        </property>    
+        <property name="cpu" type="string">
+            <column name="cpu" length="45" />
+        </property>                
+        <property name="mem" type="string">
+            <column name="mem" length="45" />
+        </property>
+        <property name="disk" type="string">
+            <column name="disk" length="45" />
+        </property>                
+    </class>
+</hibernate-mapping>

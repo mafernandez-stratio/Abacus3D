@@ -32,7 +32,13 @@ $(document).ready(function(){
             renderer:$.jqplot.DateAxisRenderer,
             tickOptions:{
               formatString:'%H:%M.%S'
-            } 
+            }            
+          },
+          yaxis:{
+            ticks: [0, 20, 40, 60, 80, 100],
+            tickOptions:{
+                formatString:'%d\%'
+            }
           }
         },
         highlighter: {

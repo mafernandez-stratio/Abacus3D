@@ -4,6 +4,7 @@
  */
 package es.cediant.db;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.hibernate.HibernateException;
@@ -29,7 +30,7 @@ public class ProcessHelper {
     
     /* Method to  READ all the employees */
     public List listProcesses(){
-        System.out.println("Listing all processes...");
+        //System.out.println("Listing all processes...");
         Session session = factory.openSession();
         Transaction tx = null;
         List processes = null;
@@ -141,6 +142,17 @@ public class ProcessHelper {
             session.close();    
             return procId;
         }
+    }
+
+    public List<Process> getLastProcesses(int num) {
+        List<Process> lastProcesses = new ArrayList<Process>();
+        List<Process> allProcesses = new ArrayList<Process>();
+        allProcesses = listProcesses();
+        int maxSize = (allProcesses.size()>num?num:allProcesses.size());
+        for(int i=0; i<maxSize; i++){
+            lastProcesses.add(allProcesses.get(i));
+        }
+        return lastProcesses;
     }
     
 }

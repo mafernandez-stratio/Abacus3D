@@ -15,5 +15,6 @@
     <mapping resource="es/cediant/db/Role.hbm.xml"/>
     <mapping resource="es/cediant/db/User.hbm.xml"/>
     <mapping resource="es/cediant/db/UsersRole.hbm.xml"/>
+    <mapping resource="es/cediant/db/Node.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>

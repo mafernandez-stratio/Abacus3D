@@ -115,13 +115,8 @@ public class ProcessesBean implements Serializable {
     }
     
     public List<Process> getLastProcesses(int num){
-        List<Process> lastProcesses = new ArrayList<Process>();
-        getAllProcesses();
-        int maxSize = (allProcesses.size()>num?num:allProcesses.size());
-        for(int i=0; i<maxSize; i++){
-            lastProcesses.add(allProcesses.get(i));
-        }
-        return lastProcesses;
+        ProcessHelper ph = new ProcessHelper();
+        return ph.getLastProcesses(num);        
     }
         
 }
