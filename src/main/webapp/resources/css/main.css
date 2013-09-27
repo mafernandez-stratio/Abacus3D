@@ -276,3 +276,73 @@ body {
     margin-left: 10%;
     margin-right: 10%;
 }
+
+.dashboardCols {
+    width: 50%;
+}
+
+.jqplot-target {
+    color: #000 !important;
+}
+
+#computerBarDiv, 
+#gpuBarDiv,
+#queuedBarDiv,
+#runningBarDiv, 
+#loadBarDiv, 
+#diskBarDiv {
+    padding: 0px !important;
+    margin: 0px !important;
+    border: 0px !important;
+}
+
+#computerBarDiv .jqplot-title, 
+#gpuBarDiv .jqplot-title,
+#queuedBarDiv .jqplot-title,
+#runningBarDiv .jqplot-title, 
+#loadBarDiv .jqplot-title, 
+#diskBarDiv .jqplot-title {
+    padding: 0px !important;
+    font-size: 0em !important;
+    display: none !important;
+}
+
+#computerBarDiv .jqplot-xaxis, 
+#gpuBarDiv .jqplot-xaxis,
+#queuedBarDiv .jqplot-xaxis,
+#runningBarDiv .jqplot-xaxis, 
+#loadBarDiv .jqplot-xaxis, 
+#diskBarDiv .jqplot-xaxis {
+    margin: 0px !important;
+    margin-top: 1px !important;
+    padding: 0px !important;
+}
+
+#computerBarDiv .jqplot-series-shadowCanvas, 
+#computerBarDiv .jqplot-series-canvas, 
+#gpuBarDiv .jqplot-series-shadowCanvas,
+#gpuBarDiv .jqplot-series-canvas,
+#queuedBarDiv .jqplot-series-shadowCanvas,
+#queuedBarDiv .jqplot-series-canvas,
+#runningBarDiv .jqplot-series-shadowCanvas,
+#runningBarDiv .jqplot-series-canvas, 
+#loadBarDiv .jqplot-series-shadowCanvas, 
+#loadBarDiv .jqplot-series-canvas, 
+#diskBarDiv .jqplot-series-shadowCanvas, 
+#diskBarDiv .jqplot-series-canvas {
+    background-color: #545454;
+} 
+
+.barSubtitle {
+    font-size: 7pt
+}
+
+#diskBarDiv .jqplot-series-shadowCanvas,
+#diskBarDiv .jqplot-series-canvas,
+#diskBarDiv .jqplot-pieRenderer-highlight-canvas, 
+#diskBarDiv .jqplot-highlight-canvas,
+#diskBarDiv .jqplot-event-canvas {
+    width: 65px;
+    height: 65px;
+}
+

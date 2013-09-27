@@ -31,13 +31,15 @@ $(document).ready(function(){
           xaxis:{
             renderer:$.jqplot.DateAxisRenderer,
             tickOptions:{
-              formatString:'%H:%M.%S'
+              formatString:'%H:%M.%S',
+              fontSize: '8pt'
             }            
           },
           yaxis:{
             ticks: [0, 20, 40, 60, 80, 100],
             tickOptions:{
-                formatString:'%d\%'
+                formatString:'%d\%',
+                fontSize: '8pt'
             }
           }
         },

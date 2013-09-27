@@ -45,9 +45,15 @@ $(document).ready(function(){
           xaxis:{
             renderer:$.jqplot.DateAxisRenderer,
             tickOptions:{
-              formatString:'%H:%M.%S'
+              formatString:'%H:%M.%S',
+              fontSize: '8pt'
             } 
-          }          
+          },
+          yaxis:{
+            tickOptions:{
+              fontSize: '8pt'
+            } 
+          }
         },
         highlighter: {
           show: true,

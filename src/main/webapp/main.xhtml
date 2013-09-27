@@ -21,11 +21,17 @@
         <h:outputScript library="jqPlot" name="jquery.min.js"/>
         <h:outputScript library="jqPlot" name="jquery.jqplot.min.js"/>
         <h:outputScript library="jqPlot" name="plugins/jqplot.pieRenderer.min.js"/>
+        <h:outputScript library="jqPlot" name="plugins/jqplot.donutRenderer.min.js"/>
         <h:outputScript library="jqPlot" name="plugins/jqplot.highlighter.min.js"/>
         <h:outputScript library="jqPlot" name="plugins/jqplot.cursor.min.js"/>
         <h:outputScript library="jqPlot" name="plugins/jqplot.cursor.min.js"/>
         <h:outputScript library="jqPlot" name="plugins/jqplot.dateAxisRenderer.min.js"/>
         <h:outputScript library="jqPlot" name="plugins/jqplot.enhancedLegendRenderer.min.js"/>
+        
+        <h:outputScript library="jqPlot" name="plugins/jqplot.barRenderer.min.js"/>
+        <h:outputScript library="jqPlot" name="plugins/jqplot.categoryAxisRenderer.min.js"/>
+        <h:outputScript library="jqPlot" name="plugins/jqplot.pointLabels.min.js"/>
+        
         <h:outputScript library="js" name="abacus.js"/>                        
         <rich:panel id="headerPanel">  
             <h:panelGrid columns="2">
@@ -76,36 +82,29 @@
                     </h:panelGrid>                    
                 </h:panelGrid>
                 <h:panelGrid id="status_2_panel" styleClass="subStatusPanel">
-                    <h:outputText value="COMPUTER" styleClass="subStatusTitle" />
-                    <h:panelGrid columns="3" columnClasses="subStatusCol2,subStatusCol2,subStatusCol2">
-                        <h:graphicImage library="img" name="bar0.png" height="48px;" styleClass="statusGraphic" />
-                        <h:graphicImage library="img" name="bar32.png" height="48px;" styleClass="statusGraphic" />
-                        <h:graphicImage library="img" name="bar32.png" height="48px;" styleClass="statusGraphic" />
-                        <h:outputText value="CPU: 0%" />
-                        <h:outputText value="Mem: 32%" />
-                        <h:outputText value="SWAP: 32%" />
-                    </h:panelGrid>
+                    <h:outputText value="COMPUTER" styleClass="subStatusTitle" />                    
+                    <div id="computerBarDiv" style="height: 65px; width: 176px;" />
+                    <h:outputScript library="jqPlot" name="createComputerGraph.js"/>
                 </h:panelGrid>
                 <h:panelGrid id="status_3_panel" styleClass="subStatusPanel">
                     <h:outputText value="GPU" styleClass="subStatusTitle" />
-                    <h:panelGrid columns="2" columnClasses="subStatusCol2,subStatusCol2">
-                        <h:graphicImage library="img" name="bar0.png" height="48px;" styleClass="statusGraphic" />
-                        <h:graphicImage library="img" name="bar32.png" height="48px;" styleClass="statusGraphic" />
-                        <h:outputText value="CPU: 0%" />
-                        <h:outputText value="Mem: 32%" />
-                    </h:panelGrid>                    
+                    <div id="gpuBarDiv" style="height: 65px; width: 118px;" />
+                    <h:outputScript library="jqPlot" name="createGpuGraph.js"/>                                       
                 </h:panelGrid>
                 <h:panelGrid id="status_4_panel" styleClass="subStatusPanel">
                     <h:outputText value="SYSTEM HEALTH" styleClass="subStatusTitle" />                    
-                    <h:panelGrid columns="4" columnClasses="subStatusCol2,subStatusCol2,subStatusCol2,subStatusCol2">
-                        <h:graphicImage library="img" name="graph4.png" height="48px;" styleClass="statusGraphic" />
-                        <h:graphicImage library="img" name="graph454.png" height="48px;" styleClass="statusGraphic" />
-                        <h:graphicImage library="img" name="graph0.png" height="48px;" styleClass="statusGraphic" />
-                        <h:graphicImage library="img" name="pie50.png" height="48px;" styleClass="statusGraphic" />
-                        <h:outputText value="Queued task: 4" />
-                        <h:outputText value="Task running: 454" />
-                        <h:outputText value="Load: 0%" />
-                        <h:outputText value="Disk: 56%" />
+                    <h:panelGrid columns="8" columnClasses="subStatusCol2,subStatusCol2,subStatusCol2,subStatusCol2">
+                        <div id="queuedBarDiv" style="height: 65px; width: 118px;" />   
+                        <h:outputScript library="jqPlot" name="createQueuedGraph.js"/>
+                        <div id="runningBarDiv" style="height: 65px; width: 118px;" /> 
+                        <h:outputScript library="jqPlot" name="createRunningGraph.js"/>
+                        <div id="loadBarDiv" style="height: 65px; width: 118px;" />                                                
+                        <h:outputScript library="jqPlot" name="createLoadGraph.js"/>
+                        <h:panelGrid styleClass="subStatusCol3">
+                            <div id="diskBarDiv" style="height: 65px; width: 65px;"/>  
+                            <h:outputText value="Disk" styleClass="barSubtitle" />
+                            <h:outputScript library="jqPlot" name="createDiskGraph.js"/>
+                        </h:panelGrid>
                     </h:panelGrid>                    
                 </h:panelGrid>                
                 <h:panelGrid id="status_5_panel" styleClass="subStatusPanel" style="padding-left: 20px;">
@@ -311,7 +310,9 @@
                         <!--h:graphicImage library="img" name="Screenshot3.png" width="100%" /-->
                     </h:panelGrid> 
                     <h:outputText value="SYSTEM" styleClass="title1" />
-                    <h:panelGrid id="systemDashboard" columns="2" styleClass="dashboardPanel">
+                    <h:panelGrid id="systemDashboard" columns="2" 
+                                 styleClass="dashboardPanel" width="100%"
+                                 columnClasses="dashboardCols,dashboardCols">
                         <h:panelGrid>
                             <div id="dashboardSecondDiv" style="height: 200px; width: 500px;" />
                             <h:outputScript library="jqPlot" name="createSystemGraph.js"/>
@@ -334,7 +335,7 @@
                                 <f:facet name="header">IP</f:facet>
                                 <h:outputText value="#{node.ip}" />
                             </rich:column>
-                            <rich:column>
+                            <rich:column styleClass="subStatusCol2">
                                 <f:facet name="header">Status</f:facet>
                                 <!--h:outputText value="{node.status}" /-->
                                 <h:graphicImage library="img" 
@@ -350,7 +351,7 @@
                                                 rendered="#{node.status.equalsIgnoreCase('error')}" 
                                                 height="24px"/>
                             </rich:column>
-                            <rich:column>
+                            <rich:column styleClass="subStatusCol2">
                                 <f:facet name="header">CPU</f:facet>
                                 <!--h:outputText value="{node.cpu}" /-->
                                 <h:graphicImage library="img" 
@@ -366,7 +367,7 @@
                                                 rendered="#{node.cpu.equalsIgnoreCase('error')}" 
                                                 height="24px"/>
                             </rich:column>
-                            <rich:column>
+                            <rich:column styleClass="subStatusCol2">
                                 <f:facet name="header">Mem</f:facet>
                                 <!--h:outputText value="{node.mem}" /-->
                                 <h:graphicImage library="img" 
@@ -382,7 +383,7 @@
                                                 rendered="#{node.mem.equalsIgnoreCase('error')}" 
                                                 height="24px"/>
                             </rich:column>
-                            <rich:column>
+                            <rich:column styleClass="subStatusCol2">
                                 <f:facet name="header">Disk</f:facet>
                                 <!--h:outputText value="{node.disk}" /-->
                                 <h:graphicImage library="img" 
