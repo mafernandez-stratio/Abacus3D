@@ -27,6 +27,7 @@
         <h:outputScript library="jqPlot" name="plugins/jqplot.cursor.min.js"/>
         <h:outputScript library="jqPlot" name="plugins/jqplot.dateAxisRenderer.min.js"/>
         <h:outputScript library="jqPlot" name="plugins/jqplot.enhancedLegendRenderer.min.js"/>
+        <h:outputScript library="jqPlot" name="plugins/jqplot.pieLegendRenderer.min.js"/>
         
         <h:outputScript library="jqPlot" name="plugins/jqplot.barRenderer.min.js"/>
         <h:outputScript library="jqPlot" name="plugins/jqplot.categoryAxisRenderer.min.js"/>
@@ -99,12 +100,9 @@
                         <div id="runningBarDiv" style="height: 65px; width: 118px;" /> 
                         <h:outputScript library="jqPlot" name="createRunningGraph.js"/>
                         <div id="loadBarDiv" style="height: 65px; width: 118px;" />                                                
-                        <h:outputScript library="jqPlot" name="createLoadGraph.js"/>
-                        <h:panelGrid styleClass="subStatusCol3">
-                            <div id="diskBarDiv" style="height: 65px; width: 65px;"/>  
-                            <h:outputText value="Disk" styleClass="barSubtitle" />
-                            <h:outputScript library="jqPlot" name="createDiskGraph.js"/>
-                        </h:panelGrid>
+                        <h:outputScript library="jqPlot" name="createLoadGraph.js"/>                        
+                        <div id="diskBarDiv" style="height: 65px; width: 118px;"/>  
+                        <h:outputScript library="jqPlot" name="createDiskGraph.js"/>
                     </h:panelGrid>                    
                 </h:panelGrid>                
                 <h:panelGrid id="status_5_panel" styleClass="subStatusPanel" style="padding-left: 20px;">
@@ -766,13 +764,131 @@
                             <h:panelGrid columns="2" 
                                          columnClasses="topCol,topCol" 
                                          width="100%">
-                                <h:graphicImage library="img" name="tableTasks.png" styleClass="regularColAndBorderRight" />
-                                <h:panelGrid>
-                                    <h:graphicImage library="img" name="Screenshot1.png" />
-                                    <h:graphicImage library="img" name="search.png"/>                                
-                                    <h:commandButton value="Search">
-                                        <rich:componentControl target="searchPopup" operation="show" />
-                                    </h:commandButton>    
+                                <rich:dataTable id="tasksTable" 
+                                                value="#{processesBean.allProcesses}" 
+                                                var="process" 
+                                                iterationStatusVar="it"                                     
+                                                rows="10">
+                                    <rich:column>
+                                        <f:facet name="header">ID</f:facet>
+                                        <h:outputText value="#{process.idProcess}" />
+                                    </rich:column>
+
+                                    <rich:column>
+                                        <f:facet name="header">User</f:facet>
+                                        <h:outputText value="#{process.user.userName}" />
+                                    </rich:column>
+                                    <rich:column>
+                                        <f:facet name="header">Name</f:facet>
+                                        <h:outputText value="#{process.name}" />
+                                    </rich:column>
+                                    <rich:column>
+                                        <f:facet name="header">Type</f:facet>
+                                        <h:outputText value="#{process.type}" />
+                                    </rich:column>
+                                    <rich:column>
+                                        <f:facet name="header">Priority</f:facet>
+                                        <h:outputText value="#{process.priority}" />
+                                    </rich:column>
+                                    <rich:column>
+                                        <f:facet name="header">Status</f:facet>                                                        
+                                        <h:outputText value="#{process.status}" 
+                                                      style="color: green;" 
+                                                      rendered="#{process.status.equalsIgnoreCase('finished')}"/>
+                                        <h:outputText value="#{process.status}" 
+                                                      style="color: red;" 
+                                                      rendered="#{process.status.equalsIgnoreCase('running')}"/>
+                                        <h:outputText value="#{process.status}" 
+                                                      style="color: blue;" 
+                                                      rendered="#{process.status.equalsIgnoreCase('waiting')}"/>                                                      
+                                    </rich:column>
+                                    <rich:column>
+                                        <f:facet name="header">Start time</f:facet>
+                                        <h:outputText value="#{process.startTime}" />
+                                    </rich:column>
+                                    <rich:column>
+                                        <f:facet name="header">End time</f:facet>
+                                        <h:outputText value="#{process.endTime}" />
+                                    </rich:column>
+                                    <rich:column>
+                                        <f:facet name="header">Actions</f:facet>
+                                        <h:selectOneMenu value="#{processesBean.action}">
+                                            <f:selectItem noSelectionOption="true"
+                                                          id="noOptionTasks"/>
+                                            <f:selectItem itemLabel="Cancel" 
+                                                          itemValue="cancel"
+                                                          itemDisabled="#{processesBean.isFinished(process.idProcess)}"/>
+                                            <f:selectItem itemLabel="Force Start" 
+                                                          itemValue="force"
+                                                          itemDisabled="#{not processesBean.isWaiting(process.idProcess)}"/>
+                                        </h:selectOneMenu>
+                                    </rich:column>
+                                    <f:facet name="footer">
+                                        <rich:dataScroller page="#{processesBean.page}" />
+                                        <br />
+                                        <rich:column colspan="8">
+                                            <a4j:commandButton id="tasksButton"
+                                                               value="Submit" 
+                                                               action="#{processesBean.executeActions}"                                                       
+                                                               render="tasksTable" />
+                                        </rich:column>
+                                    </f:facet>                        
+                                </rich:dataTable>                                
+                                <h:panelGrid>                                                                                                 
+                                    <div id="tasksDiv" style="height: 200px; width: 500px;" />
+                                    <h:outputScript library="jqPlot" name="createTasksPlot.js"/>     
+                                    <!--h:graphicImage library="img" name="Screenshot1.png" width="100%" /--> 
+                                    <rich:panel>
+                                        <f:facet name="header">
+                                            <h:outputText value="Search" />
+                                        </f:facet>
+                                        <h:panelGrid columns="4">
+                                            <h:outputText value="Name" />
+                                            <h:inputText />
+                                            <h:outputText />
+                                            <h:outputText />
+                                            <h:outputText value="Type" />
+                                            
+                                            <h:selectOneMenu value="">
+                                                <f:selectItem noSelectionOption="true"/>
+                                                <f:selectItem itemLabel="Type 1" 
+                                                              itemValue="type1"/>
+                                                <f:selectItem itemLabel="Type 2" 
+                                                              itemValue="type 2"/>
+                                            </h:selectOneMenu>
+                                            
+                                            <h:outputText />
+                                            <h:outputText />
+                                            <h:outputText value="Priority" />
+                                            
+                                            <h:selectOneMenu value="">
+                                                <f:selectItem noSelectionOption="true"/>
+                                                <f:selectItem itemLabel="Priority 1" 
+                                                              itemValue="priority1"/>
+                                                <f:selectItem itemLabel="Priority 2" 
+                                                              itemValue="priority2"/>
+                                            </h:selectOneMenu>                                            
+                                            <h:outputText />
+                                            <h:outputText />
+                                            <h:outputText value="Elapsed time" />
+                                            <h:inputText />
+                                            <h:outputText />      
+                                            <h:outputText />                                            
+                                            <h:outputText value="Started" />
+                                            <h:inputText />           
+                                            <h:outputText value="Finished" />
+                                            <h:inputText />
+                                            <h:outputText value="User" />
+                                            <h:inputText />
+                                            <h:outputText />
+                                            <h:outputText />
+                                            <h:outputText />
+                                            <h:commandButton value="Search">
+                                                <rich:componentControl target="searchPopup" operation="show" />
+                                            </h:commandButton>
+                                        </h:panelGrid>
+                                    </rich:panel>
+                                    <!--h:graphicImage library="img" name="search.png"/-->
                                 </h:panelGrid>
                             </h:panelGrid>      
                         </h:panelGrid>                        
@@ -784,11 +900,82 @@
                                 <!-- LAUNCH -->
                                 <h:panelGrid rendered="#{not userBean.launchLoading}" 
                                              styleClass="regularColAndBorderRight">
-                                    <h:graphicImage library="img" name="Screenshot11.png"/>
-                                    <a4j:commandButton value="Submit" 
-                                                       render="launchCol,launchPoll"
-                                                       action="#{userBean.setLaunchLoading(true)}"/>                                        
-                                </h:panelGrid>
+                                    <rich:dataTable id="tasksSimplyTable" 
+                                                    value="#{processesBean.allProcesses}" 
+                                                    var="process" 
+                                                    iterationStatusVar="it"                                     
+                                                    rows="10">
+                                        <rich:column>
+                                            <f:facet name="header">ID</f:facet>
+                                            <h:outputText value="#{process.idProcess}" />
+                                        </rich:column>
+
+                                        <rich:column>
+                                            <f:facet name="header">User</f:facet>
+                                            <h:outputText value="#{process.user.userName}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header">Name</f:facet>
+                                            <h:outputText value="#{process.name}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header">Type</f:facet>
+                                            <h:outputText value="#{process.type}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header">Priority</f:facet>
+                                            <h:outputText value="#{process.priority}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header">Status</f:facet>                                                        
+                                            <h:outputText value="#{process.status}" 
+                                                          style="color: green;" 
+                                                          rendered="#{process.status.equalsIgnoreCase('finished')}"/>
+                                            <h:outputText value="#{process.status}" 
+                                                          style="color: red;" 
+                                                          rendered="#{process.status.equalsIgnoreCase('running')}"/>
+                                            <h:outputText value="#{process.status}" 
+                                                          style="color: blue;" 
+                                                          rendered="#{process.status.equalsIgnoreCase('waiting')}"/>                                                      
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header">Start time</f:facet>
+                                            <h:outputText value="#{process.startTime}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header">End time</f:facet>
+                                            <h:outputText value="#{process.endTime}" />
+                                        </rich:column>                                        
+                                        <f:facet name="footer">
+                                            <rich:dataScroller page="#{processesBean.page}" />                                            
+                                        </f:facet>                        
+                                    </rich:dataTable> 
+                                    <br />
+                                    <rich:panel>
+                                        <f:facet name="header">
+                                            <h:outputText value="Parameters" />
+                                        </f:facet>
+                                        <h:panelGrid columns="3">
+                                            <h:outputText value="Matrix A" />
+                                            <h:inputText />
+                                            <h:outputText />
+                                            <h:outputText value="Matrix B" />
+                                            <h:inputText />
+                                            <h:outputText />
+                                            <h:outputText value="Matrix File" />                                           
+                                            <h:inputText />
+                                            <a4j:commandButton value="Upload"/>                                            
+                                        </h:panelGrid>   
+                                        <hr />
+                                        <h:panelGrid styleClass="centered">
+                                            <a4j:commandButton value="Submit" 
+                                                               render="launchCol,launchPoll"
+                                                               action="#{userBean.setLaunchLoading(true)}"/>
+                                        </h:panelGrid>                                                                                
+                                    </rich:panel>   
+                                    <br />
+                                    <h:outputText value="UPDATE AJAX COMPONENT FOR RELOADING..." />
+                                </h:panelGrid>                                
                                 <h:panelGrid rendered="#{userBean.launchLoading}" 
                                              styleClass="regularColAndBorderRight">
                                     <h:graphicImage library="img" name="processing.gif"/>                                
@@ -998,14 +1185,97 @@
                     <f:facet name="controls">
                         <h:outputLink value="#" 
                                       onclick="#{rich:component('searchPopup')}.hide(); return false;">
-                            X
+                            <h:graphicImage library="img" name="closeIcon.png" width="16px" />
                         </h:outputLink>
                     </f:facet>
-                    <h:panelGrid>
-                        <h:graphicImage library="img" name="popup1.png" />
-                        <h:commandButton value="Export">
-                            <rich:componentControl target="exportPopup" operation="show" />
-                        </h:commandButton>
+                    <h:panelGrid>                        
+                        <rich:dataTable id="resultsTasksTable" 
+                                        value="#{processesBean.allProcesses}" 
+                                        var="process" 
+                                        iterationStatusVar="it"                                     
+                                        rows="10"
+                                        styleClass="centered">
+                            <rich:column>
+                                <f:facet name="header">ID</f:facet>
+                                <h:outputText value="#{process.idProcess}" />
+                            </rich:column>
+
+                            <rich:column>
+                                <f:facet name="header">User</f:facet>
+                                <h:outputText value="#{process.user.userName}" />
+                            </rich:column>
+                            <rich:column>
+                                <f:facet name="header">Name</f:facet>
+                                <h:outputText value="#{process.name}" />
+                            </rich:column>
+                            <rich:column>
+                                <f:facet name="header">Type</f:facet>
+                                <h:outputText value="#{process.type}" />
+                            </rich:column>
+                            <rich:column>
+                                <f:facet name="header">Priority</f:facet>
+                                <h:outputText value="#{process.priority}" />
+                            </rich:column>
+                            <rich:column>
+                                <f:facet name="header">Status</f:facet>                                                        
+                                <h:outputText value="#{process.status}" 
+                                              style="color: green;" 
+                                              rendered="#{process.status.equalsIgnoreCase('finished')}"/>
+                                <h:outputText value="#{process.status}" 
+                                              style="color: red;" 
+                                              rendered="#{process.status.equalsIgnoreCase('running')}"/>
+                                <h:outputText value="#{process.status}" 
+                                              style="color: blue;" 
+                                              rendered="#{process.status.equalsIgnoreCase('waiting')}"/>                                                      
+                            </rich:column>
+                            <rich:column>
+                                <f:facet name="header">Start time</f:facet>
+                                <h:outputText value="#{process.startTime}" />
+                            </rich:column>
+                            <rich:column>
+                                <f:facet name="header">End time</f:facet>
+                                <h:outputText value="#{process.endTime}" />
+                            </rich:column>
+                            <rich:column>
+                                <f:facet name="header">Actions</f:facet>
+                                <h:selectOneMenu value="#{processesBean.action}">
+                                    <f:selectItem noSelectionOption="true"/>
+                                    <f:selectItem itemLabel="Cancel" 
+                                                  itemValue="cancel"
+                                                  itemDisabled="#{processesBean.isFinished(process.idProcess)}"/>
+                                    <f:selectItem itemLabel="Force Start" 
+                                                  itemValue="force"
+                                                  itemDisabled="#{not processesBean.isWaiting(process.idProcess)}"/>
+                                </h:selectOneMenu>
+                            </rich:column>
+                            <f:facet name="footer">
+                                <rich:dataScroller page="#{processesBean.page}" />                                
+                            </f:facet>                        
+                        </rich:dataTable>      
+                        <hr />
+                        <h:panelGrid columns="6">
+                            <div id="resultOneDiv" class="resultPie" />
+                            <h:outputScript library="jqPlot" name="createDiskOne.js"/>
+                            <div id="resultTwoDiv" class="resultPie" />
+                            <h:outputScript library="jqPlot" name="createDiskTwo.js"/>
+                            <div id="resultThreeDiv" class="resultPie" /> 
+                            <h:outputScript library="jqPlot" name="createDiskThree.js"/>
+                        </h:panelGrid>
+                        <hr />                        
+                        <h:panelGrid columns="4" styleClass="centered">
+                            <h:outputText value="Format" />
+                            <h:selectOneMenu value="">
+                                <f:selectItem noSelectionOption="true"/>
+                                <f:selectItem itemLabel="PDF" 
+                                                  itemValue="pdf"/>
+                                <f:selectItem itemLabel="CSV" 
+                                                  itemValue="csv"/>
+                            </h:selectOneMenu>                            
+                            <h:commandButton value="Export">
+                                <rich:componentControl target="exportPopup" operation="show" />
+                            </h:commandButton>
+                            <h:commandButton value="Cancel" onclick="#{rich:component('searchPopup')}.hide(); return false;"/>
+                        </h:panelGrid>
                     </h:panelGrid>
                 </rich:popupPanel>
 
@@ -1019,10 +1289,15 @@
                     <f:facet name="controls">
                         <h:outputLink value="#" 
                                       onclick="#{rich:component('exportPopup')}.hide(); return false;">
-                            X
+                            <h:graphicImage library="img" name="closeIcon.png" width="16px" />
                         </h:outputLink>
                     </f:facet>
-                    <h:outputText value="New PDF/CSV File"/>
+                    <h:panelGrid styleClass="centered">
+                        <h:outputText value="New PDF/CSV File"/>                        
+                    </h:panelGrid>
+                    <h:panelGrid styleClass="centered">
+                        <h:commandButton value="OK" onclick="#{rich:component('exportPopup')}.hide(); return false;"/>
+                    </h:panelGrid>
                 </rich:popupPanel>
 
                 <rich:tab header="Management"

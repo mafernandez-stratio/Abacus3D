@@ -40,6 +40,7 @@
                     X
                 </h:outputLink>
             </f:facet-->
+            <h:outputScript library="js" name="clientInfo.js"/>
             <h:form id="loginForm">
                 <rich:messages for="gv" />
                 <rich:messages globalOnly="true" />
@@ -64,8 +65,12 @@
                     <h:outputText value="DCs: " rendered="{userBean.ldapAuthentication}" />
                     <h:inputText value="{userBean.dcs}" rendered="{userBean.ldapAuthentication}" /-->
                                          
-                    <a4j:commandButton value="Log In" action="#{userBean.login}" />
-                    <h:outputText value=" " />
+                    <h:inputHidden id="clientinfo" value="#{userBean.screenSize}" />
+                    
+                    <a4j:commandButton value="Log In" 
+                                       action="#{userBean.login}"
+                                       onclick="getClientInfo();" />
+                    <h:outputText value=" " />                     
                     <!--h:outputLink value="registration.xhtml">New User</h:outputLink-->
                 </h:panelGrid>                
             </h:form>

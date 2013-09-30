@@ -20,8 +20,9 @@ body {
     height: 40px;
     opacity: 0.7;   
     bottom: 0%;
-    width: 98.4%;
-    position: absolute;
+    width: 99.8%;
+    position: relative;
+    overflow: hidden;
 }
 
 #footerPanel_body {
@@ -337,12 +338,24 @@ body {
     font-size: 7pt
 }
 
-#diskBarDiv .jqplot-series-shadowCanvas,
-#diskBarDiv .jqplot-series-canvas,
-#diskBarDiv .jqplot-pieRenderer-highlight-canvas, 
-#diskBarDiv .jqplot-highlight-canvas,
-#diskBarDiv .jqplot-event-canvas {
-    width: 65px;
-    height: 65px;
+/*
+#diskBarDiv .jqplot-series-canvas {
+    width: 64px;
+    height: 64px;
+}*/
+
+.rf-tab-cnt {
+    height: 647px !important;
 }
 
+.resultPie{
+    width: 280px;
+}
+
+.centered {
+    margin: 0 auto;
+}
+
+.rf-pp-cnt, .rf-pp-cnt-scrlr {
+    background-color: #CFDFFF !important;
+}

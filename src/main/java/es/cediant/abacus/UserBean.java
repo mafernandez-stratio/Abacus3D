@@ -58,6 +58,7 @@ public class UserBean implements Serializable {
     private Date startLaunch;
     private Date startDeploy;
     private Date startTest;
+    private String screenSize;
         
     //private final String hostLDAP = "10.129.129.148";
     //private final int portLDAP = 389;    
@@ -65,6 +66,12 @@ public class UserBean implements Serializable {
     public UserBean(){        
         logoImg = "logoHere.jpg";
         lastAccesedTime = System.currentTimeMillis();
+        
+//        String clientInfo = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("loginForm:clientinfo");
+//        System.out.println(" >>> " + clientInfo);
+//        screenSize = clientInfo;
+//        screenSize=screenSize.substring(clientInfo.indexOf("Screensize")+13);
+        
         //System.out.println("New UserBean");
         /*SelectItem item = new SelectItem("CN", "CN"); 
         ldapAuthTypes.add(item);
@@ -221,7 +228,15 @@ public class UserBean implements Serializable {
         }
         this.testLoading = testLoading;
     }
-            
+
+    public String getScreenSize() {
+        return screenSize;
+    }
+
+    public void setScreenSize(String screenSize) {
+        this.screenSize = screenSize;
+    }                
+    
     public String getActiveTab() {
         //System.out.println("activeTab="+activeTab);
         return activeTab;

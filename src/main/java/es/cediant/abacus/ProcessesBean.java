@@ -7,7 +7,6 @@ package es.cediant.abacus;
 import es.cediant.db.ProcessHelper;
 import es.cediant.db.Process;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import javax.faces.component.UIComponent;
@@ -25,6 +24,7 @@ public class ProcessesBean implements Serializable {
     private String action;
     private HashMap<Integer, String> mapForms = new HashMap<Integer, String>();
     private HashMap<Integer, Boolean> nullActions = new HashMap<Integer, Boolean>();
+    private int page = 1;
 
     /**
      * Creates a new instance of ProcessesBean
@@ -67,6 +67,14 @@ public class ProcessesBean implements Serializable {
         Process process = ph.getProcess(id);
         return process.getStatus().equalsIgnoreCase("finished"); 
     }            
+
+    public int getPage() {
+        return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
+    }        
 
     public void valueChanged(ValueChangeEvent event) {
         System.out.println(" <<< valueChanged >>> ");
