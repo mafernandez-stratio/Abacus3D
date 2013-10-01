@@ -36,4 +36,9 @@
         <managed-bean-class>es.cediant.abacus.NodesBean</managed-bean-class>
         <managed-bean-scope>session</managed-bean-scope>
     </managed-bean>
+    <managed-bean>
+        <managed-bean-name>processesTableBean</managed-bean-name>
+        <managed-bean-class>es.cediant.abacus.ProcessesTableBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
 </faces-config>

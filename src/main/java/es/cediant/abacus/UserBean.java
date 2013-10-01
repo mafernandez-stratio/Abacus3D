@@ -184,7 +184,9 @@ public class UserBean implements Serializable {
     }
     
     public void setLaunchLoading(boolean launchLoading) {
+        System.out.println("setLaunchLoading");
         if(startLaunch == null){
+            System.out.println("new Date()");
             startLaunch = new Date();
         }
         System.out.println("New launch Loading = "+launchLoading);

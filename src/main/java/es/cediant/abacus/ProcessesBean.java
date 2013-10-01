@@ -125,7 +125,7 @@ public class ProcessesBean implements Serializable {
     public List<Process> getLastProcesses(int num){
         ProcessHelper ph = new ProcessHelper();
         return ph.getLastProcesses(num);        
-    }
-        
+    }    
+    
 }
 

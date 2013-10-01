@@ -157,7 +157,7 @@
         </rich:popupPanel>
         <!--a4j:status onstart="{rich:component('statPane')}.show()" 
                     onstop="{rich:component('statPane')}.hide()" /-->                        
-        <h:form>
+        <h:form id="generalForm">
             <a4j:jsFunction name="setActiveTab"    
                             render="poll,dashboardGrid,managementPanel,tasksPanel,myAccountPanel,myMonitorPanel">
                 <a4j:param name="activeTab" assignTo="#{userBean.activeTab}"/>
@@ -900,16 +900,21 @@
                                 <!-- LAUNCH -->
                                 <h:panelGrid rendered="#{not userBean.launchLoading}" 
                                              styleClass="regularColAndBorderRight">
-                                    <rich:dataTable id="tasksSimplyTable" 
-                                                    value="#{processesBean.allProcesses}" 
-                                                    var="process" 
-                                                    iterationStatusVar="it"                                     
-                                                    rows="10">
+                                    <rich:extendedDataTable id="tasksSimplyTable" 
+                                                            value="#{processesBean.allProcesses}" 
+                                                            var="process" 
+                                                            iterationStatusVar="it"                                     
+                                                            rows="10"
+                                                            selection="#{processesTableBean.selection}"
+                                                            selectionMode="#{processesTableBean.selectionMode}">
+                                        <a4j:ajax execute="@none"
+                                                  event="selectionchange" 
+                                                  listener="#{processesTableBean.selectionListener}"
+                                                  render=":processSubmitPanel"/>
                                         <rich:column>
                                             <f:facet name="header">ID</f:facet>
                                             <h:outputText value="#{process.idProcess}" />
                                         </rich:column>
-
                                         <rich:column>
                                             <f:facet name="header">User</f:facet>
                                             <h:outputText value="#{process.user.userName}" />
@@ -949,13 +954,17 @@
                                         <f:facet name="footer">
                                             <rich:dataScroller page="#{processesBean.page}" />                                            
                                         </f:facet>                        
-                                    </rich:dataTable> 
+                                    </rich:extendedDataTable> 
                                     <br />
-                                    <rich:panel>
+                                    <rich:panel id="processSubmitPanel">
                                         <f:facet name="header">
                                             <h:outputText value="Parameters" />
                                         </f:facet>
                                         <h:panelGrid columns="3">
+                                            <h:outputText value="TASK: " styleClass="title1" />
+                                            <h:outputText value="#{processesTableBean.selectedProcess.name}"
+                                                          styleClass="title1" />
+                                            <h:outputText />
                                             <h:outputText value="Matrix A" />
                                             <h:inputText />
                                             <h:outputText />
@@ -970,11 +979,9 @@
                                         <h:panelGrid styleClass="centered">
                                             <a4j:commandButton value="Submit" 
                                                                render="launchCol,launchPoll"
-                                                               action="#{userBean.setLaunchLoading(true)}"/>
+                                                               onbeforedomupdate="#{userBean.setLaunchLoading(true)}"/>
                                         </h:panelGrid>                                                                                
                                     </rich:panel>   
-                                    <br />
-                                    <h:outputText value="UPDATE AJAX COMPONENT FOR RELOADING..." />
                                 </h:panelGrid>                                
                                 <h:panelGrid rendered="#{userBean.launchLoading}" 
                                              styleClass="regularColAndBorderRight">
@@ -988,7 +995,7 @@
                                     </h:commandLink>                                    
                                     <a4j:commandButton value="Deploy" 
                                                        render="launchCol,deployPoll"
-                                                       action="#{userBean.setDeployLoading(true)}"/>                                        
+                                                       onbeforedomupdate="#{userBean.setDeployLoading(true)}"/>                                        
                                 </h:panelGrid>
                                 <h:panelGrid rendered="#{userBean.deployLoading}" 
                                              styleClass="regularCol">
@@ -1056,7 +1063,7 @@
                         <f:facet name="controls">
                             <h:outputLink value="#" 
                                           onclick="#{rich:component('submittedPopup')}.hide(); return false;">
-                                X
+                                <h:graphicImage library="img" name="closeIcon.png" width="16px" />
                             </h:outputLink>
                         </f:facet>
                         <h:panelGrid columns="2">
@@ -1076,7 +1083,7 @@
                         <f:facet name="controls">
                             <h:outputLink value="#" 
                                           onclick="#{rich:component('deployedPopup')}.hide(); return false;">
-                                X
+                                <h:graphicImage library="img" name="closeIcon.png" width="16px" />
                             </h:outputLink>
                         </f:facet>
                         <h:panelGrid columns="2">
