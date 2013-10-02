@@ -12,6 +12,11 @@ root {
 
 body {
     background-color: #F5F5DC;
+    margin: 5px;
+}
+
+#statusPanel {
+    padding: 0px;
 }
 
 #footerPanel {
@@ -20,7 +25,7 @@ body {
     height: 40px;
     opacity: 0.7;   
     bottom: 0%;
-    width: 99.8%;
+    width: 99.76%;
     position: relative;
     overflow: hidden;
 }
@@ -80,7 +85,7 @@ body {
     width: 100%; 
 }
 
-#welcomeName, .title1 {
+#welcomeName, .title1, .dashboardSubtitle {
     font-weight: bolder;
 }
 
@@ -101,15 +106,11 @@ body {
     right: 50%;
 }
 
-#statusPanel {
-    padding: 0px;
-}
-
 .headerStatus {
     padding: 0px !important;
 }
 
-#statusPanel *, .removeSpacing {
+.removeSpacing {
     border-spacing: 0px !important;
 }
 
@@ -118,7 +119,7 @@ body {
     background: #CFDFFF;
 }
 
-#status_1_panel, #status_2_panel, #status_3_panel, #status_4_panel, .regularColAndBorderRight {
+.regularColAndBorderRight {
     border-right: #999 thin solid;
 }
 
@@ -197,6 +198,10 @@ body {
 
 .dashboardTitle {
     border-top: 10px;
+}
+
+.dashboardSubtitle {
+    margin-left: 5px;
 }
 
 .verticalSeparator {
@@ -345,17 +350,43 @@ body {
 }*/
 
 .rf-tab-cnt {
-    height: 647px !important;
+    height: 660px !important;
+    border: #D4CFC7 1px solid !important;
 }
 
 .resultPie{
     width: 280px;
 }
 
-.centered {
+.centered, .innerPanel {
     margin: 0 auto;
 }
 
 .rf-pp-cnt, .rf-pp-cnt-scrlr {
     background-color: #CFDFFF !important;
+}
+
+.outerPanel * {
+    border-spacing: 0px !important;
+}
+
+.outerPanel td {
+    border: #D4CFC7 thin solid;
+}
+
+.innerPanel * {
+    border: none !important;
+}
+
+.tabActive {
+    background: #CFDFFF !important; 
+}
+
+.rf-tab-hdr-spcr {
+    padding: 0px !important;
+}
+
+.contentTab {
+    padding: 0px !important;
+    padding-top: 5px !important;
 }

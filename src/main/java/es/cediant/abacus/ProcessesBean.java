@@ -21,6 +21,7 @@ public class ProcessesBean implements Serializable {
     private static final long serialVersionUID = 5651395627768122272L;
     
     private List<Process> allProcesses;
+    private List<Process> allTests;
     private String action;
     private HashMap<Integer, String> mapForms = new HashMap<Integer, String>();
     private HashMap<Integer, Boolean> nullActions = new HashMap<Integer, Boolean>();
@@ -41,6 +42,16 @@ public class ProcessesBean implements Serializable {
     public void setAllProcesses(List<Process> allProcesses) {
         this.allProcesses = allProcesses;
     }
+
+    public List<Process> getAllTests() {
+        ProcessHelper ph = new ProcessHelper();
+        allTests = ph.listProcesses("type", "test");
+        return allTests;
+    }
+
+    public void setAllTests(List<Process> allTests) {
+        this.allTests = allTests;
+    }        
 
     public String getAction() {
         return action;

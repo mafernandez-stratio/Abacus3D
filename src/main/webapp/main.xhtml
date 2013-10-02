@@ -64,8 +64,12 @@
                                switchType="client"
                                bodyClass="statusStyle"
                                headerClass="headerStatus">
-            <h:panelGrid id="outerStatusPanel" columns="5">
-                <h:panelGrid id="status_1_panel" styleClass="subStatusPanel">
+            <h:panelGrid columns="5"                            
+                         width="100%"
+                         styleClass="outerPanel"
+                         cellspacing="0">
+                <h:panelGrid id="status_1_panel" 
+                             styleClass="innerPanel">
                     <h:outputText value="INFO" styleClass="subStatusTitle" />
                     <h:panelGrid columns="2" >                        
                         <h:graphicImage library="img" name="serverIcon.png" height="48px;" 
@@ -82,17 +86,17 @@
                         </h:panelGrid>
                     </h:panelGrid>                    
                 </h:panelGrid>
-                <h:panelGrid id="status_2_panel" styleClass="subStatusPanel">
+                <h:panelGrid id="status_2_panel" styleClass="innerPanel">
                     <h:outputText value="COMPUTER" styleClass="subStatusTitle" />                    
                     <div id="computerBarDiv" style="height: 65px; width: 176px;" />
                     <h:outputScript library="jqPlot" name="createComputerGraph.js"/>
                 </h:panelGrid>
-                <h:panelGrid id="status_3_panel" styleClass="subStatusPanel">
+                <h:panelGrid id="status_3_panel" styleClass="innerPanel">
                     <h:outputText value="GPU" styleClass="subStatusTitle" />
                     <div id="gpuBarDiv" style="height: 65px; width: 118px;" />
                     <h:outputScript library="jqPlot" name="createGpuGraph.js"/>                                       
                 </h:panelGrid>
-                <h:panelGrid id="status_4_panel" styleClass="subStatusPanel">
+                <h:panelGrid id="status_4_panel" styleClass="innerPanel">
                     <h:outputText value="SYSTEM HEALTH" styleClass="subStatusTitle" />                    
                     <h:panelGrid columns="8" columnClasses="subStatusCol2,subStatusCol2,subStatusCol2,subStatusCol2">
                         <div id="queuedBarDiv" style="height: 65px; width: 118px;" />   
@@ -105,7 +109,7 @@
                         <h:outputScript library="jqPlot" name="createDiskGraph.js"/>
                     </h:panelGrid>                    
                 </h:panelGrid>                
-                <h:panelGrid id="status_5_panel" styleClass="subStatusPanel" style="padding-left: 20px;">
+                <h:panelGrid id="status_5_panel" styleClass="innerPanel">
                     <a4j:commandButton value="Refresh" 
                                        render="outerStatusPanel"/>
                 </h:panelGrid>                                
@@ -168,14 +172,16 @@
             </a4j:jsFunction> 
             <rich:tabPanel id="generalTabPanel"
                            switchType="client" 
-                           activeItem="#{userBean.activeTab==null?'Dashboard':userBean.activeTab}">
+                           activeItem="#{userBean.activeTab==null?'Dashboard':userBean.activeTab}"
+                           tabActiveHeaderClass="tabActive">
 
                 <!--div id="externdiv" style="width: 48%;" /-->
                 <!--div id="piechart" style="width: 48%;" /-->                        
                 <rich:tab header="Dashboard"
                           id="Dashboard"
                           onenter="setActiveTab('Dashboard'); buildgraphs('#{dashboardBean.strOne}', '#{dashboardBean.strTwo}', #{dashboardBean.interval});"                      
-                          render="poll,dashboardGrid">  
+                          render="poll,dashboardGrid"
+                          contentClass="contentTab">  
                     <f:facet name="header">
                         <h:panelGroup>
                             <h:panelGrid columns="2" columnClasses="middleCol,bottomCol">
@@ -230,7 +236,7 @@
                         </h:form>
                     </c:if>
                     
-                    <h:outputText value="TASKS" styleClass="title1" />
+                    <h:outputText value="TASKS" styleClass="dashboardSubtitle" />
                     <h:panelGrid id="tasksDashboard" columns="2" styleClass="dashboardPanelAndSpace">                                                                    
                         <h:panelGrid>                            
                             <div id="dashboardFirstDiv" style="height: 200px; width: 500px;" />
@@ -307,7 +313,7 @@
                         </rich:dataTable>  
                         <!--h:graphicImage library="img" name="Screenshot3.png" width="100%" /-->
                     </h:panelGrid> 
-                    <h:outputText value="SYSTEM" styleClass="title1" />
+                    <h:outputText value="SYSTEM" styleClass="dashboardSubtitle" />
                     <h:panelGrid id="systemDashboard" columns="2" 
                                  styleClass="dashboardPanel" width="100%"
                                  columnClasses="dashboardCols,dashboardCols">
@@ -415,9 +421,9 @@
                             </f:facet>                        
                         </rich:dataTable>                        
                     </h:panelGrid>                    
-                    <h:panelGrid id="alertsUpdateDashboard" columns="2" styleClass="removeSpacing">                    
-                        <h:panelGrid id="alertsDashboard" styleClass="removeSpacing">
-                            <h:outputText value="ALERTS" styleClass="title1" />   
+                    <h:panelGrid id="alertsUpdateDashboard" columns="2" cellspacing="0" cellpadding="0">                    
+                        <h:panelGrid id="alertsDashboard" cellspacing="0" cellpadding="0">
+                            <h:outputText value="ALERTS" styleClass="dashboardSubtitle" />   
                             <h:panelGrid columns="5" styleClass="removeSpacing" 
                                          columnClasses="alertsCols,alertsCols,alertsCols,alertsCols,alertsCols">
                                 <h:panelGrid styleClass="alertPanel" 
@@ -529,7 +535,7 @@
                         </h:panelGrid>                    
                         <h:panelGrid id="updateDashboard" styleClass="verticalSeparator">
                             <h:panelGrid>
-                                <h:outputText value="OTHERS" styleClass="title1" />
+                                <h:outputText value="OTHERS" styleClass="dashboardSubtitle" />
                                 <h:panelGrid styleClass="othersPanel" 
                                              columnClasses="alertColPanel">
                                     <h:panelGrid columns="2" 
@@ -898,19 +904,23 @@
                                      rendered="#{userBean.getActiveSub().equalsIgnoreCase('Launch')}">
                             <h:panelGrid id="launchCol" columns="4">
                                 <!-- LAUNCH -->
-                                <h:panelGrid rendered="#{not userBean.launchLoading}" 
-                                             styleClass="regularColAndBorderRight">
-                                    <rich:extendedDataTable id="tasksSimplyTable" 
-                                                            value="#{processesBean.allProcesses}" 
-                                                            var="process" 
-                                                            iterationStatusVar="it"                                     
-                                                            rows="10"
-                                                            selection="#{processesTableBean.selection}"
-                                                            selectionMode="#{processesTableBean.selectionMode}">
-                                        <a4j:ajax execute="@none"
+                                <rich:panel rendered="#{not userBean.launchLoading}">
+                                    <f:facet name="header">
+                                        <h:outputText value="DEPLOYED APPLICATIONS" />
+                                    </f:facet>
+                                    <rich:dataTable id="tasksSimplyTable" 
+                                                    value="#{processesBean.allProcesses}" 
+                                                    var="process" 
+                                                    iterationStatusVar="it"                                     
+                                                    rows="10">
+                                        <!--                                   
+                                        selection="{processesTableBean.selection}"
+                                        selectionMode="{processesTableBean.selectionMode}"
+                                        -->
+                                        <!--a4j:ajax execute="@none"
                                                   event="selectionchange" 
-                                                  listener="#{processesTableBean.selectionListener}"
-                                                  render=":processSubmitPanel"/>
+                                                  listener="{processesTableBean.selectionListener}"
+                                                  render=":processSubmitPanel"/-->
                                         <rich:column>
                                             <f:facet name="header">ID</f:facet>
                                             <h:outputText value="#{process.idProcess}" />
@@ -954,7 +964,7 @@
                                         <f:facet name="footer">
                                             <rich:dataScroller page="#{processesBean.page}" />                                            
                                         </f:facet>                        
-                                    </rich:extendedDataTable> 
+                                    </rich:dataTable> 
                                     <br />
                                     <rich:panel id="processSubmitPanel">
                                         <f:facet name="header">
@@ -982,20 +992,41 @@
                                                                onbeforedomupdate="#{userBean.setLaunchLoading(true)}"/>
                                         </h:panelGrid>                                                                                
                                     </rich:panel>   
-                                </h:panelGrid>                                
+                                </rich:panel>                                
                                 <h:panelGrid rendered="#{userBean.launchLoading}" 
                                              styleClass="regularColAndBorderRight">
                                     <h:graphicImage library="img" name="processing.gif"/>                                
                                 </h:panelGrid>
                                 <!-- DEPLOY -->
                                 <h:panelGrid rendered="#{not userBean.deployLoading}" styleClass="regularCol">
-                                    <h:commandLink onclick="#{rich:component('paramPopup')}.show(); return false;">
-                                        <h:graphicImage library="img" 
-                                                    name="Screenshot12.png"/>
-                                    </h:commandLink>                                    
-                                    <a4j:commandButton value="Deploy" 
-                                                       render="launchCol,deployPoll"
-                                                       onbeforedomupdate="#{userBean.setDeployLoading(true)}"/>                                        
+                                    <rich:panel>
+                                        <f:facet name="header">
+                                            <h:outputText value="CREATE NEW TASK"/>
+                                        </f:facet> 
+                                        <h:panelGrid columns="3">
+                                            <h:outputText value="Application Name: "/>
+                                            <h:inputText />
+                                            <h:outputText />
+                                            <h:outputText />
+                                            <a4j:commandButton value="Add new parameter" 
+                                                               onclick="#{rich:component('paramPopup')}.show(); return false;" />                                                
+                                            <h:outputText />
+                                            <h:outputText value="Executable File: "/>
+                                            <h:inputText />
+                                            <a4j:commandButton value="Upload" />
+                                            <h:outputText value="Extra Files (.zip): "/>
+                                            <h:inputText />
+                                            <a4j:commandButton value="Upload" />
+                                            <h:outputText />
+                                            <a4j:commandButton value="Deploy" 
+                                                               render="launchCol,deployPoll"
+                                                               onbeforedomupdate="#{userBean.setDeployLoading(true)}"/>
+                                            <h:outputText />
+                                        </h:panelGrid>
+                                    </rich:panel>                                    
+                                    <!--h:commandLink onclick="{rich:component('paramPopup')}.show(); return false;">
+                                        <h:graphicImage library="img" name="Screenshot12.png"/>
+                                    </h:commandLink-->                                                                        
                                 </h:panelGrid>
                                 <h:panelGrid rendered="#{userBean.deployLoading}" 
                                              styleClass="regularCol">
@@ -1012,17 +1043,125 @@
                                          width="100%">
                                 <h:panelGrid styleClass="regularColAndBorderRight" 
                                              rendered="#{not userBean.testLoading}">
-                                    <h:graphicImage library="img" name="testsForm.png"/>
-                                    <a4j:commandButton value="Submit"
-                                                       render="testsPanel,testPoll"
-                                                       action="#{userBean.setTestLoading(true)}"/>
+                                    <rich:panel>
+                                        <f:facet name="header">
+                                            <h:outputText value="TEST APPLICATIONS" />
+                                        </f:facet>                                                                                                                        
+                                        <rich:dataTable id="testsSimplyTable" 
+                                                        value="#{processesBean.allTests}" 
+                                                        var="process" 
+                                                        iterationStatusVar="it"                                     
+                                                        rows="10">
+                                            <rich:column>
+                                                <f:facet name="header">ID</f:facet>
+                                                <h:outputText value="#{process.idProcess}" />
+                                            </rich:column>
+                                            <rich:column>
+                                                <f:facet name="header">User</f:facet>
+                                                <h:outputText value="#{process.user.userName}" />
+                                            </rich:column>
+                                            <rich:column>
+                                                <f:facet name="header">Name</f:facet>
+                                                <h:outputText value="#{process.name}" />
+                                            </rich:column>                                            
+                                            <rich:column>
+                                                <f:facet name="header">Start time</f:facet>
+                                                <h:outputText value="#{process.startTime}" />
+                                            </rich:column>
+                                            <rich:column>
+                                                <f:facet name="header">End time</f:facet>
+                                                <h:outputText value="#{process.endTime}" />
+                                            </rich:column>                                        
+                                            <f:facet name="footer">
+                                                <rich:dataScroller page="#{processesBean.page}" />                                            
+                                            </f:facet>                        
+                                        </rich:dataTable>
+                                        <br />
+                                        <rich:panel>
+                                            <f:facet name="header">
+                                                <h:outputText value="Parameters" />
+                                            </f:facet>
+                                            <h:panelGrid columns="3">
+                                                <h:outputText value="Matrix A"/>
+                                                <h:inputText />
+                                                <h:outputText />
+                                                <h:outputText value="Matrix B"/>
+                                                <h:inputText />
+                                                <h:outputText />
+                                                <h:outputText />
+                                                <hr />
+                                                <h:outputText />
+                                                <h:outputText value="Matrix File"/>
+                                                <h:inputText />
+                                                <a4j:commandButton value="Upload" />
+                                            </h:panelGrid>
+                                        </rich:panel>
+                                        <br />
+                                        <a4j:commandButton value="Submit"
+                                                           render="testsPanel,testPoll"
+                                                           action="#{userBean.setTestLoading(true)}"/>
+                                        
+                                    </rich:panel>
+                                    <!--h:graphicImage library="img" name="testsForm.png"/-->                                    
                                 </h:panelGrid>
                                 <h:panelGrid styleClass="regularColAndBorderRight"
                                              rendered="#{userBean.testLoading}">
                                     <h:graphicImage library="img" name="processing.gif"/>
                                 </h:panelGrid>                                
                                 <h:panelGrid>
-                                    <h:graphicImage  library="img" name="testsTable.png"/>
+                                    <rich:dataTable id="testsHistoryTable" 
+                                                 value="#{processesBean.allTests}" 
+                                                 var="process" 
+                                                 iterationStatusVar="it"                                     
+                                                 rows="10">
+                                        <f:facet name="header">
+                                            <h:outputText value="TEST TASKS" />
+                                        </f:facet>                                                                                
+                                        <rich:column>
+                                            <f:facet name="header">ID</f:facet>
+                                            <h:outputText value="#{process.idProcess}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header">User</f:facet>
+                                            <h:outputText value="#{process.user.userName}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header">Name</f:facet>
+                                            <h:outputText value="#{process.name}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header">Type</f:facet>
+                                            <h:outputText value="#{process.type}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header">Priority</f:facet>
+                                            <h:outputText value="#{process.priority}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header">Status</f:facet>                                                        
+                                            <h:outputText value="#{process.status}" 
+                                                          style="color: green;" 
+                                                          rendered="#{process.status.equalsIgnoreCase('finished')}"/>
+                                            <h:outputText value="#{process.status}" 
+                                                          style="color: red;" 
+                                                          rendered="#{process.status.equalsIgnoreCase('running')}"/>
+                                            <h:outputText value="#{process.status}" 
+                                                          style="color: blue;" 
+                                                          rendered="#{process.status.equalsIgnoreCase('waiting')}"/>                                                      
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header">Start time</f:facet>
+                                            <h:outputText value="#{process.startTime}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header">End time</f:facet>
+                                            <h:outputText value="#{process.endTime}" />
+                                        </rich:column>                                        
+                                        <f:facet name="footer">
+                                            <rich:dataScroller page="#{processesBean.page}" />                                            
+                                        </f:facet>                                                                                
+                                    </rich:dataTable>
+                                    <!--h:graphicImage  library="img" name="testsTable.png"/-->
                                 </h:panelGrid>
                             </h:panelGrid>      
                         </h:panelGrid>
@@ -1122,7 +1261,7 @@
                         <f:facet name="controls">
                             <h:outputLink value="#" 
                                           onclick="#{rich:component('paramPopup')}.hide(); return false;">
-                                X
+                                <h:graphicImage library="img" name="closeIcon.png" width="16px" />
                             </h:outputLink>
                         </f:facet>
                         <h:panelGrid columns="2">

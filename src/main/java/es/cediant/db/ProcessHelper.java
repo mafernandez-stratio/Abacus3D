@@ -56,7 +56,31 @@ public class ProcessHelper {
             return processes;
         }
     }
-
+    
+    public List listProcesses(String field, String value){
+        Session session = factory.openSession();
+        Transaction tx = null;
+        List processes = null;
+        try {
+            tx = session.beginTransaction();
+            processes = session.createQuery("FROM Process P WHERE P."+field+" = '"+value+"'").list();            
+            tx.commit();
+        } catch (HibernateException ex) {
+            if (tx!=null){
+                tx.rollback();
+            }
+            Logger.getLogger(ProcessHelper.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            session.close(); 
+            /*
+            if(processes!=null){
+                System.out.println(processes.size()+" processes found");
+            }
+            */
+            return processes;
+        }
+    }
+    
     public Process getProcess(int id) {        
         Session session = factory.openSession();
         Transaction tx = null;
