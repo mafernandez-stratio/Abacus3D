@@ -6,7 +6,6 @@ package es.cediant.abacus;
 
 import es.cediant.db.InventoryUserList;
 import es.cediant.db.Role;
-import es.cediant.db.RolesParser;
 import es.cediant.db.User;
 import es.cediant.db.UserHelper;
 import es.cediant.db.UsersRoleHelper;
@@ -35,18 +34,23 @@ public class UsersBean implements Serializable {
     private static final int CLIENT_ROWS_IN_AJAX_MODE = 15;
     private static final int ROUNDING_MODE = BigDecimal.ROUND_HALF_UP;
     private List<User> allUsers = new ArrayList<User>();
+    private List<String> allNames = new ArrayList<String>();
     private List<InventoryUserList> inventoryUserLists = new ArrayList<InventoryUserList>();
     private int currentUserIndex;
     private User editedUser;
     private int page = 1;
     private int clientRows;
     private UserHelper uh = new UserHelper();
+    private String searchedName;
     
     /**
      * Creates a new instance of UsersBean
      */
     public UsersBean() {        
         allUsers.addAll(uh.getUsers());
+        for(User user: allUsers){
+            allNames.add(user.getUserName());
+        }
     }
     
     public void switchAjaxLoading(ValueChangeEvent event) {
@@ -158,6 +162,18 @@ public class UsersBean implements Serializable {
         UserHelper uh = new UserHelper();
         return uh.getUsers();        
     }     
+
+    public List<String> getAllNames() {
+        getAllUsers();
+        for(User user: allUsers){
+            allNames.add(user.getUserName());
+        }
+        return allNames;
+    }
+
+    public void setAllNames(List<String> allNames) {
+        this.allNames = allNames;
+    }        
  
     public int getCurrentUserIndex() {
         return currentUserIndex;
@@ -190,4 +206,13 @@ public class UsersBean implements Serializable {
     public void setClientRows(int clientRows) {
         this.clientRows = clientRows;
     }
+
+    public String getSearchedName() {
+        return searchedName;
+    }
+
+    public void setSearchedName(String searchedName) {
+        this.searchedName = searchedName;
+    }
+            
 }

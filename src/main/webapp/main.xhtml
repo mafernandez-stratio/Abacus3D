@@ -33,7 +33,9 @@
         <h:outputScript library="jqPlot" name="plugins/jqplot.categoryAxisRenderer.min.js"/>
         <h:outputScript library="jqPlot" name="plugins/jqplot.pointLabels.min.js"/>
         
-        <h:outputScript library="js" name="abacus.js"/>                        
+        <h:outputScript library="js" name="abacus.js"/>    
+        
+        <div id="wrapDiv">
         <rich:panel id="headerPanel">  
             <h:panelGrid columns="2">
                 <h:panelGrid>
@@ -160,7 +162,9 @@
             <!--/div-->
         </rich:popupPanel>
         <!--a4j:status onstart="{rich:component('statPane')}.show()" 
-                    onstop="{rich:component('statPane')}.hide()" /-->                        
+                    onstop="{rich:component('statPane')}.hide()" /-->   
+        
+        <div id="mainDiv" >
         <h:form id="generalForm">
             <a4j:jsFunction name="setActiveTab"    
                             render="poll,dashboardGrid,managementPanel,tasksPanel,myAccountPanel,myMonitorPanel">
@@ -421,11 +425,19 @@
                             </f:facet>                        
                         </rich:dataTable>                        
                     </h:panelGrid>                    
-                    <h:panelGrid id="alertsUpdateDashboard" columns="2" cellspacing="0" cellpadding="0">                    
-                        <h:panelGrid id="alertsDashboard" cellspacing="0" cellpadding="0">
+                    <h:panelGrid id="alertsUpdateDashboard" 
+                                 columns="2" 
+                                 cellspacing="0" 
+                                 cellpadding="0"
+                                 width="100%">                    
+                        <h:panelGrid id="alertsDashboard" 
+                                     cellspacing="0" 
+                                     cellpadding="0"
+                                     width="100%">
                             <h:outputText value="ALERTS" styleClass="dashboardSubtitle" />   
-                            <h:panelGrid columns="5" styleClass="removeSpacing" 
-                                         columnClasses="alertsCols,alertsCols,alertsCols,alertsCols,alertsCols">
+                            <h:panelGrid id="alertsInnerPanel"
+                                         columns="5"                                          
+                                         width="100%">
                                 <h:panelGrid styleClass="alertPanel" 
                                              columnClasses="alertColPanel">
                                     <h:panelGrid columns="2" 
@@ -878,14 +890,31 @@
                                             <h:outputText />
                                             <h:outputText value="Elapsed time" />
                                             <h:inputText />
-                                            <h:outputText />      
+                                            <h:outputText value=" milliseconds" />      
                                             <h:outputText />                                            
                                             <h:outputText value="Started" />
-                                            <h:inputText />           
+                                            <rich:calendar value="#{calendarBean.selectedStartDate}" 
+                                                           id="startCalendar" 
+                                                           locale="#{calendarBean.locale}"
+                                                           popup="#{calendarBean.popup}" 
+                                                           datePattern="#{calendarBean.pattern}"
+                                                           showApplyButton="#{calendarBean.showApply}" 
+                                                           styleClass="calendar"
+                                                           disabled="#{calendarBean.disabled}" />         
                                             <h:outputText value="Finished" />
-                                            <h:inputText />
+                                            <rich:calendar value="#{calendarBean.selectedEndDate}" 
+                                                           id="endCalendar" 
+                                                           locale="#{calendarBean.locale}"
+                                                           popup="#{calendarBean.popup}" 
+                                                           datePattern="#{calendarBean.pattern}"
+                                                           showApplyButton="#{calendarBean.showApply}" 
+                                                           styleClass="calendar"
+                                                           disabled="#{calendarBean.disabled}" />
                                             <h:outputText value="User" />
-                                            <h:inputText />
+                                            <h:selectOneMenu value="#{usersBean.searchedName}">
+                                                <f:selectItem noSelectionOption="true" />
+                                                <f:selectItems value="#{usersBean.allNames}" />
+                                            </h:selectOneMenu>    
                                             <h:outputText />
                                             <h:outputText />
                                             <h:outputText />
@@ -2145,6 +2174,9 @@
                             library="img" 
                             name="silver-footer.jpg"/>
         </div-->
+        </div>
+        </div>
+        <div id="footerDiv" >                    
         <rich:panel id="footerPanel">     
             <h:panelGrid columns="3" columnClasses="footerleft,footercenter,footerright">
                 <h:outputText value="v1.0" />
@@ -2154,6 +2186,7 @@
                                 height="32px" />
             </h:panelGrid>
         </rich:panel> 
+        </div>
     </h:body>
 </f:view>
 </html>    
