@@ -7,10 +7,13 @@ package es.cediant.abacus;
 import es.cediant.db.ProcessHelper;
 import es.cediant.db.Process;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import javax.faces.component.UIComponent;
 import javax.faces.event.ValueChangeEvent;
+import org.apache.commons.collections.list.SetUniqueList;
+import org.apache.commons.collections.list.TreeList;
 
 /**
  *
@@ -20,12 +23,14 @@ public class ProcessesBean implements Serializable {
     
     private static final long serialVersionUID = 5651395627768122272L;
     
-    private List<Process> allProcesses;
-    private List<Process> allTests;
+    private List<Process> allProcesses = new ArrayList<Process>();
+    private List<Process> allTests = new ArrayList<Process>();
+    private List<String> allTypes = new ArrayList<String>();
     private String action;
     private HashMap<Integer, String> mapForms = new HashMap<Integer, String>();
     private HashMap<Integer, Boolean> nullActions = new HashMap<Integer, Boolean>();
     private int page = 1;
+    private String searchedType;
 
     /**
      * Creates a new instance of ProcessesBean
@@ -52,6 +57,20 @@ public class ProcessesBean implements Serializable {
     public void setAllTests(List<Process> allTests) {
         this.allTests = allTests;
     }        
+    
+    public List<String> getAllTypes() {
+        ProcessHelper ph = new ProcessHelper();
+        allProcesses = ph.listProcesses();
+        allTypes = SetUniqueList.decorate(new TreeList());
+        for (Process process: allProcesses){
+            allTypes.add(process.getType());
+        }
+        return allTypes;
+    }
+
+    public void setAllTypes(List<String> allTypes) {
+        this.allTypes = allTypes;
+    }  
 
     public String getAction() {
         return action;
@@ -85,6 +104,14 @@ public class ProcessesBean implements Serializable {
 
     public void setPage(int page) {
         this.page = page;
+    }        
+
+    public String getSearchedType() {
+        return searchedType;
+    }
+
+    public void setSearchedType(String searchedType) {
+        this.searchedType = searchedType;
     }        
 
     public void valueChanged(ValueChangeEvent event) {
@@ -136,7 +163,7 @@ public class ProcessesBean implements Serializable {
     public List<Process> getLastProcesses(int num){
         ProcessHelper ph = new ProcessHelper();
         return ph.getLastProcesses(num);        
-    }    
+    }             
     
 }
 

@@ -178,7 +178,7 @@ html, body {
     padding-right: 10px;
 }
 
-.topCol {
+.topCol, .fixedWidth {
     vertical-align: top; 
     padding-left: 10px;
     padding-right: 10px;
@@ -408,6 +408,37 @@ html, body {
     padding-top: 5px !important;
 }
 
-.calendar {
+.calendar, .calendarLeft {
     width: 150px;
+}
+
+.fixedWidth {
+    width: 66%;
+}
+
+.marginSpacing, .inputTime {
+    margin-left: -1px;
+}
+
+.marginAntiSpacing {
+    margin-left: 1px;
+}
+.calendarLeft {
+    margin-left: -3px;
+}
+
+.afterCalendarLeft {
+    margin-left: 3px;
+}
+
+.alignRight {
+    text-align: right;
+}
+
+.inputTime, .widthTime {
+   width: 60px; 
+}
+
+.rf-cal-inp {
+    width: 80px !important;
 }

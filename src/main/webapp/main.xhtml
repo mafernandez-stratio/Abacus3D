@@ -779,8 +779,9 @@
                         
                         <h:panelGrid width="100%" 
                                      rendered="#{userBean.getActiveSub().equalsIgnoreCase('Main')}">
-                            <h:panelGrid columns="2" 
-                                         columnClasses="topCol,topCol" 
+                            <h:panelGrid id="tasksMainTable"
+                                         columns="2" 
+                                         columnClasses="fixedWidth,topCol" 
                                          width="100%">
                                 <rich:dataTable id="tasksTable" 
                                                 value="#{processesBean.allProcesses}" 
@@ -860,56 +861,59 @@
                                         <f:facet name="header">
                                             <h:outputText value="Search" />
                                         </f:facet>
-                                        <h:panelGrid columns="4">
+                                        <h:panelGrid columns="2" columnClasses="alignRight">
                                             <h:outputText value="Name" />
-                                            <h:inputText />
-                                            <h:outputText />
-                                            <h:outputText />
-                                            <h:outputText value="Type" />
-                                            
-                                            <h:selectOneMenu value="">
+                                            <h:inputText />                                            
+                                            <h:outputText value="Type" />                                            
+                                            <h:selectOneMenu value="#{processesBean.searchedType}">
                                                 <f:selectItem noSelectionOption="true"/>
-                                                <f:selectItem itemLabel="Type 1" 
-                                                              itemValue="type1"/>
-                                                <f:selectItem itemLabel="Type 2" 
-                                                              itemValue="type 2"/>
+                                                <f:selectItems value="#{processesBean.allTypes}" />
                                             </h:selectOneMenu>
-                                            
-                                            <h:outputText />
-                                            <h:outputText />
-                                            <h:outputText value="Priority" />
-                                            
+                                            <h:outputText value="Priority" />                                            
                                             <h:selectOneMenu value="">
                                                 <f:selectItem noSelectionOption="true"/>
-                                                <f:selectItem itemLabel="Priority 1" 
-                                                              itemValue="priority1"/>
-                                                <f:selectItem itemLabel="Priority 2" 
-                                                              itemValue="priority2"/>
+                                                <f:selectItem itemLabel="Low" 
+                                                              itemValue="low"/>
+                                                <f:selectItem itemLabel="Medium" 
+                                                              itemValue="medium"/>
+                                                <f:selectItem itemLabel="High" 
+                                                              itemValue="high"/>
                                             </h:selectOneMenu>                                            
-                                            <h:outputText />
-                                            <h:outputText />
-                                            <h:outputText value="Elapsed time" />
-                                            <h:inputText />
-                                            <h:outputText value=" milliseconds" />      
-                                            <h:outputText />                                            
-                                            <h:outputText value="Started" />
-                                            <rich:calendar value="#{calendarBean.selectedStartDate}" 
-                                                           id="startCalendar" 
-                                                           locale="#{calendarBean.locale}"
-                                                           popup="#{calendarBean.popup}" 
-                                                           datePattern="#{calendarBean.pattern}"
-                                                           showApplyButton="#{calendarBean.showApply}" 
-                                                           styleClass="calendar"
-                                                           disabled="#{calendarBean.disabled}" />         
-                                            <h:outputText value="Finished" />
-                                            <rich:calendar value="#{calendarBean.selectedEndDate}" 
-                                                           id="endCalendar" 
-                                                           locale="#{calendarBean.locale}"
-                                                           popup="#{calendarBean.popup}" 
-                                                           datePattern="#{calendarBean.pattern}"
-                                                           showApplyButton="#{calendarBean.showApply}" 
-                                                           styleClass="calendar"
-                                                           disabled="#{calendarBean.disabled}" />
+                                            <h:outputText value="Elapsed time" />                                                
+                                            <h:panelGrid columns="4" styleClass="removeSpacing,removeSpacing,removeSpacing,removeSpacing">
+                                                <h:inputText styleClass="inputTime" />
+                                                <h:outputText value="-" styleClass="marginAntiSpacing" />
+                                                <h:inputText styleClass="widthTime" />
+                                                <h:selectOneMenu value="">
+                                                    <f:selectItem noSelectionOption="true"/>
+                                                    <f:selectItem itemLabel="Milliseconds" 
+                                                                  itemValue="milliseconds"/>
+                                                    <f:selectItem itemLabel="Seconds" 
+                                                                  itemValue="seconds"/>
+                                                    <f:selectItem itemLabel="Minutes" 
+                                                                  itemValue="minutes"/>
+                                                </h:selectOneMenu>                                                                                                 
+                                            </h:panelGrid>                                                                                              
+                                            <h:outputText value="Started" />                                            
+                                            <h:panelGrid columns="3" styleClass="removeSpacing,removeSpacing,removeSpacing">
+                                                <rich:calendar value="#{calendarBean.selectedStartDate}" 
+                                                               id="startCalendar" 
+                                                               locale="#{calendarBean.locale}"
+                                                               popup="#{calendarBean.popup}" 
+                                                               datePattern="#{calendarBean.pattern}"
+                                                               showApplyButton="#{calendarBean.showApply}" 
+                                                               styleClass="calendarLeft"
+                                                               disabled="#{calendarBean.disabled}" />         
+                                                <h:outputText value="Finished" styleClass="afterCalendarLeft" />
+                                                <rich:calendar value="#{calendarBean.selectedEndDate}" 
+                                                               id="endCalendar" 
+                                                               locale="#{calendarBean.locale}"
+                                                               popup="#{calendarBean.popup}" 
+                                                               datePattern="#{calendarBean.pattern}"
+                                                               showApplyButton="#{calendarBean.showApply}" 
+                                                               styleClass="calendar"
+                                                               disabled="#{calendarBean.disabled}" />
+                                            </h:panelGrid>
                                             <h:outputText value="User" />
                                             <h:selectOneMenu value="#{usersBean.searchedName}">
                                                 <f:selectItem noSelectionOption="true" />
@@ -931,17 +935,19 @@
                         <h:panelGrid id="launchGrid"
                                      width="100%" 
                                      rendered="#{userBean.getActiveSub().equalsIgnoreCase('Launch')}">
-                            <h:panelGrid id="launchCol" columns="4">
+                            <h:panelGrid id="launchCol" columns="4" columnClasses=",fixedWidth">
                                 <!-- LAUNCH -->
-                                <rich:panel rendered="#{not userBean.launchLoading}">
+                                <rich:panel>
                                     <f:facet name="header">
                                         <h:outputText value="DEPLOYED APPLICATIONS" />
                                     </f:facet>
+                                    <h:panelGroup rendered="#{not userBean.launchLoading}">
                                     <rich:dataTable id="tasksSimplyTable" 
                                                     value="#{processesBean.allProcesses}" 
                                                     var="process" 
                                                     iterationStatusVar="it"                                     
-                                                    rows="10">
+                                                    rows="10"
+                                                    styleClass="centered">
                                         <!--                                   
                                         selection="{processesTableBean.selection}"
                                         selectionMode="{processesTableBean.selectionMode}"
@@ -1011,7 +1017,9 @@
                                             <h:inputText />
                                             <h:outputText />
                                             <h:outputText value="Matrix File" />                                           
-                                            <h:inputText />
+                                            <h:form enctype="multipart/form-data"> 
+                                                <h:inputFile />
+                                            </h:form>                                                                                         
                                             <a4j:commandButton value="Upload"/>                                            
                                         </h:panelGrid>   
                                         <hr />
@@ -1020,12 +1028,15 @@
                                                                render="launchCol,launchPoll"
                                                                onbeforedomupdate="#{userBean.setLaunchLoading(true)}"/>
                                         </h:panelGrid>                                                                                
-                                    </rich:panel>   
+                                    </rich:panel>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{userBean.launchLoading}">
+                                        <h:panelGrid styleClass="regularColAndBorderRight">
+                                           <h:graphicImage library="img" name="processing.gif"/>                                
+                                       </h:panelGrid>
+                                    </h:panelGroup>
                                 </rich:panel>                                
-                                <h:panelGrid rendered="#{userBean.launchLoading}" 
-                                             styleClass="regularColAndBorderRight">
-                                    <h:graphicImage library="img" name="processing.gif"/>                                
-                                </h:panelGrid>
+                                
                                 <!-- DEPLOY -->
                                 <h:panelGrid rendered="#{not userBean.deployLoading}" styleClass="regularCol">
                                     <rich:panel>
