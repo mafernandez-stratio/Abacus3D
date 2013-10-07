@@ -12,6 +12,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.event.AjaxBehaviorEvent;
 import org.richfaces.component.UIExtendedDataTable;
 import es.cediant.db.Process;
+import javax.servlet.http.Part;
 
 /**
  *
@@ -26,6 +27,7 @@ public class ProcessesTableBean implements Serializable {
     private List<Process> inventoryItems;
     private List<Process> selectionItems = new ArrayList<Process>();
     private Process selectedProcess;
+    private Part uploadedFile;
 
     public void selectionListener(AjaxBehaviorEvent event) {
         System.out.println("selectionListener");
@@ -88,5 +90,17 @@ public class ProcessesTableBean implements Serializable {
     public void setSelectedProcess(Process selectedProcess) {
         this.selectedProcess = selectedProcess;
     }
-        
+
+    public Part getUploadedFile() {
+        return uploadedFile;
+    }
+
+    public void setUploadedFile(Part uploadedFile) {
+        this.uploadedFile = uploadedFile;
+    }            
+    
+    public void upload(){
+        System.out.println("Uploaded file size = "+uploadedFile.getSize());
+    }
+    
 }

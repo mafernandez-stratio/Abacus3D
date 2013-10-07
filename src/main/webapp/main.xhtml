@@ -27,7 +27,7 @@
         <h:outputScript library="jqPlot" name="plugins/jqplot.cursor.min.js"/>
         <h:outputScript library="jqPlot" name="plugins/jqplot.dateAxisRenderer.min.js"/>
         <h:outputScript library="jqPlot" name="plugins/jqplot.enhancedLegendRenderer.min.js"/>
-        <h:outputScript library="jqPlot" name="plugins/jqplot.pieLegendRenderer.min.js"/>
+        <!--h:outputScript library="jqPlot" name="plugins/jqplot.pieLegendRenderer.min.js"/-->
         
         <h:outputScript library="jqPlot" name="plugins/jqplot.barRenderer.min.js"/>
         <h:outputScript library="jqPlot" name="plugins/jqplot.categoryAxisRenderer.min.js"/>
@@ -61,6 +61,7 @@
             </h:panelGrid>                        
         </rich:panel>
                 
+        <h:form>
         <rich:collapsiblePanel id="statusPanel" 
                                header="Status" 
                                switchType="client"
@@ -117,10 +118,12 @@
                 </h:panelGrid>                                
             </h:panelGrid>
         </rich:collapsiblePanel>
+        </h:form>
         
         <!--h:graphicImage library="img" name="header-blue-plain.jpg" 
                         style="width: 100%; opacity: 0.4;" /-->            
         
+        <h:form>
         <rich:popupPanel id="resultPopup" modal="false" autosized="true" resizeable="false"> 
             <f:facet name="header">
                 <h:outputText value="Result" />
@@ -132,7 +135,9 @@
             </f:facet>
             <h:graphicImage library="img" name="redSphere.png" />
         </rich:popupPanel>
+        </h:form>
         
+        <h:form>
         <rich:popupPanel id="JSPopup" 
                          modal="false"
                          autosized="true" 
@@ -162,25 +167,31 @@
             <!--/div-->
         </rich:popupPanel>
         <!--a4j:status onstart="{rich:component('statPane')}.show()" 
-                    onstop="{rich:component('statPane')}.hide()" /-->   
+                    onstop="{rich:component('statPane')}.hide()" /-->
+        </h:form>
         
         <div id="mainDiv" >
-        <h:form id="generalForm">
-            <a4j:jsFunction name="setActiveTab"    
-                            render="poll,dashboardGrid,managementPanel,tasksPanel,myAccountPanel,myMonitorPanel">
-                <a4j:param name="activeTab" assignTo="#{userBean.activeTab}"/>
-            </a4j:jsFunction>
-            <a4j:jsFunction name="setActiveSub" 
-                            render="subManagementPanel,subTasksPanel,subAccountPanel,subMonitorPanel">
-                <a4j:param name="activeSub" assignTo="#{userBean.activeSub}"/>
-            </a4j:jsFunction> 
+        <!--h:form id="generalForm"-->
+            <h:form>
+                <a4j:jsFunction name="setActiveTab"    
+                                render="poll,dashboardGrid,managementPanel,tasksPanel,myAccountPanel,myMonitorPanel">
+                    <a4j:param name="activeTab" assignTo="#{userBean.activeTab}"/>
+                </a4j:jsFunction>
+            </h:form>
+            <h:form>
+                <a4j:jsFunction name="setActiveSub" 
+                                render="subManagementPanel,subTasksPanel,subAccountPanel,subMonitorPanel">
+                    <a4j:param name="activeSub" assignTo="#{userBean.activeSub}"/>
+                </a4j:jsFunction> 
+            </h:form>
             <rich:tabPanel id="generalTabPanel"
                            switchType="client" 
                            activeItem="#{userBean.activeTab==null?'Dashboard':userBean.activeTab}"
                            tabActiveHeaderClass="tabActive">
 
                 <!--div id="externdiv" style="width: 48%;" /-->
-                <!--div id="piechart" style="width: 48%;" /-->                        
+                <!--div id="piechart" style="width: 48%;" /-->  
+                <h:form>
                 <rich:tab header="Dashboard"
                           id="Dashboard"
                           onenter="setActiveTab('Dashboard'); buildgraphs('#{dashboardBean.strOne}', '#{dashboardBean.strTwo}', #{dashboardBean.interval});"                      
@@ -188,7 +199,7 @@
                           contentClass="contentTab">  
                     <f:facet name="header">
                         <h:panelGroup>
-                            <h:panelGrid columns="2" columnClasses="middleCol,bottomCol">
+                            <h:panelGrid columns="2" columnClasses="middleCol,middleCol">
                                 <h:graphicImage library="img" name="dashboard.png" height="18px;"/>
                                 <h:outputLabel value="Dashboard"/>
                             </h:panelGrid>
@@ -246,7 +257,8 @@
                             <div id="dashboardFirstDiv" style="height: 200px; width: 500px;" />
                             <h:outputScript library="jqPlot" name="createTasksGraph.js"/>     
                             <!--h:graphicImage library="img" name="Screenshot1.png" width="100%" /-->
-                        </h:panelGrid>                                                   
+                        </h:panelGrid> 
+                        <h:form>
                         <rich:dataTable id="procSummaryTable" 
                                         value="#{processesBean.getLastProcesses(5)}" 
                                         var="process" 
@@ -314,7 +326,8 @@
                                                        render="procSummaryTable" />
                                 </rich:column>
                             </f:facet>                        
-                        </rich:dataTable>  
+                        </rich:dataTable> 
+                        </h:form>
                         <!--h:graphicImage library="img" name="Screenshot3.png" width="100%" /-->
                     </h:panelGrid> 
                     <h:outputText value="SYSTEM" styleClass="dashboardSubtitle" />
@@ -325,7 +338,8 @@
                             <div id="dashboardSecondDiv" style="height: 200px; width: 500px;" />
                             <h:outputScript library="jqPlot" name="createSystemGraph.js"/>
                             <!--h:graphicImage library="img" name="Screenshot2.png" width="100%" /-->
-                        </h:panelGrid>                        
+                        </h:panelGrid>
+                        <h:form>
                         <rich:dataTable id="nodesSummaryTable" 
                                         value="#{nodesBean.getLastNodes(5)}" 
                                         var="node" 
@@ -423,7 +437,8 @@
                                                        render="nodeSummaryTable" />
                                 </rich:column>
                             </f:facet>                        
-                        </rich:dataTable>                        
+                        </rich:dataTable>   
+                        </h:form>
                     </h:panelGrid>                    
                     <h:panelGrid id="alertsUpdateDashboard" 
                                  columns="2" 
@@ -572,9 +587,9 @@
                             </h:panelGrid>
                         </h:panelGrid>
                     </h:panelGrid>
-
                 </rich:tab>                                                            
-
+                </h:form>    
+                <h:form>
                 <rich:tab header="Tasks"
                           id="Tasks"
                           onenter="setActiveTab('Tasks')"
@@ -582,12 +597,12 @@
                           contentClass="richTabContent">  
                     <f:facet name="header">
                         <h:panelGroup>
-                            <h:panelGrid columns="2" columnClasses="middleCol,bottomCol">
+                            <h:panelGrid columns="2" columnClasses="middleCol,middleCol">
                                 <h:graphicImage library="img" name="tasks.png" height="18px;"/>
                                 <h:outputLabel value="Tasks"/>
                             </h:panelGrid>
                         </h:panelGroup>
-                    </f:facet>                                                                
+                    </f:facet>         
                     <h:form id="subTasks">
                         <h:panelGrid id ="subTasksPanel" columns="4" styleClass="panelLinks" width="100%"                             
                                  columnClasses="subStatusCol2,subStatusCol2,subStatusCol2,subStatusCol2">                    
@@ -783,6 +798,7 @@
                                          columns="2" 
                                          columnClasses="fixedWidth,topCol" 
                                          width="100%">
+                                <h:form>
                                 <rich:dataTable id="tasksTable" 
                                                 value="#{processesBean.allProcesses}" 
                                                 var="process" 
@@ -852,7 +868,8 @@
                                                                render="tasksTable" />
                                         </rich:column>
                                     </f:facet>                        
-                                </rich:dataTable>                                
+                                </rich:dataTable>  
+                                </h:form>
                                 <h:panelGrid>                                                                                                 
                                     <div id="tasksDiv" style="height: 200px; width: 500px;" />
                                     <h:outputScript library="jqPlot" name="createTasksPlot.js"/>     
@@ -861,6 +878,7 @@
                                         <f:facet name="header">
                                             <h:outputText value="Search" />
                                         </f:facet>
+                                        <h:form>
                                         <h:panelGrid columns="2" columnClasses="alignRight">
                                             <h:outputText value="Name" />
                                             <h:inputText />                                            
@@ -926,6 +944,7 @@
                                                 <rich:componentControl target="searchPopup" operation="show" />
                                             </h:commandButton>
                                         </h:panelGrid>
+                                        </h:form>
                                     </rich:panel>
                                     <!--h:graphicImage library="img" name="search.png"/-->
                                 </h:panelGrid>
@@ -1005,6 +1024,7 @@
                                         <f:facet name="header">
                                             <h:outputText value="Parameters" />
                                         </f:facet>
+                                        <h:form>
                                         <h:panelGrid columns="3">
                                             <h:outputText value="TASK: " styleClass="title1" />
                                             <h:outputText value="#{processesTableBean.selectedProcess.name}"
@@ -1017,17 +1037,22 @@
                                             <h:inputText />
                                             <h:outputText />
                                             <h:outputText value="Matrix File" />                                           
-                                            <h:form enctype="multipart/form-data"> 
-                                                <h:inputFile />
-                                            </h:form>                                                                                         
-                                            <a4j:commandButton value="Upload"/>                                            
+                                            <h:form id="uploadingForm"
+                                                    enctype="multipart/form-data"> 
+                                                <h:inputFile id="uploadedFile" 
+                                                             value="#{processesTableBean.uploadedFile}"/>
+                                                <a4j:commandButton value="Upload" 
+                                                                   action="#{processesTableBean.upload}"/> 
+                                            </h:form> 
+                                            <h:outputText />
                                         </h:panelGrid>   
                                         <hr />
                                         <h:panelGrid styleClass="centered">
                                             <a4j:commandButton value="Submit" 
                                                                render="launchCol,launchPoll"
                                                                onbeforedomupdate="#{userBean.setLaunchLoading(true)}"/>
-                                        </h:panelGrid>                                                                                
+                                        </h:panelGrid>  
+                                        </h:form>
                                     </rich:panel>
                                     </h:panelGroup>
                                     <h:panelGroup rendered="#{userBean.launchLoading}">
@@ -1043,6 +1068,7 @@
                                         <f:facet name="header">
                                             <h:outputText value="CREATE NEW TASK"/>
                                         </f:facet> 
+                                        <h:form>
                                         <h:panelGrid columns="3">
                                             <h:outputText value="Application Name: "/>
                                             <h:inputText />
@@ -1063,6 +1089,7 @@
                                                                onbeforedomupdate="#{userBean.setDeployLoading(true)}"/>
                                             <h:outputText />
                                         </h:panelGrid>
+                                        </h:form>
                                     </rich:panel>                                    
                                     <!--h:commandLink onclick="{rich:component('paramPopup')}.show(); return false;">
                                         <h:graphicImage library="img" name="Screenshot12.png"/>
@@ -1121,7 +1148,8 @@
                                             <f:facet name="header">
                                                 <h:outputText value="Parameters" />
                                             </f:facet>
-                                            <h:panelGrid columns="3">
+                                            <h:form>
+                                            <h:panelGrid columns="3">                                                
                                                 <h:outputText value="Matrix A"/>
                                                 <h:inputText />
                                                 <h:outputText />
@@ -1129,17 +1157,21 @@
                                                 <h:inputText />
                                                 <h:outputText />
                                                 <h:outputText />
-                                                <hr />
+                                                <br />
                                                 <h:outputText />
                                                 <h:outputText value="Matrix File"/>
                                                 <h:inputText />
                                                 <a4j:commandButton value="Upload" />
+                                                <h:outputText />
+                                                <hr />
+                                                <h:outputText />
+                                                <h:outputText />
+                                                <a4j:commandButton value="Submit"
+                                                                   render="testsPanel,testPoll"
+                                                                   action="#{userBean.setTestLoading(true)}"/>
                                             </h:panelGrid>
-                                        </rich:panel>
-                                        <br />
-                                        <a4j:commandButton value="Submit"
-                                                           render="testsPanel,testPoll"
-                                                           action="#{userBean.setTestLoading(true)}"/>
+                                            </h:form>
+                                        </rich:panel>                                        
                                         
                                     </rich:panel>
                                     <!--h:graphicImage library="img" name="testsForm.png"/-->                                    
@@ -1208,27 +1240,35 @@
                         
                     </h:panelGrid>
                     
+                    <h:form>
                     <a4j:poll id="launchPoll" 
                               interval="2000" 
                               enabled="#{userBean.launchLoading}" 
                               render="launchPoll,launchCol,submittedPopup"
                               oncomplete="if(#{not userBean.launchLoading}) #{rich:component('submittedPopup')}.show(); return false;"/>                                                                                  
-                                     
+                    </h:form>
+                              
+                    <h:form>
                     <a4j:poll id="deployPoll" 
                               interval="2000" 
                               enabled="#{userBean.deployLoading}" 
                               render="deployPoll,launchCol,deployedPopup"
                               oncomplete="if(#{not userBean.deployLoading}) #{rich:component('deployedPopup')}.show(); return false;"/>
+                    </h:form>
                     
+                    <h:form>
                     <a4j:poll id="testPoll" 
                               interval="2000" 
                               enabled="#{userBean.testLoading}" 
                               render="testPoll,testsPanel,testPopup"
                               oncomplete="if(#{not userBean.testLoading}) #{rich:component('testPopup')}.show(); return false;"/>
+                    </h:form>
                     
+                    <h:form>
                     <a4j:jsFunction name="updateSub" render="launchCol">
                         <a4j:param name="activeSub" assignTo="#{userBean.activeSub}" />
                     </a4j:jsFunction>
+                    </h:form>
                                         
                     <rich:popupPanel id="submittedPopup" 
                                      modal="false" 
@@ -1305,6 +1345,7 @@
                             </h:outputLink>
                         </f:facet>
                         <h:panelGrid columns="2">
+                            <h:form>
                             <h:outputText value="Name: "/>
                             <h:inputText value="#{appsBean.newParam}"/>
                             <h:outputText value="Type: "/>
@@ -1314,6 +1355,7 @@
                             </h:selectOneRadio>
                             <h:commandButton value="Accept" onclick="#{rich:component('paramPopup')}.hide(); return false;"/>
                             <h:commandButton value="Cancel" onclick="#{rich:component('paramPopup')}.hide(); return false;"/>
+                            </h:form>
                         </h:panelGrid>
                         
                     </rich:popupPanel>
@@ -1360,7 +1402,8 @@
                         </rich:panel>                    
                     </h:form-->                 
                 </rich:tab>
-
+                </h:form>
+                <h:form>
                 <rich:popupPanel id="searchPopup" 
                                  modal="false" 
                                  autosized="true" 
@@ -1374,7 +1417,8 @@
                             <h:graphicImage library="img" name="closeIcon.png" width="16px" />
                         </h:outputLink>
                     </f:facet>
-                    <h:panelGrid>                        
+                    <h:panelGrid>      
+                        <h:form>
                         <rich:dataTable id="resultsTasksTable" 
                                         value="#{processesBean.allProcesses}" 
                                         var="process" 
@@ -1437,7 +1481,8 @@
                             <f:facet name="footer">
                                 <rich:dataScroller page="#{processesBean.page}" />                                
                             </f:facet>                        
-                        </rich:dataTable>      
+                        </rich:dataTable> 
+                        </h:form>
                         <hr />
                         <h:panelGrid columns="6">
                             <div id="resultOneDiv" class="resultPie" />
@@ -1450,6 +1495,7 @@
                         <hr />                        
                         <h:panelGrid columns="4" styleClass="centered">
                             <h:outputText value="Format" />
+                            <h:form>
                             <h:selectOneMenu value="">
                                 <f:selectItem noSelectionOption="true"/>
                                 <f:selectItem itemLabel="PDF" 
@@ -1461,10 +1507,12 @@
                                 <rich:componentControl target="exportPopup" operation="show" />
                             </h:commandButton>
                             <h:commandButton value="Cancel" onclick="#{rich:component('searchPopup')}.hide(); return false;"/>
+                            </h:form>
                         </h:panelGrid>
                     </h:panelGrid>
                 </rich:popupPanel>
-
+                </h:form>
+                <h:form>
                 <rich:popupPanel id="exportPopup" 
                                  modal="true" 
                                  resizeable="true" 
@@ -1478,14 +1526,17 @@
                             <h:graphicImage library="img" name="closeIcon.png" width="16px" />
                         </h:outputLink>
                     </f:facet>
+                    <h:form>
                     <h:panelGrid styleClass="centered">
                         <h:outputText value="New PDF/CSV File"/>                        
                     </h:panelGrid>
                     <h:panelGrid styleClass="centered">
                         <h:commandButton value="OK" onclick="#{rich:component('exportPopup')}.hide(); return false;"/>
                     </h:panelGrid>
+                    </h:form>
                 </rich:popupPanel>
-
+                </h:form>
+                <h:form>
                 <rich:tab header="Management"
                           id="Management"
                           onenter="setActiveTab('Management')"
@@ -1493,7 +1544,7 @@
                           contentClass="richTabContent">
                     <f:facet name="header">
                         <h:panelGroup>
-                            <h:panelGrid columns="2" columnClasses="middleCol,bottomCol">
+                            <h:panelGrid columns="2" columnClasses="middleCol,middleCol">
                                 <h:graphicImage library="img" name="management.png" height="18px;"/>
                                 <h:outputLabel value="Management"/>
                             </h:panelGrid>
@@ -1560,7 +1611,8 @@
                                                        execute=":ldapForm"/>
                                 </h:panelGrid>
                             </rich:panel>
-                        </h:form>                                        
+                        </h:form> 
+                        <h:form>
                         <rich:dataTable id="usersTable"
                                         value="#{usersBean.allUsers}" 
                                         var="user" 
@@ -1607,7 +1659,8 @@
                             <f:facet name="footer">
                                 <rich:dataScroller page="#{usersBean.page}" />
                             </f:facet>
-                        </rich:dataTable>                    
+                        </rich:dataTable>  
+                        </h:form>
                     </h:panelGrid>
 
                     <rich:popupPanel id="statPane" autosized="true">
@@ -1623,6 +1676,7 @@
                                      left="50"
                                      top="50"
                                      style="background-color: #FFDCDC">
+                        <h:form>
                         <h:panelGrid columns="3" id="editGrid">                                                
                             <rich:panel style="width:560px;">
                                 <!--f:facet name="header">
@@ -1649,9 +1703,11 @@
                                            oncomplete="#{rich:component('editPane')}.hide(); #{rolesBean.removeNewRoles()}; return false;" />
                         <a4j:commandButton value="Cancel" 
                                            onclick="#{rich:component('editPane')}.hide(); return false;" />
+                        </h:form>
                     </rich:popupPanel>               
                 </rich:tab>
-
+                </h:form>
+                <h:form>
                 <rich:tab header="Monitor"
                           id="Monitor"
                           onenter="setActiveTab('Monitor')"
@@ -1659,7 +1715,7 @@
                           contentClass="richTabContent">
                     <f:facet name="header">
                         <h:panelGroup>
-                            <h:panelGrid columns="2" columnClasses="middleCol,bottomCol">
+                            <h:panelGrid columns="2" columnClasses="middleCol,middleCol">
                                 <h:graphicImage library="img" name="monitor.png" height="18px;"/>
                                 <h:outputLabel value="Monitor"/>
                             </h:panelGrid>
@@ -1698,7 +1754,8 @@
                         <h:panelGrid id="myMonitorPanel">
                         </h:panelGrid>
                 </rich:tab>
-
+                </h:form>
+                <h:form>
                 <rich:tab header="My account"
                           id="MyAccount"
                           onenter="setActiveTab('MyAccount')"
@@ -1706,7 +1763,7 @@
                           contentClass="richTabContent"> 
                     <f:facet name="header">
                         <h:panelGroup>
-                            <h:panelGrid columns="2" columnClasses="middleCol,bottomCol">
+                            <h:panelGrid columns="2" columnClasses="middleCol,middleCol">
                                 <h:graphicImage library="img" name="account.png" height="18px;"/>
                                 <h:outputLabel value="My Account"/>
                             </h:panelGrid>
@@ -1817,7 +1874,9 @@
                             </h:panelGrid>
                         </h:form>
                     </h:panelGrid>
-                </rich:tab>            
+                </rich:tab> 
+                </h:form>
+                <h:form>
                 <!-- ............................................................................. -->
                 <rich:tab header="Overview"
                           id="OverviewTab"
@@ -1826,13 +1885,17 @@
                     <h:outputText id="overviewDate" value="Date: #{overviewBean.date}"
                                   style="font-size:16px; font-weight: bold"/> 
                     <br />
+                    <h:form>
                     <h:outputLink value="logout.xhtml">
                         Logout
-                    </h:outputLink> 
+                    </h:outputLink>
+                    </h:form>
                     <br />
+                    <h:form>
                     <h:outputLink value="unregister.xhtml">
                         Unregister
                     </h:outputLink> 
+                    </h:form>
                     <br />
                     <p>RichFaces is a component library for JSF and an advanced framework for
                         easily integrating AJAX capabilities into business applications.</p>
@@ -1849,7 +1912,8 @@
                         <li>Large and active community</li>
                     </ul>                               
                 </rich:tab>
-
+                </h:form>
+                <h:form>
                 <c:forEach var="i" begin="0" end="#{userBean.roles.size()-1}">
                     <rich:tab header="#{userBean.roles.get(i)}"
                               id="#{userBean.roles.get(i).concat('Tab')}"
@@ -1862,7 +1926,8 @@
                         </c:if>
                     </rich:tab>
                 </c:forEach>
-
+                </h:form>
+                <h:form>
                 <rich:tab header="Manager"
                           id="ManagerTab"
                           onenter="setActiveTab('ManagerTab')"
@@ -1907,7 +1972,8 @@
                         </rich:column>
                     </rich:dataTable>
                 </rich:tab>
-
+                </h:form>
+                <h:form>
                 <rich:tab header="Graphs"
                           id="GraphsTab"
                           onenter="setActiveTab('GraphsTab')"
@@ -1945,10 +2011,12 @@
                                     <h:outputText value="Number of focus: " rendered="#{not empty graphBean.numbFocus}" />                            
                                     <h:outputText id="executionTime" value="#{graphBean.numbFocus}" rendered="#{not empty graphBean.numbFocus}" />                                
                                 </h:panelGrid>
-                            </h:form>                        
+                            </h:form>  
+                            <h:form>
                             <a4j:jsFunction name="assignObjects">
                                 <a4j:param name="focuses" assignTo="#{graphBean.focuses}" />
-                            </a4j:jsFunction>                                                
+                            </a4j:jsFunction>    
+                            </h:form>
                             <h:graphicImage library="img" name="sphere.png" />                                                                                                
                             <br />    
                             <h:form id="createForm">
@@ -1996,7 +2064,8 @@
                         </h:panelGrid>
                     </rich:panel>
                 </rich:tab>        
-
+                </h:form>
+                <h:form>
                 <rich:tab header="NBody"
                           id="NBodyTab"
                           onenter="setActiveTab('NBodyTab')"
@@ -2124,7 +2193,8 @@
                         </rich:panel>
                     </h:form>
                 </rich:tab>
-
+                </h:form>
+                <h:form>    
                 <!--div id="externdiv" style="width: 98%;" /-->
 
                 <rich:tab id="PlotsTab" 
@@ -2137,7 +2207,8 @@
                 <!--h:form>
                     <a4j:poll id="poll" interval="2000" enabled="{pollBean.pollEnabled}" render="poll,grid" />
                 </h:form-->
-
+                </h:form>
+                <h:form>
                 <rich:tab header="Conf"
                           id="ConfTab"
                           onenter="setActiveTab('ConfTab')"
@@ -2178,8 +2249,9 @@
                         </h:panelGrid>                    
                     </h:form>
                 </rich:tab>
+                </h:form>
             </rich:tabPanel>
-        </h:form>        
+        <!--/h:form-->        
         <!--div id="divFooter">
             <h:graphicImage id="graphicFooter"
                             library="img" 
