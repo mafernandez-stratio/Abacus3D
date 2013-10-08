@@ -10,9 +10,9 @@ import java.util.Collection;
 import java.util.List;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.event.AjaxBehaviorEvent;
-import org.richfaces.component.UIExtendedDataTable;
 import es.cediant.db.Process;
 import javax.servlet.http.Part;
+import org.richfaces.component.UIExtendedDataTable;
 
 /**
  *
@@ -100,7 +100,9 @@ public class ProcessesTableBean implements Serializable {
     }            
     
     public void upload(){
-        System.out.println("Uploaded file size = "+uploadedFile.getSize());
+        System.out.println("file size: " + uploadedFile.getSize());
+        System.out.println("file type: " + uploadedFile.getContentType());
+        System.out.println("file info: " + uploadedFile.getHeader("Content-Disposition"));
     }
     
 }

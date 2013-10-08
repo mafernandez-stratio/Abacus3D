@@ -14,17 +14,17 @@
     <managed-bean>
         <managed-bean-name>processesBean</managed-bean-name>
         <managed-bean-class>es.cediant.abacus.ProcessesBean</managed-bean-class>
-        <managed-bean-scope>session</managed-bean-scope>
+        <managed-bean-scope>view</managed-bean-scope>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>appsBean</managed-bean-name>
         <managed-bean-class>es.cediant.abacus.AppsBean</managed-bean-class>
-        <managed-bean-scope>session</managed-bean-scope>
+        <managed-bean-scope>view</managed-bean-scope>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>sessionListener</managed-bean-name>
         <managed-bean-class>es.cediant.abacus.SessionListener</managed-bean-class>
-        <managed-bean-scope>session</managed-bean-scope>
+        <managed-bean-scope>view</managed-bean-scope>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>pollBean</managed-bean-name>
@@ -34,16 +34,21 @@
     <managed-bean>
         <managed-bean-name>nodesBean</managed-bean-name>
         <managed-bean-class>es.cediant.abacus.NodesBean</managed-bean-class>
-        <managed-bean-scope>session</managed-bean-scope>
+        <managed-bean-scope>view</managed-bean-scope>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>processesTableBean</managed-bean-name>
         <managed-bean-class>es.cediant.abacus.ProcessesTableBean</managed-bean-class>
-        <managed-bean-scope>session</managed-bean-scope>
+        <managed-bean-scope>view</managed-bean-scope>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>calendarBean</managed-bean-name>
         <managed-bean-class>es.cediant.abacus.CalendarBean</managed-bean-class>
-        <managed-bean-scope>session</managed-bean-scope>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>fileUploadBean</managed-bean-name>
+        <managed-bean-class>es.cediant.abacus.FileUploadBean</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
     </managed-bean>
 </faces-config>

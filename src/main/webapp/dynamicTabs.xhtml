@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">   
+    <body>
+        <h:form>
+        <c:forEach var="i" begin="0" end="#{userBean.roles.size()-1}">
+            <rich:tab header="#{userBean.roles.get(i)}"
+                      id="#{userBean.roles.get(i).concat('Tab')}"
+                      onenter="setActiveTab(this.id)"
+                      rendered="false">
+                <h:outputText value="#{userBean.roles.get(i)}" />
+                <br />
+                <c:if test="#{userBean.roles.get(i).equalsIgnoreCase('Admin')}">
+                    <h:outputText value="Table"/>
+                </c:if>
+            </rich:tab>
+        </c:forEach>
+        </h:form>
+    </body>
+</html>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <body>
+        <rich:tab header="Graphs"
+                  id="GraphsTab"
+                  onenter="setActiveTab('GraphsTab')"
+                  rendered="false">
+            <p>We are working hard on RichFaces 4.0 which will have full JSF 2 integration. That is not all though, here is
+                a summary of updates and features:</p>
+            <ul>
+                <li>Redesigned modular repository and build system.</li>
+                <li>Simplified Component Development Kit with annotations, faces-config extensions, advanced templates
+                    support and more..</li>
+                <li>Ajax framework improvements extending the JSF 2 specification.</li>
+                <li>Component review for consistency, usability, and redesign following semantic HTML principles where
+                    possible.</li>
+                <li>Both server-side and client-side performance optimization.</li>
+                <li>Strict code clean-up and review.</li>
+            </ul>
+            <br />
+            <rich:panel id="graphs" style="background-color: #B0C4DE; width: 40%;">
+                <f:facet name="header">
+                    <h:outputText value="Sphere" />
+                </f:facet>           
+                <h:panelGrid>       
+                    <h:form id="sphereForm">
+                        <h:panelGrid columns="2">
+                            <h:outputText value="Sphere radius: " />
+                            <rich:inputNumberSlider value="#{graphBean.sphereRadius}" minValue="50" maxValue="500" step="10" />
+                            <h:outputText value="Number of focus: " />
+                            <rich:inputNumberSlider value="#{graphBean.numbFocus}" minValue="1" maxValue="10"/>
+                            <a4j:commandButton value="Update" actionListener="#{graphBean.updateSphere}"
+                                               render="inputSphere" />    
+                        </h:panelGrid>  
+                        <h:panelGrid columns="2" id="inputSphere">  
+                            <h:outputText value="Sphere radius: " rendered="#{not empty graphBean.sphereRadius}" />
+                            <h:outputText id="sphereData" value="#{graphBean.sphereRadius}" rendered="#{not empty graphBean.sphereRadius}" />
+                            <h:outputText value="Number of focus: " rendered="#{not empty graphBean.numbFocus}" />                            
+                            <h:outputText id="executionTime" value="#{graphBean.numbFocus}" rendered="#{not empty graphBean.numbFocus}" />                                
+                        </h:panelGrid>
+                    </h:form>  
+                    <h:form>
+                    <a4j:jsFunction name="assignObjects">
+                        <a4j:param name="focuses" assignTo="#{graphBean.focuses}" />
+                    </a4j:jsFunction>    
+                    </h:form>
+                    <h:graphicImage library="img" name="sphere.png" />                                                                                                
+                    <br />    
+                    <h:form id="createForm">
+                        <h:panelGrid columns="1" id="resultInfoPanel">                           
+                            <rich:select id="execSelect" defaultLabel="Choose an option" 
+                                         required="true" value="#{graphBean.typeExec}" >
+                                <f:selectItem itemValue="0" itemLabel="Local" />
+                                <f:selectItem itemValue="1" itemLabel="Remote" />
+                            </rich:select>    
+                            <h:panelGrid columns="2" id="execInfoPanel">    
+                                <h:outputText value="Spheres data: " rendered="#{not graphBean.isEmpty()}" />
+                                <h:outputText id="sphereData" value="#{graphBean.printFocuses()}" rendered="#{not graphBean.isEmpty()}" />
+                                <h:outputText value="Execution time: " rendered="#{not graphBean.execTimeIsZero()}" />                            
+                                <h:outputText id="executionTime" value="#{graphBean.executionTime}" rendered="#{not graphBean.execTimeIsZero()}" />
+                            </h:panelGrid>                                                                         
+                            <rich:progressBar mode="ajax" value="#{progressBarBean.currentValue}" interval="500" id="pb"
+                                              enabled="#{progressBarBean.enabled}" minValue="0" maxValue="100">
+                                <f:facet name="initial">
+                                    <h:panelGroup>
+                                        <!--h:outputText value="Process hasn't started yet" /-->
+                                        <a4j:commandButton action="#{progressBarBean.startProcess}" value="Start Process" execute="@form"
+                                            render="pb" rendered="#{progressBarBean.buttonRendered}" style="margin: 9px 0px 5px;" />
+                                    </h:panelGroup>
+                                </f:facet>
+                                <f:facet name="finish">
+                                    <h:panelGroup>
+                                        <!--h:outputText value="Process Done" /-->
+                                        <a4j:commandButton action="#{progressBarBean.startProcess}" value="Restart Process" execute="@form"
+                                            render="pb" rendered="#{progressBarBean.buttonRendered}" style="margin: 9px 0px 5px;" />
+                                    </h:panelGroup>
+                                </f:facet>
+                                <h:outputText value="#{progressBarBean.currentValue} %" />
+                                <!-- Update the progress for each AJAX update -->
+                                <a4j:ajax event="begin" listener="#{progressBarBean.increment}" />
+                            </rich:progressBar>
+                            <!--h:commandButton value="Create" actionListener="{graphBean.createImage}" >        
+                                <rich:componentControl target="resultPopup" operation="show" />
+                            </h:commandButton-->   
+                            <a4j:commandButton value="Create"
+                                               actionListener="#{graphBean.createImage}"
+                                               oncomplete="#{rich:component('resultPopup')}.show()" 
+                                               render="resultPopup, execInfoPanel"/>
+                        </h:panelGrid>   
+                    </h:form>
+                </h:panelGrid>
+            </rich:panel>
+        </rich:tab>
+        <!--div id="externdiv" style="width: 98%;" /-->  
+        <!--h:outputScript library="jqPlot" name="plots.js" rendered="false" /-->
+    </body>
+</html>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <body>
+        <rich:tab header="Manager"
+                  id="ManagerTab"
+                  onenter="setActiveTab('ManagerTab')"
+                  rendered="false">
+            <p>The rich:panel component creates a rectangle shaped area on the page that 
+               may contain any content including other panels. Panel's have a header 
+               (optional) and a body. The default look-n-feel is based on the current 
+               skin. Look-n-feel of any part of the panel, including color scheme, 
+               borders and paddings can be customizable using with pre-defined number of 
+               CSS classes.</p>                   
+            <rich:dataTable value="" var="car" id="table" rows="20" 
+                            rowClasses="odd-row, even-row" styleClass="stable">
+                <rich:column>
+                    <f:facet name="header">
+                        <h:outputText value="Vendor " />
+                    </f:facet>
+                    <h:outputText value="Ford" />
+                </rich:column>
+                <rich:column>
+                    <f:facet name="header">
+                        <h:outputText value="Model" />
+                    </f:facet>
+                    <h:outputText value="Focus" />
+                </rich:column>
+                <rich:column>
+                    <f:facet name="header">
+                        <h:outputText value="Price" />
+                    </f:facet>
+                    <h:outputText value="39695" />
+                </rich:column>
+                <rich:column filter="">
+                    <f:facet name="header">
+                        <h:outputText value="Mileage" />
+                    </f:facet>
+                    <h:outputText value="38975.0" />
+                </rich:column>
+                <rich:column>
+                    <f:facet name="header">
+                        <h:outputText value="VIN " />
+                    </f:facet>
+                    <h:outputText value="XALLPTPELDWUOSQES" />
+                </rich:column>
+            </rich:dataTable>
+        </rich:tab> 
+    </body>
+</html>

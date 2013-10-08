@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <rich:tab header="NBody"
+              id="NBodyTab"
+              onenter="setActiveTab('NBodyTab')"
+              rendered="false">
+        <h:form id="formnbody">
+            <rich:panel style="max-width: 40%;">
+                <f:facet name="header">
+                    <!--h:panelGroup-->
+                    <h:outputText value="Data for simulation" />
+                        <!--a4j:status>
+                            <f:facet name="start">
+                                <h:graphicImage value="/resources/img/ai.gif" alt="ai" style="height:12px;width:12px;" />
+                            </f:facet>
+                        </a4j:status-->
+                    <!--/h:panelGroup-->
+                </f:facet>
+                <h:panelGrid columns="3">
+                    <h:outputText value="nParticles: " />
+                    <h:inputText value="#{nBodysBean.numParticles}" id="numParticles">
+                        <rich:validator />
+                    </h:inputText>
+                    <rich:message for="numParticles" />
+                    <h:outputText value="nSteps: " />
+                    <h:inputText value="#{nBodysBean.numSteps}" id="numSteps">
+                        <rich:validator />
+                    </h:inputText>
+                    <rich:message for="numSteps" />
+                    <h:outputText value="dt: " />
+                    <h:inputText value="#{nBodysBean.dt}" id="dt">
+                        <rich:validator />
+                    </h:inputText>
+                    <rich:message for="dt" />                             
+                    <h:outputText value="Device: "/>
+                    <h:selectOneMenu value="#{nBodysBean.device}">
+                        <f:selectItem itemLabel="Xeon Phi" itemValue="xeon" />
+                        <f:selectItem itemLabel="Host" itemValue="host" />
+                        <f:selectItem itemLabel="Both" itemValue="both" />
+                    </h:selectOneMenu>                          
+                    <h:outputText value=" "/>
+                    <!--a4j:commandButton value="Submit"  
+                                       action="{nBodysBean.launchCalculation}" 
+                                       render="calculationPanel"/-->                                                                                        
+                    <!--h:form id="progressForm"-->
+                        <rich:progressBar mode="ajax" 
+                                          value="#{nBodysBean.currentValue}" 
+                                          interval="400" 
+                                          id="pb"
+                                          enabled="#{nBodysBean.enabled}" 
+                                          minValue="0" 
+                                          maxValue="100">
+                            <f:facet name="initial">
+                                <h:panelGroup>
+                                    <a4j:commandButton action="#{nBodysBean.startProcess}" 
+                                                       value="Submit" 
+                                                       render="pb" 
+                                                       rendered="#{nBodysBean.buttonRendered}" 
+                                                       style="margin: 9px 0px 5px;" />                                            
+                                    <br />                                        
+                                    <rich:dataTable var="record" 
+                                                    value="Value" 
+                                                    rendered="#{nBodysBean.showCalc}">
+                                        <f:facet name="header">
+                                            <rich:columnGroup>
+                                                <rich:column>
+                                                    <h:outputText value=" " />
+                                                </rich:column>
+                                                <rich:column>
+                                                    <h:outputText value="Elapsed time" />
+                                                </rich:column>     
+                                                <rich:column>
+                                                    <h:outputText value="Result" />
+                                                </rich:column>
+                                            </rich:columnGroup>
+                                        </f:facet>
+
+                                        <rich:columnGroup rendered="#{nBodysBean.showXeon}">
+                                            <rich:column>
+                                                <h:outputText value="Xeon Phi" />
+                                            </rich:column>
+                                            <rich:column>
+                                                <h:outputText value="6" />
+                                            </rich:column> 
+                                            <rich:column>
+                                                <a4j:commandButton value="Show"  
+                                                                   action="#{nBodysBean.readCoordinates()}"
+                                                                   oncomplete="#{rich:component('JSPopup')}.show()"
+                                                                   render="JSPopup"/> 
+                                            </rich:column>
+                                        </rich:columnGroup>
+                                        <rich:columnGroup rendered="#{nBodysBean.showHost}">
+                                            <rich:column>
+                                                <h:outputText value="Host" />
+                                            </rich:column>
+                                            <rich:column>
+                                                <h:outputText value="10" />
+                                            </rich:column>     
+                                            <rich:column>
+                                                <a4j:commandButton value="Show" 
+                                                                   action="#{nBodysBean.readCoordinates()}"
+                                                                   oncomplete="#{rich:component('JSPopup')}.show()"
+                                                                   render="JSPopup"/> 
+                                            </rich:column>
+                                        </rich:columnGroup>                                
+                                    </rich:dataTable>
+                                </h:panelGroup>                                        
+                            </f:facet>
+                            <!--f:facet name="finish">
+                                <h:panelGroup>        
+                                    <h:outputText value="Done"/>
+                                    <a4j:commandButton action="{nBodysBean.startProcess}" 
+                                                       value="Submit" 
+                                                       execute="@form"
+                                                       render="pb" 
+                                                       rendered="{nBodysBean.buttonRendered}" 
+                                                       style="margin: 9px 0px 5px;" />                                            
+                                </h:panelGroup>                                                                                  
+                            </f:facet-->
+                            <h:outputText value="Processing..." />
+                            <!-- Update the progress for each AJAX update -->
+                            <a4j:ajax event="begin" listener="#{nBodysBean.increment}" />
+                        </rich:progressBar>                            
+                    <!--/h:form-->
+                </h:panelGrid>         
+                <br />                                              
+            </rich:panel>
+        </h:form>
+    </rich:tab>
+</html>
