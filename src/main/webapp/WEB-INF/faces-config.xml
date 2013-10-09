@@ -49,6 +49,6 @@
     <managed-bean>
         <managed-bean-name>fileUploadBean</managed-bean-name>
         <managed-bean-class>es.cediant.abacus.FileUploadBean</managed-bean-class>
-        <managed-bean-scope>view</managed-bean-scope>
+        <managed-bean-scope>session</managed-bean-scope>
     </managed-bean>
 </faces-config>

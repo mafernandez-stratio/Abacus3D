@@ -442,3 +442,29 @@ html, body {
 .rf-cal-inp {
     width: 80px !important;
 }
+
+/*
+*.rf-fu {
+    border-width: 0px !important;
+    background: #CFDFFF !important;
+    width: 110px !important;
+}
+
+*.rf-fu-hdr {
+    border-width: 0px !important;
+    margin: 0px !important;
+    background: transparent !important;
+    width: 220px !important;
+}
+
+*.rf-fu-btns-lft {
+    background: transparent !important; 
+    width: auto !important;
+}
+
+*.rf-fu-btn-add {
+    border-width: 0px !important;
+    margin: 0px !important;
+}
+*/
+

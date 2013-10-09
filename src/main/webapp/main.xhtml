@@ -5,8 +5,7 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:rich="http://richfaces.org/rich"
       xmlns:a4j="http://richfaces.org/a4j"
-      xmlns:c="http://java.sun.com/jsp/jstl/core"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
     
 <!--meta http-equiv="refresh" content="{pageContext.session.maxInactiveInterval};url=login.xhtml" /--> 
 
@@ -36,17 +35,7 @@
         
         <h:outputScript library="js" name="abacus.js"/>    
         
-        <div id="wrapDiv">
-            
-            <h:form>
-                            <rich:fileUpload fileUploadListener="#{fileUploadBean.listener}" 
-                                             maxFilesQuantity="1">
-                                <a4j:ajax event="uploadcomplete" 
-                                          execute="@none"/>
-                            </rich:fileUpload>
-                        </h:form>
-            
-            
+        <div id="wrapDiv">            
         <rich:panel id="headerPanel">  
             <h:panelGrid columns="2">
                 <h:panelGrid>
@@ -1039,17 +1028,29 @@
                                             <h:outputText value="TASK: " styleClass="title1" />
                                             <h:outputText value="#{processesTableBean.selectedProcess.name}"
                                                           styleClass="title1" />
+                                            
                                             <h:outputText />
                                             <h:outputText value="Matrix A" />
                                             <h:inputText />
                                             <h:outputText />
+                                            
                                             <h:outputText value="Matrix B" />
                                             <h:inputText />
                                             <h:outputText />
-                                            <h:outputText value="Matrix File" />                                           
+                                            
+                                            <h:outputText value="Device" />                                            
+                                            <h:selectOneMenu value="">    
+                                                <f:selectItem noSelectionOption="true"/>
+                                                <f:selectItem itemLabel="Processor" itemValue="processor" />
+                                                <f:selectItem itemLabel="GPU" itemValue="gpu" />
+                                            </h:selectOneMenu>                                                                                                                                                                                
+                                            <h:outputText />
+                                            
+                                            <h:outputText value="Matrix File" />                                                                                                                           
                                             
                                             <h:inputText id="inputTextFile"
-                                                         onclick="#{rich:component('uploadingPopup')}.show(); return false;" />
+                                                         onclick="#{rich:component('uploadingPopup')}.show(); return false;" 
+                                                         value="#{fileUploadBean.size}"/>                                                                                                                                    
                                             
                                         </h:panelGrid>   
                                         <hr />
@@ -1162,8 +1163,12 @@
                                                 <h:outputText value="Matrix B"/>
                                                 <h:inputText />
                                                 <h:outputText />
-                                                <h:outputText />
-                                                <br />
+                                                <h:outputText value="Device" />                                            
+                                                <h:selectOneMenu value="">    
+                                                    <f:selectItem noSelectionOption="true"/>
+                                                    <f:selectItem itemLabel="Processor" itemValue="processor" />
+                                                    <f:selectItem itemLabel="GPU" itemValue="gpu" />
+                                                </h:selectOneMenu>                                                                                                                                                                                
                                                 <h:outputText />
                                                 <h:outputText value="Matrix File"/>
                                                 <h:inputText />
@@ -1277,7 +1282,7 @@
                     </h:form>
                                  
                     <rich:popupPanel id="uploadingPopup" 
-                                     modal="true"                                      
+                                     modal="false" 
                                      autosized="true" 
                                      left="40%">
                         <f:facet name="header">
@@ -1314,9 +1319,15 @@
                         </h:form-->
                         <h:form>
                             <rich:fileUpload fileUploadListener="#{fileUploadBean.listener}" 
-                                             maxFilesQuantity="1">
+                                             maxFilesQuantity="1"
+                                             addLabel="Select File"
+                                             listHeight="37px"
+                                             noDuplicate="true"
+                                             clearLabel="Clear">
                                 <a4j:ajax event="uploadcomplete" 
-                                          execute="@none"/>
+                                          execute="@none"
+                                          render=":inputTextFile"
+                                          oncomplete="#{rich:component('uploadingPopup')}.hide(); return false;"/>
                             </rich:fileUpload>
                         </h:form>
                     </rich:popupPanel>
