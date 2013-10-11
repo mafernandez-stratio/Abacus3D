@@ -125,6 +125,8 @@ public class ProcessHelper {
             remove(idProcess);
         } else if(newAction.equalsIgnoreCase("force")) {
             start(idProcess);
+        } else if(newAction.equalsIgnoreCase("finished")) {
+            finish(idProcess);
         }
     }
 
@@ -166,6 +168,28 @@ public class ProcessHelper {
             session.close();    
             return procId;
         }
+    }    
+    
+    private int finish(Integer idProcess) {
+        Session session = factory.openSession();
+        Transaction tx = null;
+        int procId = 0;
+        try {
+            tx = session.beginTransaction();
+            Process process = (Process) session.get(Process.class, idProcess);
+            process.setStatus("finished");
+            process.setEndTime(new Date());
+            session.update(process);
+            tx.commit();
+        } catch (HibernateException ex) {
+            if (tx!=null){
+                tx.rollback();
+            }
+            Logger.getLogger(ProcessHelper.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            session.close();    
+            return procId;
+        }
     }
 
     public List<Process> getLastProcesses(int num) {
@@ -177,6 +201,6 @@ public class ProcessHelper {
             lastProcesses.add(allProcesses.get(i));
         }
         return lastProcesses;
-    }
+    }   
     
 }

@@ -13,6 +13,7 @@ public class App  implements java.io.Serializable {
     private Integer idApp;
     private User user;
     private String name;
+    private String type;
     private String status;
     private Date instDate;
     private String logo;
@@ -20,13 +21,15 @@ public class App  implements java.io.Serializable {
     public App() {
     }
 
-    public App(String name) {
+    public App(String name, String type) {
         this.name = name;
+        this.type = type;
     }
     
-    public App(User user, String name, String status, Date instDate, String logo) {
+    public App(User user, String name, String type, String status, Date instDate, String logo) {
        this.user = user;
        this.name = name;
+       this.type = type;
        this.status = status;
        this.instDate = instDate;
        this.logo = logo;
@@ -55,6 +58,14 @@ public class App  implements java.io.Serializable {
     public void setName(String name) {
         this.name = name;
     }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }        
     
     public String getStatus() {
         return this.status;

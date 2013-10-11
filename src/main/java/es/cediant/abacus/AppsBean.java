@@ -21,6 +21,7 @@ public class AppsBean implements Serializable {
     private List<App> allApps = new ArrayList<App>();
     private List<App> installedApps = new ArrayList<App>();
     private List<App> availableApps = new ArrayList<App>();
+    private List<App> allTests = new ArrayList<App>();
     private String action;
     private String newParam;
     
@@ -67,6 +68,22 @@ public class AppsBean implements Serializable {
         this.availableApps = availableApps;
     }        
 
+    public List<App> getAllTests() {
+        List<App> tmpList = new ArrayList<App>();
+        tmpList = this.availableApps;
+        allTests.clear();
+        for(App app: tmpList){
+            if(app.getType().equalsIgnoreCase("test")){
+                allTests.add(app);
+            }
+        }        
+        return allTests;
+    }
+
+    public void setAllTests(List<App> allTests) {
+        this.allTests = allTests;
+    }        
+    
     public String getAction() {
         return action;
     }

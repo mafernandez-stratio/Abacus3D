@@ -46,6 +46,7 @@ public class UploadedImage implements Serializable {
                 mime = "image/unknown";
             }
         }
+        this.name = name;
     }
 
     public long getLength() {

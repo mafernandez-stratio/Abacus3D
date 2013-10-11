@@ -15,8 +15,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -27,8 +25,6 @@ import javax.servlet.http.HttpSession;
  *
  * @author miguel
  */
-@ManagedBean
-@SessionScoped
 public class UserBean implements Serializable {  
     
     private static final long serialVersionUID = 4474970058733848377L;
@@ -63,7 +59,8 @@ public class UserBean implements Serializable {
     //private final String hostLDAP = "10.129.129.148";
     //private final int portLDAP = 389;    
     
-    public UserBean(){        
+    public UserBean(){     
+        System.out.println("userBean created");
         logoImg = "logoHere.jpg";
         lastAccesedTime = System.currentTimeMillis();
         
