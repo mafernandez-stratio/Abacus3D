@@ -129,7 +129,7 @@ public class FileUploadBean implements Serializable {
             User user = uh.getUser(username);
             System.out.println("UserID="+user.getIdUser());
             
-            if(this.appName == null){
+            if((this.appName==null) || (this.appName.length()<1)){
                 this.appName = FilenameUtils.getBaseName(file.getName());
             }
             
@@ -188,6 +188,11 @@ public class FileUploadBean implements Serializable {
             }
             
             //ph.modify(idProcess, "finished");     
+                                    
+            System.out.println("appName: "+appName);
+            System.out.println("priority: "+priority);
+            System.out.println("startNow: "+startNow);
+            System.out.println("device: "+device);
             
             this.device = null;
             this.file = null;
@@ -273,6 +278,7 @@ public class FileUploadBean implements Serializable {
     }
 
     public void setDevice(String device) {
+        System.out.println("device: "+device);
         this.device = device;
     }
 
@@ -289,6 +295,7 @@ public class FileUploadBean implements Serializable {
     }
 
     public void setAppName(String appName) {
+        System.out.println("appName: "+appName);
         this.appName = appName;
     }
 
@@ -297,6 +304,7 @@ public class FileUploadBean implements Serializable {
     }
 
     public void setPriority(String priority) {
+        System.out.println("priority: "+priority);
         this.priority = priority;
     }
 
@@ -305,6 +313,7 @@ public class FileUploadBean implements Serializable {
     }
 
     public void setStartNow(boolean startNow) {
+        System.out.println("startNow: "+startNow);
         this.startNow = startNow;
     }       
     

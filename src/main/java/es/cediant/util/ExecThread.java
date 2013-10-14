@@ -52,6 +52,7 @@ public class ExecThread extends Thread {
             ph.modify(idProcess, "error");
         } catch (IOException ex) {
             Logger.getLogger(ExecThread.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("IOException ex");
             ph.modify(idProcess, "error");
         }
     }
