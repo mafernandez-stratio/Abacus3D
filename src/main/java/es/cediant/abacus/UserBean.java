@@ -50,7 +50,7 @@ public class UserBean implements Serializable {
     private String logoImg;
     private boolean launchLoading = false;
     private boolean deployLoading = false;
-    private boolean testLoading = false;
+    //private boolean testLoading = false;
     private Date startLaunch;
     private Date startDeploy;
     private Date startTest;
@@ -209,6 +209,7 @@ public class UserBean implements Serializable {
         this.deployLoading = deployLoading;
     }        
 
+    /*
     public boolean isTestLoading() {
         if(testLoading){
             Date now = new Date();
@@ -219,7 +220,7 @@ public class UserBean implements Serializable {
             }
         }
         return testLoading;
-    }
+    }     
 
     public void setTestLoading(boolean testLoading) {
         if(startTest == null){
@@ -227,6 +228,7 @@ public class UserBean implements Serializable {
         }
         this.testLoading = testLoading;
     }
+    */
 
     public String getScreenSize() {
         return screenSize;

@@ -1100,10 +1100,7 @@
                                                                    onbeforedomupdate="#{userBean.setDeployLoading(true)}"/>
                                                 <h:outputText />
                                             </h:panelGrid>
-                                        </rich:panel>                                    
-                                        <!--h:commandLink onclick="{rich:component('paramPopup')}.show(); return false;">
-                                            <h:graphicImage library="img" name="Screenshot12.png"/>
-                                        </h:commandLink-->                                                                        
+                                        </rich:panel>                                                                                                    
                                     </h:panelGrid>
                                     <h:panelGrid rendered="#{userBean.deployLoading}" 
                                                  styleClass="regularCol">
@@ -1111,163 +1108,168 @@
                                     </h:panelGrid>
                                 </h:panelGrid>
                             </h:panelGrid>
-                            <h:panelGrid width="100%" 
-                                         rendered="#{userBean.getActiveSub().equalsIgnoreCase('Tests')}">
-                                <h:panelGrid id="testsPanel"
-                                             columns="2" 
-                                             columnClasses="topCol,topCol" 
-                                             width="100%">
-                                    <h:panelGrid styleClass="regularColAndBorderRight" 
-                                                 rendered="#{not userBean.testLoading}">
-                                        <rich:panel>
-                                            <f:facet name="header">
-                                                <h:outputText value="TEST APPLICATIONS" />
-                                            </f:facet>                                                                                                                        
-                                            <rich:dataTable id="testsSimplyTable" 
-                                                            value="#{appsBean.allTests}" 
-                                                            var="app">
-                                                <rich:column>
-                                                    <f:facet name="header">ID</f:facet>
-                                                    <h:outputText value="#{app.idApp}" />
-                                                </rich:column>
-                                                <rich:column>
-                                                    <f:facet name="header">Name</f:facet>
-                                                    <h:outputText value="#{app.name}" />
-                                                </rich:column>
-                                                <rich:column>
-                                                    <f:facet name="header">Date</f:facet>
-                                                    <h:outputText value="#{app.instDate}" />
-                                                </rich:column>                                            
-                                                <rich:column>
-                                                    <f:facet name="header">User</f:facet>
-                                                    <h:outputText value="#{app.user.userName}" />
-                                                </rich:column>                                                                                                                                                              
-                                            </rich:dataTable>
+                            <!-- TAB: TASKS, MENU: Tests -->
+                            <h:panelGrid id="generalTestPanel"
+                                         rendered="#{userBean.getActiveSub().equalsIgnoreCase('Tests')}"
+                                         columns="2"
+                                         width="100%">     
+                                <h:panelGrid>
+
+                                    <rich:dataTable id="testsSimplyTable" 
+                                                    value="#{appsBean.allTests}" 
+                                                    var="app">
+                                         <f:facet name="header">
+                                            <h:outputText value="TYPES" />
+                                        </f:facet> 
+                                        <rich:column>
+                                            <f:facet name="header">ID</f:facet>
+                                            <h:outputText value="#{app.idApp}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header">Name</f:facet>
+                                            <h:outputText value="#{app.name}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header">Date</f:facet>
+                                            <h:outputText value="#{app.instDate}" />
+                                        </rich:column>                                            
+                                        <rich:column>
+                                            <f:facet name="header">User</f:facet>
+                                            <h:outputText value="#{app.user.userName}" />
+                                        </rich:column>                                              
+                                    </rich:dataTable>
+                                    
+                                    <rich:panel>
+                                        <f:facet name="header">
+                                            <h:outputText value="FORM" />
+                                        </f:facet>
+                                        <h:panelGrid id="launchingTestGrid" columns="2">   
+
+                                            <h:outputText value="Name"/>
+                                            <h:inputText value="#{fileUploadBean.appName}"/>
+
+                                            <h:outputText value="Priority"/>
+                                            <h:selectOneMenu value="#{fileUploadBean.priority}">    
+                                                <f:selectItem noSelectionOption="true"/>
+                                                <f:selectItem itemLabel="High" itemValue="high" />
+                                                <f:selectItem itemLabel="Medium" itemValue="medium" />
+                                                <f:selectItem itemLabel="Low" itemValue="low" />
+                                            </h:selectOneMenu> 
+
+                                            <h:outputText value="Start now?"/>
+                                            <h:selectBooleanCheckbox value="#{fileUploadBean.startNow}" />
+
+                                            <h:outputText value="Script File"/>
+                                            <h:inputText id="inputTextFile"
+                                                         onclick="#{rich:component('uploadingPopup')}.show(); return false;" 
+                                                         value="#{fileUploadBean.size>0?fileUploadBean.file.name:null}"/>
+
+                                            <h:outputText value="Device" />                                            
+                                            <h:selectOneMenu value="#{fileUploadBean.device}">    
+                                                <f:selectItem noSelectionOption="true"/>
+                                                <f:selectItem itemLabel="Processor" itemValue="processor" />
+                                                <f:selectItem itemLabel="GPU" itemValue="gpu" />
+                                            </h:selectOneMenu> 
+
+                                            <h:outputText />
+                                            <a4j:commandButton value="Submit"
+                                                               action="#{fileUploadBean.launchTest('octave')}"
+                                                               render="generalTestPanel"
+                                                               execute="@form"/>     
+
+                                            <h:outputText />
+                                            <h:panelGrid id="resultTestPanel"
+                                                         rendered="#{fileUploadBean.result!=null}">
+                                               <h:panelGrid styleClass="centered" 
+                                                            bgcolor="#B8E4B8" 
+                                                            rendered="#{fileUploadBean.result.equalsIgnoreCase('OK')}"
+                                                            columns="2">
+                                                   <h:outputText value="#{fileUploadBean.message}"
+                                                                 styleClass="launchOK" />
+                                                   <a4j:commandLink render="resultTestPanel"
+                                                                    onclick="#{fileUploadBean.setResult(null)}"
+                                                                    execute="@none">
+                                                       X
+                                                   </a4j:commandLink>
+                                               </h:panelGrid>
+                                               <h:panelGrid styleClass="centered" 
+                                                            columnClasses="centered,centered"
+                                                            bgcolor="lightcoral" 
+                                                            rendered="#{fileUploadBean.result.equalsIgnoreCase('Error')}"
+                                                            columns="2">
+                                                   <h:outputText value="#{fileUploadBean.message}"
+                                                                 styleClass="launchError" />   
+                                                   <a4j:commandLink render="resultTestPanel"
+                                                                    onclick="#{fileUploadBean.setResult(null)}"
+                                                                    execute="@none">
+                                                       X
+                                                   </a4j:commandLink>
+                                               </h:panelGrid>                                                    
+                                           </h:panelGrid>                                            
+                                        </h:panelGrid>
+                                    </rich:panel>   
+                                    
+                                </h:panelGrid>
+                                
+                                <h:panelGrid>
+                                    <rich:dataTable id="testsHistoryTable" 
+                                                    value="#{processesBean.allTests}" 
+                                                    var="process">
+                                        <f:facet name="header">
+                                            <h:outputText value="TEST TASKS" />
+                                        </f:facet>                                                                                
+                                        <rich:column>
+                                            <f:facet name="header">ID</f:facet>
+                                            <h:outputText value="#{process.idProcess}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header">User</f:facet>
+                                            <h:outputText value="#{process.user.userName}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header">Name</f:facet>
+                                            <h:outputText value="#{process.name}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header">Type</f:facet>
+                                            <h:outputText value="#{process.type}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header">Priority</f:facet>
+                                            <h:outputText value="#{process.priority}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header">Status</f:facet>                                                        
+                                            <h:outputText value="#{process.status}" 
+                                                          style="color: green;" 
+                                                          rendered="#{process.status.equalsIgnoreCase('finished')}"/>
+                                            <h:outputText value="#{process.status}" 
+                                                          style="color: red;" 
+                                                          rendered="#{process.status.equalsIgnoreCase('running')}"/>
+                                            <h:outputText value="#{process.status}" 
+                                                          style="color: blue;" 
+                                                          rendered="#{process.status.equalsIgnoreCase('waiting')}"/>                                                      
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header">Start time</f:facet>
+                                            <h:outputText value="#{process.startTime}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header">End time</f:facet>
+                                            <h:outputText value="#{process.endTime}" />
+                                        </rich:column>                                        
+                                        <f:facet name="footer">
+                                            <rich:dataScroller page="#{processesBean.page}" />
                                             <br />
-                                            <rich:panel>
-                                                <f:facet name="header">
-                                                    <h:outputText value="Parameters" />
-                                                </f:facet>
-                                                <h:panelGrid id="launchingTestGrid" columns="3">    
-
-                                                    <h:outputText value="Name"/>
-                                                    <h:inputText value="#{fileUploadBean.appName}"/>
-                                                    <h:outputText />
-
-                                                    <h:outputText value="Priority"/>
-                                                    <h:selectOneMenu value="#{fileUploadBean.priority}">    
-                                                        <f:selectItem noSelectionOption="true"/>
-                                                        <f:selectItem itemLabel="High" itemValue="high" />
-                                                        <f:selectItem itemLabel="Medium" itemValue="medium" />
-                                                        <f:selectItem itemLabel="Low" itemValue="low" />
-                                                    </h:selectOneMenu> 
-                                                    <h:outputText />
-
-                                                    <h:outputText value="Start now?"/>
-                                                    <h:selectBooleanCheckbox value="#{fileUploadBean.startNow}" />
-                                                    <h:outputText />
-
-                                                    <h:outputText value="Script File"/>
-                                                    <h:inputText id="inputTextFile"
-                                                                 onclick="#{rich:component('uploadingPopup')}.show(); return false;" 
-                                                                 value="#{fileUploadBean.size>0?fileUploadBean.file.name:null}"
-                                                                 required="true"/>
-                                                    <h:outputText />
-
-                                                    <h:outputText value="Device" />                                            
-                                                    <h:selectOneMenu value="#{fileUploadBean.device}">    
-                                                        <f:selectItem noSelectionOption="true"/>
-                                                        <f:selectItem itemLabel="Processor" itemValue="processor" />
-                                                        <f:selectItem itemLabel="GPU" itemValue="gpu" />
-                                                    </h:selectOneMenu> 
-                                                    <h:outputText />
-
-                                                    <h:outputText />
-                                                    <hr />
-                                                    <h:outputText />
-
-                                                    <!--h:commandButton value="Submit" 
-                                                                     action="{fileUploadBean.launchTest('octave')}">
-                                                        <a4j:ajax render="testsPanel" />
-                                                    </h:commandButton-->
-
-                                                    <a4j:commandButton value="Submit"
-                                                                       action="#{fileUploadBean.launchTest('octave')}"
-                                                                       render="testsPanel,launchingTestGrid"
-                                                                       execute="@form"/>
-
-                                                    <!--a4j:commandButton value="Submit"
-                                                                       render="testsPanel,testPoll"
-                                                                       action="{userBean.setTestLoading(true)}"/-->
-
-                                                    <h:outputText />
-                                                </h:panelGrid>           
-                                            </rich:panel>                                        
-
-                                        </rich:panel>
-                                        <!--h:graphicImage library="img" name="testsForm.png"/-->                                    
-                                    </h:panelGrid>
-                                    <h:panelGrid styleClass="regularColAndBorderRight"
-                                                 rendered="#{userBean.testLoading}">
-                                        <h:graphicImage library="img" name="processing.gif"/>
-                                    </h:panelGrid>                                
+                                            <a4j:commandButton value="Refresh" 
+                                                               render="testsHistoryTable"
+                                                               execute="@none"/>
+                                        </f:facet>                                                                                
+                                    </rich:dataTable> 
                                     <h:panelGrid>
-                                        <rich:dataTable id="testsHistoryTable" 
-                                                     value="#{processesBean.allTests}" 
-                                                     var="process" 
-                                                     iterationStatusVar="it">
-                                            <f:facet name="header">
-                                                <h:outputText value="TEST TASKS" />
-                                            </f:facet>                                                                                
-                                            <rich:column>
-                                                <f:facet name="header">ID</f:facet>
-                                                <h:outputText value="#{process.idProcess}" />
-                                            </rich:column>
-                                            <rich:column>
-                                                <f:facet name="header">User</f:facet>
-                                                <h:outputText value="#{process.user.userName}" />
-                                            </rich:column>
-                                            <rich:column>
-                                                <f:facet name="header">Name</f:facet>
-                                                <h:outputText value="#{process.name}" />
-                                            </rich:column>
-                                            <rich:column>
-                                                <f:facet name="header">Type</f:facet>
-                                                <h:outputText value="#{process.type}" />
-                                            </rich:column>
-                                            <rich:column>
-                                                <f:facet name="header">Priority</f:facet>
-                                                <h:outputText value="#{process.priority}" />
-                                            </rich:column>
-                                            <rich:column>
-                                                <f:facet name="header">Status</f:facet>                                                        
-                                                <h:outputText value="#{process.status}" 
-                                                              style="color: green;" 
-                                                              rendered="#{process.status.equalsIgnoreCase('finished')}"/>
-                                                <h:outputText value="#{process.status}" 
-                                                              style="color: red;" 
-                                                              rendered="#{process.status.equalsIgnoreCase('running')}"/>
-                                                <h:outputText value="#{process.status}" 
-                                                              style="color: blue;" 
-                                                              rendered="#{process.status.equalsIgnoreCase('waiting')}"/>                                                      
-                                            </rich:column>
-                                            <rich:column>
-                                                <f:facet name="header">Start time</f:facet>
-                                                <h:outputText value="#{process.startTime}" />
-                                            </rich:column>
-                                            <rich:column>
-                                                <f:facet name="header">End time</f:facet>
-                                                <h:outputText value="#{process.endTime}" />
-                                            </rich:column>                                        
-                                            <f:facet name="footer">
-                                                <rich:dataScroller page="#{processesBean.page}" />
-                                                <br />
-                                                <a4j:commandButton value="Refresh" 
-                                                                   render="testsHistoryTable" />
-                                            </f:facet>                                                                                
-                                        </rich:dataTable>
+                                        <h:outputText value=" "/>
                                     </h:panelGrid>
-                                </h:panelGrid>      
+                                </h:panelGrid>
                             </h:panelGrid>
                         </h:panelGrid>
                     </h:form>
@@ -1288,13 +1290,13 @@
                               oncomplete="if(#{not userBean.deployLoading}) #{rich:component('deployedPopup')}.show(); return false;"/>
                     </h:form>
                     
-                    <h:form>
+                    <!--h:form>
                     <a4j:poll id="testPoll" 
                               interval="2000" 
-                              enabled="#{userBean.testLoading}" 
+                              enabled="{userBean.testLoading}" 
                               render="testPoll,testsPanel,testPopup"
-                              oncomplete="if(#{not userBean.testLoading}) #{rich:component('testPopup')}.show(); return false;"/>
-                    </h:form>
+                              oncomplete="if({not userBean.testLoading}) {rich:component('testPopup')}.show(); return false;"/>
+                    </h:form-->
                     
                     <h:form>
                     <a4j:jsFunction name="updateSub" render="launchCol">
@@ -1339,7 +1341,8 @@
                                              action="{processesTableBean.upload}"/>
                         </h:form-->
                         <h:form>
-                            <rich:fileUpload fileUploadListener="#{fileUploadBean.listener}" 
+                            <rich:fileUpload id="uploadingForm"
+                                             fileUploadListener="#{fileUploadBean.listener}" 
                                              maxFilesQuantity="1"
                                              addLabel="Select File"
                                              listHeight="38px"
@@ -1347,7 +1350,7 @@
                                              clearLabel="Clear">
                                 <a4j:ajax event="uploadcomplete" 
                                           execute="@none"
-                                          render=":inputTextFile"
+                                          render=":inputTextFile,uploadingForm"
                                           oncomplete="#{rich:component('uploadingPopup')}.hide(); return false;"/>
                             </rich:fileUpload>
                         </h:form>

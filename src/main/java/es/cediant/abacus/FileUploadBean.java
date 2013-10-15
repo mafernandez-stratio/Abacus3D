@@ -19,6 +19,8 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.el.ELContext;
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import org.apache.commons.io.FilenameUtils;
@@ -39,13 +41,11 @@ public class FileUploadBean implements Serializable {
     private String priority;
     private boolean startNow = false;
     //private Part uploadedFile;
+    private String message;
+    private String result;
     
     public FileUploadBean(){
-        homeDir = System.getProperty("user.home");
-        ELContext elContext = FacesContext.getCurrentInstance().getELContext();
-        UserBean userBean = (UserBean) FacesContext.getCurrentInstance().getApplication().getELResolver().getValue(elContext, null, "userBean");
-        username = userBean.getUsername();
-        
+        homeDir = System.getProperty("user.home");        
     }
  
     public void paint(OutputStream stream, Object object) throws IOException {
@@ -121,9 +121,19 @@ public class FileUploadBean implements Serializable {
         this.file = file;
     }
     
-    public void launchTest(String app){
+    public boolean launchTest(String app){
         System.out.println("Launching test...");
         try {            
+            
+            System.out.println("file.getName(): "+file.getName());
+            
+            this.result = null;
+            this.message = null;
+            
+            ELContext elContext = FacesContext.getCurrentInstance().getELContext();
+            UserBean userBean = (UserBean) FacesContext.getCurrentInstance().getApplication().getELResolver().getValue(elContext, null, "userBean");
+            username = userBean.getUsername();
+            
             UserHelper uh = new UserHelper();
             System.out.println("username="+username);
             User user = uh.getUser(username);
@@ -140,13 +150,36 @@ public class FileUploadBean implements Serializable {
                 priorityInt = 10;
             }                         
             
-            System.out.println("startNow="+this.startNow);
-            System.out.println("!startNow="+(!startNow));
             String status = "running";
             Date date = new Date();
             if(!this.startNow){
                 status = "waiting";
                 date = null;
+            }
+                        
+            String octavePath = "/usr/bin/"+app+" --silent "+homeDir+"/"+file.getName();
+            
+            File f = new File("/usr/bin/"+app);
+            
+            if((this.device != null) && this.device.equalsIgnoreCase("gpu")){
+                octavePath = "/opt/octave/cuda/bin/"+app+" --silent "+homeDir+"/"+file.getName();
+                f = new File("/opt/octave/cuda/bin/"+app);
+            }            
+            
+            if(!f.exists()){
+                System.out.println("Executable path unavailable");
+                this.result = "error";
+                this.message = "Executable path unavailable";                
+                this.clearForm();
+                return false;
+            } 
+            
+            if(file == null){
+                System.err.println("Upload a script file");
+                this.result = "error";
+                this.message = "Upload a script file";                
+                this.clearForm();
+                return false;
             }
             
             es.cediant.db.Process process = new es.cediant.db.Process(
@@ -159,24 +192,8 @@ public class FileUploadBean implements Serializable {
                     null);
             
             ProcessHelper ph = new ProcessHelper();  
-            int idProcess = ph.addProc(process);            
-            
-            /*
-            Process p = Runtime.getRuntime().exec("/usr/bin/"+app+" --silent "+homeDir+"/"+file.getName());
-            p.waitFor();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            String line = reader.readLine();
-            while (line != null) {
-                line = reader.readLine();
-                System.out.println(" >> "+line);
-            }
-            */
-            
-            String octavePath = "/usr/bin/"+app+" --silent "+homeDir+"/"+file.getName();
-            if((this.device != null) && this.device.equalsIgnoreCase("gpu")){
-                octavePath = "/opt/octave/cuda/bin/"+app+" --silent "+homeDir+"/"+file.getName();
-            }
-            
+            int idProcess = ph.addProc(process);                                    
+                                                            
             if(this.startNow){
                 System.out.println("Lacunching process");
                 ExecThread execThread = new ExecThread(
@@ -194,11 +211,10 @@ public class FileUploadBean implements Serializable {
             System.out.println("startNow: "+startNow);
             System.out.println("device: "+device);
             
-            this.device = null;
-            this.file = null;
-            this.files.clear();
-            this.appName = null;
-            this.priority = null;
+            this.clearForm();
+            
+            this.result = "OK";
+            this.message = "Test launched";
             
         /* 
         } catch (IOException ex) {
@@ -207,11 +223,23 @@ public class FileUploadBean implements Serializable {
             Logger.getLogger(FileUploadBean.class.getName()).log(Level.SEVERE, null, ex);
         */
         } catch (Exception ex){
-            Logger.getLogger(FileUploadBean.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FileUploadBean.class.getName()).log(Level.SEVERE, null, ex);            
+            this.result = "error";
+            this.message = "Something went wrong"; 
         } finally {
             System.out.println("Test DONE!");
+            return true;
         }
     }        
+    
+    public void clearForm(){
+        this.startNow = false;
+        this.device = null;
+        this.file = null;
+        this.files.clear();
+        this.appName = null;
+        this.priority = null;
+    }
     
     public void changeStart(AjaxBehaviorEvent abe){
         this.startNow = !this.startNow;
@@ -278,7 +306,7 @@ public class FileUploadBean implements Serializable {
     }
 
     public void setDevice(String device) {
-        System.out.println("device: "+device);
+        //System.out.println("device: "+device);
         this.device = device;
     }
 
@@ -295,7 +323,7 @@ public class FileUploadBean implements Serializable {
     }
 
     public void setAppName(String appName) {
-        System.out.println("appName: "+appName);
+        //System.out.println("appName: "+appName);
         this.appName = appName;
     }
 
@@ -304,7 +332,7 @@ public class FileUploadBean implements Serializable {
     }
 
     public void setPriority(String priority) {
-        System.out.println("priority: "+priority);
+        //System.out.println("priority: "+priority);
         this.priority = priority;
     }
 
@@ -313,8 +341,24 @@ public class FileUploadBean implements Serializable {
     }
 
     public void setStartNow(boolean startNow) {
-        System.out.println("startNow: "+startNow);
+        //System.out.println("startNow: "+startNow);
         this.startNow = startNow;
     }       
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getResult() {
+        return result;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
+    }
     
 }

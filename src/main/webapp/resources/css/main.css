@@ -178,7 +178,7 @@ html, body {
     padding-right: 10px;
 }
 
-.topCol, .fixedWidth {
+.topCol, .fixedWidth, .fixedNarrowWidth {
     vertical-align: top; 
     padding-left: 10px;
     padding-right: 10px;
@@ -416,6 +416,10 @@ html, body {
     width: 66%;
 }
 
+.fixedNarrowWidth {
+    width: 34%;
+}
+
 .marginSpacing, .inputTime {
     margin-left: -1px;
 }
@@ -467,4 +471,14 @@ html, body {
     margin: 0px !important;
 }
 */
+
+.launchOK {
+    font-weight: bolder;
+    color: #009900;  
+}
+
+.launchError {
+    font-weight: bolder;
+    color: #900000;
+}
 
