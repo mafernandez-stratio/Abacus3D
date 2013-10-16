@@ -56,4 +56,9 @@
         <managed-bean-class>es.cediant.abacus.FileUploadBean</managed-bean-class>
         <managed-bean-scope>session</managed-bean-scope>
     </managed-bean>
+    <managed-bean>
+        <managed-bean-name>extTableSelectionBean</managed-bean-name>
+        <managed-bean-class>es.cediant.abacus.ExtTableSelectionBean</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
 </faces-config>

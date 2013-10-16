@@ -19,8 +19,6 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.el.ELContext;
-import javax.faces.application.FacesMessage;
-import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import org.apache.commons.io.FilenameUtils;
@@ -157,9 +155,9 @@ public class FileUploadBean implements Serializable {
                 date = null;
             }
                         
-            String octavePath = "/usr/bin/"+app+" --silent "+homeDir+"/"+file.getName();
+            String octavePath = "/opt/octave/standard/bin/"+app+" --silent "+homeDir+"/"+file.getName();
             
-            File f = new File("/usr/bin/"+app);
+            File f = new File("/opt/octave/standard/bin/"+app);
             
             if((this.device != null) && this.device.equalsIgnoreCase("gpu")){
                 octavePath = "/opt/octave/cuda/bin/"+app+" --silent "+homeDir+"/"+file.getName();
