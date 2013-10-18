@@ -14,8 +14,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.el.ELContext;
@@ -41,9 +45,33 @@ public class FileUploadBean implements Serializable {
     //private Part uploadedFile;
     private String message;
     private String result;
+    private boolean abacus = false;
     
     public FileUploadBean(){
-        homeDir = System.getProperty("user.home");        
+        try {
+            homeDir = System.getProperty("user.home");  
+            NetworkInterface i = NetworkInterface.getByName("eth0");
+            
+            if (i != null) {
+                Enumeration<InetAddress> iplist = i.getInetAddresses();
+                
+                while(iplist.hasMoreElements()){
+                    InetAddress ad = iplist.nextElement();
+                    byte bs[] = ad.getAddress();
+                    if((bs.length == 4) && 
+                            (bs[0] == 192) && 
+                            (bs[1] == 10) && 
+                            (bs[2] == 0) &&
+                            (bs[3] == 100)){
+                        this.abacus = false;
+                        break;
+                    }
+                }
+            }
+        } catch (SocketException ex) {
+            Logger.getLogger(FileUploadBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
  
     public void paint(OutputStream stream, Object object) throws IOException {
@@ -154,16 +182,28 @@ public class FileUploadBean implements Serializable {
                 status = "waiting";
                 date = null;
             }
-                        
-            String octavePath = "/opt/octave/standard/bin/"+app+" --silent "+homeDir+"/"+file.getName();
             
-            File f = new File("/opt/octave/standard/bin/"+app);
+            String appPath = "/opt/octave/standard/bin/";
+            if (!this.abacus){
+                appPath = "/usr/bin/";
+            }
             
             if((this.device != null) && this.device.equalsIgnoreCase("gpu")){
-                octavePath = "/opt/octave/cuda/bin/"+app+" --silent "+homeDir+"/"+file.getName();
-                f = new File("/opt/octave/cuda/bin/"+app);
-            }            
+                appPath = "/opt/octave/cuda/bin/";
+            }
             
+            ////////////////////////////////////////////////////////////////////
+            if(this.abacus){
+                appPath = "/opt/octave/cuda/bin/";
+            } else {
+                appPath = "/usr/bin/";
+            }
+            //////////////////////////////////////////////////////////////////// 
+            
+            String octaveCommand = appPath+app+" --silent "+homeDir+"/"+file.getName();
+            
+            File f = new File(appPath+app);
+                                         
             if(!f.exists()){
                 System.out.println("Executable path unavailable");
                 this.result = "error";
@@ -188,16 +228,20 @@ public class FileUploadBean implements Serializable {
                     status, 
                     date, 
                     null);
+                          
+            ProcessHelper ph = new ProcessHelper();
+            ph.addProc(process);
             
-            ProcessHelper ph = new ProcessHelper();  
-            int idProcess = ph.addProc(process);                                    
-                                                            
+            TestsBean testsBean = (TestsBean) FacesContext.getCurrentInstance().getApplication().getELResolver().getValue(elContext, null, "testsBean");
+            
+            testsBean.addTestRunning(process);
+            
             if(this.startNow){
-                System.out.println("Lacunching process");
+                System.out.println("Launching process");
                 ExecThread execThread = new ExecThread(
-                        idProcess, 
-                        ph, 
-                        octavePath);
+                        octaveCommand, 
+                        process,
+                        testsBean);
                 Thread thread = new Thread(execThread);                        
                 thread.start();   
             }
@@ -205,9 +249,18 @@ public class FileUploadBean implements Serializable {
             //ph.modify(idProcess, "finished");     
                                     
             System.out.println("appName: "+appName);
-            System.out.println("priority: "+priority);
+            System.out.println("priorityInt: "+priorityInt);
             System.out.println("startNow: "+startNow);
-            System.out.println("device: "+device);
+            System.out.println("device: "+device);            
+            
+            /*
+            FacesContext.getCurrentInstance().addMessage(null, 
+                    new FacesMessage(
+                            FacesMessage.SEVERITY_INFO, 
+                            "Test launched", 
+                            appName+" test launched!")
+                    );
+            */
             
             this.clearForm();
             
@@ -220,12 +273,13 @@ public class FileUploadBean implements Serializable {
         } catch (InterruptedException ex) {
             Logger.getLogger(FileUploadBean.class.getName()).log(Level.SEVERE, null, ex);
         */
+            
         } catch (Exception ex){
             Logger.getLogger(FileUploadBean.class.getName()).log(Level.SEVERE, null, ex);            
             this.result = "error";
             this.message = "Something went wrong"; 
         } finally {
-            System.out.println("Test DONE!");
+            System.out.println("Test launched!");
             return true;
         }
     }        
@@ -241,12 +295,12 @@ public class FileUploadBean implements Serializable {
     
     public void changeStart(AjaxBehaviorEvent abe){
         this.startNow = !this.startNow;
-        System.out.println("New startNow: "+this.startNow);
+        //System.out.println("New startNow: "+this.startNow);
     }
     
     public void changeStart(){
         this.startNow = !this.startNow;
-        System.out.println("New startNow: "+this.startNow);
+        //System.out.println("New startNow: "+this.startNow);
     }
     
     /*
@@ -357,6 +411,18 @@ public class FileUploadBean implements Serializable {
 
     public void setResult(String result) {
         this.result = result;
+    }
+
+    public FacesContext getCurrentInstance() {
+        return FacesContext.getCurrentInstance();
+    }
+
+    public boolean isAbacus() {
+        return abacus;
+    }
+
+    public void setAbacus(boolean abacus) {
+        this.abacus = abacus;
     }
     
 }

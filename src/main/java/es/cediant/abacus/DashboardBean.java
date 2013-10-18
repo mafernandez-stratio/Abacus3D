@@ -21,8 +21,6 @@ import javax.faces.context.FacesContext;
  *
  * @author miguel
  */
-@ManagedBean
-@SessionScoped
 public class DashboardBean implements Serializable {
     private static final long serialVersionUID = 648864815261749745L;
     private boolean pollEnabled = true;
@@ -34,7 +32,7 @@ public class DashboardBean implements Serializable {
      * Creates a new instance of DashboardBean
      */
     public DashboardBean() {
-        System.out.println("new DashboardBean");
+        //System.out.println("new DashboardBean");
         //////////////////
         updateData(5); ///
         //////////////////

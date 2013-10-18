@@ -8,6 +8,8 @@ import es.cediant.util.LdapConnection;
 import es.cediant.util.LdapPropHandler;
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Properties;
@@ -53,16 +55,19 @@ public class UserBean implements Serializable {
     //private boolean testLoading = false;
     private Date startLaunch;
     private Date startDeploy;
-    private Date startTest;
     private String screenSize;
+    private int tmpInt;
         
     //private final String hostLDAP = "10.129.129.148";
     //private final int portLDAP = 389;    
     
-    public UserBean(){     
+    public UserBean() throws UnknownHostException, SocketException{     
         System.out.println("userBean created");
         logoImg = "logoHere.jpg";
-        lastAccesedTime = System.currentTimeMillis();
+        lastAccesedTime = System.currentTimeMillis();                        
+        
+//        InetAddress ip = InetAddress.getLocalHost();
+//        System.out.println("IP="+ip.getHostAddress());
         
 //        String clientInfo = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("loginForm:clientinfo");
 //        System.out.println(" >>> " + clientInfo);
@@ -263,12 +268,12 @@ public class UserBean implements Serializable {
     }
 
     public void setActiveSub(String activeSub) {
-        System.out.println("New sub = "+activeSub);
+        //System.out.println("New sub = "+activeSub);
         this.activeSub = activeSub;
     }        
     
     public String changeSub(String newSub){
-        System.out.println("New sub="+newSub);
+        //System.out.println("New sub="+newSub);
         setActiveSub(newSub);
         return null;
     }        
@@ -298,21 +303,21 @@ public class UserBean implements Serializable {
                     }
                 }    
                 
-                /////////////////////////////////////////////////////
+                /*////////////////////////////////////////////////////
                 System.out.println("=== ROLES for "+username+" ===");
                 ArrayList<String> rolesAdmin = uh.getRoles(username);
                 for(String str: rolesAdmin){
                     System.out.println(str);
                 }
                 System.out.println("==============================");
-                /////////////////////////////////////////////////////
+                ////////////////////////////////////////////////////*/
                 
                 setRoles(uh.getRoles(username));
                 uh.updateLastConnection(username, new Date());                              
                 // Get userId
                 User user = uh.getUser(username);
                 setUserId(user.getIdUser().toString());     
-                System.out.println("userId="+userId); 
+                //System.out.println("userId="+userId); 
                 FacesContext.getCurrentInstance().getExternalContext().redirect("/main.xhtml");
             } else {
                 FacesContext.getCurrentInstance().addMessage(null,
@@ -585,6 +590,62 @@ public class UserBean implements Serializable {
         long elapsedTime = newLastAccessedTime - lastAccesedTime;
         System.out.println("Elapsed time="+elapsedTime);
         lastAccesedTime = newLastAccessedTime;
+    }
+
+    public FacesContext getCurrentInstance() {
+        return FacesContext.getCurrentInstance();
+    }
+
+    public LdapConnection getLdapc() {
+        return ldapc;
+    }
+
+    public void setLdapc(LdapConnection ldapc) {
+        this.ldapc = ldapc;
+    }
+
+    public LdapPropHandler getLph() {
+        return lph;
+    }
+
+    public void setLph(LdapPropHandler lph) {
+        this.lph = lph;
+    }
+
+    public long getLastAccesedTime() {
+        return lastAccesedTime;
+    }
+
+    public void setLastAccesedTime(long lastAccesedTime) {
+        this.lastAccesedTime = lastAccesedTime;
+    }
+
+    public Date getStartLaunch() {
+        return startLaunch;
+    }
+
+    public void setStartLaunch(Date startLaunch) {
+        this.startLaunch = startLaunch;
+    }
+
+    public Date getStartDeploy() {
+        return startDeploy;
+    }
+
+    public void setStartDeploy(Date startDeploy) {
+        this.startDeploy = startDeploy;
+    }
+
+    public int getTmpInt() {
+        return tmpInt;
+    }
+
+    public void setTmpInt(int tmpInt) {
+        this.tmpInt = tmpInt;
+    }
+            
+    public void test(){
+        this.tmpInt = (int) (Math.random()*1000);        
     }
     
 }

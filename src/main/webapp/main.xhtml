@@ -16,8 +16,20 @@
         <h:outputStylesheet library="css" name="main.css" />
         <h:outputStylesheet library="jqPlot" name="jquery.jqplot.css" />
     </h:head>
-    <h:body onload="buildgraphs('#{dashboardBean.strOne}', '#{dashboardBean.strTwo}', #{dashBoardBean.interval}); #{dashboardBean.setPollEnabled(true)}; #{userBean.setActiveTab('Dashboard')}; #{userBean.changeSub('Main')};" 
-            onunload="#{dashboardBean.setPollEnabled(true)}; #{userBean.setActiveTab('Dashboard')}; #{userBean.changeSub('Main')};">                                      
+    <h:body onload="#{userBean.setActiveTab('Dashboard')}; #{userBean.changeSub('Main')};" 
+            onunload="#{userBean.setActiveTab('Dashboard')}; #{userBean.changeSub('Main')};">                                      
+        <!-- 
+        onload="buildgraphs('{dashboardBean.strOne}', '{dashboardBean.strTwo}', {dashBoardBean.interval}); 
+                             {dashboardBean.setPollEnabled(true)}; 
+                             {userBean.setActiveTab('Dashboard')}; 
+                             {userBean.changeSub('Main')};" 
+        -->
+        <!--
+        onunload="{dashboardBean.setPollEnabled(true)}; 
+                  {userBean.setActiveTab('Dashboard')}; 
+                  {userBean.changeSub('Main')};">                                      
+        -->
+        
         <h:outputScript library="jqPlot" name="jquery.min.js"/>
         <h:outputScript library="jqPlot" name="jquery.jqplot.min.js"/>
         <h:outputScript library="jqPlot" name="plugins/jqplot.pieRenderer.min.js"/>
@@ -34,6 +46,36 @@
         <h:outputScript library="jqPlot" name="plugins/jqplot.pointLabels.min.js"/>
         
         <h:outputScript library="js" name="abacus.js"/>    
+        
+        <!--rich:notify stayTime="2000" 
+                     sticky="false" 
+                     nonblocking="true"
+                     showShadow="true"
+                     showCloseButton="true" 
+                     detail="Detail" 
+                     escape="false">
+            <f:facet name="summary">
+                INFO
+            </f:facet>
+        </rich:notify-->        
+        
+        <rich:notifyMessages stayTime="2000" 
+                             sticky="false"
+                             nonblocking="true"
+                             showCloseButton="true"
+                             showShadow="true"
+                             escape="false">
+            <f:facet name="summary">
+                INFO
+            </f:facet>
+        </rich:notifyMessages>                        
+                
+        <h:form> 
+            <a4j:poll id="testsTablePoll" 
+                      interval="5000" 
+                      enabled="#{testsBean.testsRunning.size()>0}" 
+                      render="testsHistoryTable testsTablePoll" />
+        </h:form>
         
         <div id="wrapDiv">                       
         <rich:panel id="headerPanel">  
@@ -118,10 +160,7 @@
                     </h:panelGrid>                                
                 </h:panelGrid>
             </rich:collapsiblePanel>
-        </h:form>
-        
-        <!--h:graphicImage library="img" name="header-blue-plain.jpg" 
-                        style="width: 100%; opacity: 0.4;" /-->            
+        </h:form>               
         
         <h:form>
             <rich:popupPanel id="resultPopup" modal="false" autosized="true" resizeable="false"> 
@@ -153,28 +192,15 @@
                         X                    
                     </h:outputLink>
                 </f:facet>       
-                <!--h:graphicImage library="img" name="redSphere.png" /-->
-                <!-- JavaScript -->
                 <div id="nBodyDiv">
                     <h:outputScript library="threeJS" name="three.min.js"/>
                     <!--h:outputScript library="js" name="rotatingCube.js" /-->
                     <h:outputScript library="threeJS" name="nbody.js" />
                 </div>
-                <!--div-->
-                    <!--ui:insert id="JSResult"-->                    
-                        <!--ui:include src="welcome.xhtml" /-->                    
-                    <!--/ui:insert-->                
-                <!--/div-->
             </rich:popupPanel>
             <!--a4j:status onstart="{rich:component('statPane')}.show()" 
                         onstop="{rich:component('statPane')}.hide()" /-->
-        </h:form>
-        
-        <!--h:form>
-            <a4j:push id="pushJms" address="pushTopicsContext">
-                <a4j:ajax event="dataavailable" render="testsSimplyTable" />
-            </a4j:push>
-        </h:form-->
+        </h:form>                
         
         <div id="mainDiv" >
         <!--h:form id="generalForm"-->
@@ -1186,7 +1212,7 @@
                                                     <h:outputText />
                                                     <a4j:commandButton value="Submit"
                                                                        action="#{fileUploadBean.launchTest('octave')}"
-                                                                       render="testsHistoryTable testGroup"
+                                                                       render="testGroup testsHistoryTable :testsTablePoll"
                                                                        execute="@region"/>     
 
                                                     <h:outputText />
@@ -1278,14 +1304,11 @@
                                             <a4j:commandButton value="Refresh" 
                                                                render="testsHistoryTable"
                                                                execute="@none"/>
-                                        </f:facet>                                                                                
+                                        </f:facet>                                           
                                     </rich:dataTable> 
-                                    <h:panelGrid>
-                                        <h:outputText value=" "/>
-                                    </h:panelGrid>
                                 </h:panelGrid>
                             </h:panelGrid>
-                        </h:panelGrid>
+                        </h:panelGrid>                                                                                                
                     </h:form>
                         
                     <h:form>

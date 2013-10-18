@@ -61,4 +61,9 @@
         <managed-bean-class>es.cediant.abacus.ExtTableSelectionBean</managed-bean-class>
         <managed-bean-scope>view</managed-bean-scope>
     </managed-bean>
+    <managed-bean>
+        <managed-bean-name>testsBean</managed-bean-name>
+        <managed-bean-class>es.cediant.abacus.TestsBean</managed-bean-class>
+    
+        <managed-bean-scope>view</managed-bean-scope></managed-bean>
 </faces-config>

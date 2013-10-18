@@ -90,13 +90,13 @@ public class AppsBean implements Serializable {
 
     public void setAction(String action) {
         this.action = action;
-        System.out.println("Action="+action);
+        //System.out.println("Action="+action);
     }        
     
     public boolean isInstalled(String appName){
-        System.out.println("isInstalled("+appName+")?");
+        //System.out.println("isInstalled("+appName+")?");
         for(App app: installedApps){
-            System.out.println("Comparing with... "+app.getName());
+            //System.out.println("Comparing with... "+app.getName());
             if(appName.equalsIgnoreCase(app.getName())){
                 return true;
             }
@@ -105,12 +105,12 @@ public class AppsBean implements Serializable {
     }
     
     public boolean isAvailable(String appName){
-        System.out.println("isAvailable("+appName+")?");
+        //System.out.println("isAvailable("+appName+")?");
         if(isInstalled(appName)){
             return false;
         } else {
             for(App app: availableApps){
-                System.out.println("Comparing with... "+app.getName());
+                //System.out.println("Comparing with... "+app.getName());
                 if(appName.equalsIgnoreCase(app.getName())){
                     return true;
                 }

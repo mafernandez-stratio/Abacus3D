@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <body>
+        <ui:composition>            
+            <rich:panel id="headerPanel">  
+                <h:panelGrid columns="2">
+                    <h:panelGrid>
+                        <h:graphicImage library="img" 
+                                        name="#{userBean.logoImg}" 
+                                        height="32px" />
+                    </h:panelGrid>
+                    <h:panelGrid id="headerGrid" columns="7">    
+                        <h:outputLink styleClass="headerLinks">Language</h:outputLink>
+                        <h:outputLink styleClass="headerLinks">Help</h:outputLink>
+                        <h:outputLink styleClass="headerLinks">About</h:outputLink>
+                        <h:graphicImage id="separatorHeader" 
+                                        library="img" 
+                                        name="lineSeparator.png" 
+                                        height="32px" />
+                        <h:outputText id ="welcomeText" value="Welcome" />
+                        <h:outputText id="welcomeName"                              
+                                      value="#{userBean.username}"/>
+                        <h:outputLink value="logout.xhtml">
+                            <h:graphicImage library="img" name="logout.png" height="32px" />
+                        </h:outputLink>                 
+                    </h:panelGrid>
+                </h:panelGrid>                        
+            </rich:panel>            
+        </ui:composition>
+    </body>
+</html>

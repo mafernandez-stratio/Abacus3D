@@ -16,10 +16,7 @@ import org.richfaces.application.push.TopicsContext;
  */
 public class TopicsContextMessageProducer implements MessageProducer {    
     
-    public static final String PUSH_TOPICS_CONTEXT_TOPIC = "pushTopicsContext";
-    
-    private TopicsContextMessageProducer() {
-    }        
+    public static final String PUSH_TOPICS_CONTEXT_TOPIC = "pushTopicsContext"; 
     
     @Override
     public void sendMessage() {

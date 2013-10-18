@@ -13,6 +13,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import es.cediant.db.Process;
 
 /**
  *
@@ -129,6 +130,16 @@ public class ProcessHelper {
             finish(idProcess);
         }
     }
+    
+    public void modify(Process process, String newAction) {
+        if(newAction.equalsIgnoreCase("cancel")){
+            remove(process.getIdProcess());
+        } else if(newAction.equalsIgnoreCase("force")) {
+            start(process.getIdProcess());
+        } else if(newAction.equalsIgnoreCase("finished")) {
+            finish(process.getIdProcess());
+        }
+    }
 
     private void remove(Integer idProcess) {
         Session session = factory.openSession();
@@ -201,6 +212,6 @@ public class ProcessHelper {
             lastProcesses.add(allProcesses.get(i));
         }
         return lastProcesses;
-    }   
+    }       
     
 }
