@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <h:body>                    
+        <h:outputText value="TASKS" styleClass="dashboardSubtitle" />
+            <h:panelGrid id="tasksDashboard" columns="2" styleClass="dashboardPanelAndSpace">                                                                    
+                <h:panelGrid>                            
+                    <div id="dashboardFirstDiv" style="height: 200px; width: 500px;" />
+                    <h:outputScript library="jqPlot" name="createTasksGraph.js"/>     
+                    <!--h:graphicImage library="img" name="Screenshot1.png" width="100%" /-->
+                </h:panelGrid> 
+                <h:form>
+                    <rich:dataTable id="procSummaryTable" 
+                                    value="#{processesBean.getLastProcesses(5)}" 
+                                    var="process" 
+                                    iterationStatusVar="it"                                     
+                                    rows="5">
+                        <rich:column>
+                            <f:facet name="header">ID</f:facet>
+                            <h:outputText value="#{process.idProcess}" />
+                        </rich:column>
+
+                        <rich:column>
+                            <f:facet name="header">User</f:facet>
+                            <h:outputText value="#{process.user.userName}" />
+                        </rich:column>
+                        <rich:column>
+                            <f:facet name="header">Name</f:facet>
+                            <h:outputText value="#{process.name}" />
+                        </rich:column>
+                        <rich:column>
+                            <f:facet name="header">Type</f:facet>
+                            <h:outputText value="#{process.type}" />
+                        </rich:column>
+                        <rich:column>
+                            <f:facet name="header">Priority</f:facet>
+                            <h:outputText value="#{process.priority}" />
+                        </rich:column>
+                        <rich:column>
+                            <f:facet name="header">Status</f:facet>                                                        
+                            <h:outputText value="#{process.status}" 
+                                          style="color: green;" 
+                                          rendered="#{process.status.equalsIgnoreCase('finished')}"/>
+                            <h:outputText value="#{process.status}" 
+                                          style="color: red;" 
+                                          rendered="#{process.status.equalsIgnoreCase('running')}"/>
+                            <h:outputText value="#{process.status}" 
+                                          style="color: blue;" 
+                                          rendered="#{process.status.equalsIgnoreCase('waiting')}"/>                                                      
+                        </rich:column>
+                        <rich:column>
+                            <f:facet name="header">Start time</f:facet>
+                            <h:outputText value="#{process.startTime}" />
+                        </rich:column>
+                        <rich:column>
+                            <f:facet name="header">End time</f:facet>
+                            <h:outputText value="#{process.endTime}" />
+                        </rich:column>
+                        <rich:column>
+                            <f:facet name="header">Actions</f:facet>
+                            <h:selectOneMenu value="#{processesBean.action}">
+                                <f:selectItem noSelectionOption="true"
+                                              id="noOption"/>
+                                <f:selectItem itemLabel="Cancel" 
+                                              itemValue="cancel"
+                                              itemDisabled="#{processesBean.isFinished(process.idProcess)}"/>
+                                <f:selectItem itemLabel="Force Start" 
+                                              itemValue="force"
+                                              itemDisabled="#{not processesBean.isWaiting(process.idProcess)}"/>
+                            </h:selectOneMenu>
+                        </rich:column>
+                        <f:facet name="footer">
+                            <rich:column colspan="8">
+                                <a4j:commandButton id="procButton"
+                                                   value="Submit" 
+                                                   action="#{processesBean.executeActions}"                                                       
+                                                   render="procSummaryTable" />
+                            </rich:column>
+                        </f:facet>                        
+                    </rich:dataTable> 
+                </h:form>
+                <!--h:graphicImage library="img" name="Screenshot3.png" width="100%" /-->
+            </h:panelGrid> 
+            <h:outputText value="SYSTEM" styleClass="dashboardSubtitle" />
+            <h:panelGrid id="systemDashboard" columns="2" 
+                         styleClass="dashboardPanel" width="100%"
+                         columnClasses="dashboardCols,dashboardCols">
+                <h:panelGrid>
+                    <div id="dashboardSecondDiv" style="height: 200px; width: 500px;" />
+                    <h:outputScript library="jqPlot" name="createSystemGraph.js"/>
+                    <!--h:graphicImage library="img" name="Screenshot2.png" width="100%" /-->
+                </h:panelGrid>
+                <h:form>
+                    <rich:dataTable id="nodesSummaryTable" 
+                                    value="#{nodesBean.getLastNodes(5)}" 
+                                    var="node" 
+                                    iterationStatusVar="it"                                     
+                                    rows="5">
+                        <rich:column>
+                            <f:facet name="header">ID</f:facet>
+                            <h:outputText value="#{node.idNode}" />                                
+                        </rich:column>
+                        <rich:column>
+                            <f:facet name="header">Hostname</f:facet>
+                            <h:outputText value="#{node.hostname}" />
+                        </rich:column>
+                        <rich:column>
+                            <f:facet name="header">IP</f:facet>
+                            <h:outputText value="#{node.ip}" />
+                        </rich:column>
+                        <rich:column styleClass="subStatusCol2">
+                            <f:facet name="header">Status</f:facet>
+                            <!--h:outputText value="{node.status}" /-->
+                            <h:graphicImage library="img" 
+                                            name="greenOkIcon.png" 
+                                            rendered="#{node.status.equalsIgnoreCase('ok')}"
+                                            height="24px"/>
+                            <h:graphicImage library="img" 
+                                            name="warningIcon.png" 
+                                            rendered="#{node.status.equalsIgnoreCase('warning')}" 
+                                            height="24px"/>
+                            <h:graphicImage library="img" 
+                                            name="errorIcon.png" 
+                                            rendered="#{node.status.equalsIgnoreCase('error')}" 
+                                            height="24px"/>
+                        </rich:column>
+                        <rich:column styleClass="subStatusCol2">
+                            <f:facet name="header">CPU</f:facet>
+                            <!--h:outputText value="{node.cpu}" /-->
+                            <h:graphicImage library="img" 
+                                            name="greenOkIcon.png" 
+                                            rendered="#{node.cpu.equalsIgnoreCase('ok')}"
+                                            height="24px"/>
+                            <h:graphicImage library="img" 
+                                            name="warningIcon.png" 
+                                            rendered="#{node.cpu.equalsIgnoreCase('warning')}" 
+                                            height="24px"/>
+                            <h:graphicImage library="img" 
+                                            name="errorIcon.png" 
+                                            rendered="#{node.cpu.equalsIgnoreCase('error')}" 
+                                            height="24px"/>
+                        </rich:column>
+                        <rich:column styleClass="subStatusCol2">
+                            <f:facet name="header">Mem</f:facet>
+                            <!--h:outputText value="{node.mem}" /-->
+                            <h:graphicImage library="img" 
+                                            name="greenOkIcon.png" 
+                                            rendered="#{node.mem.equalsIgnoreCase('ok')}"
+                                            height="24px"/>
+                            <h:graphicImage library="img" 
+                                            name="warningIcon.png" 
+                                            rendered="#{node.mem.equalsIgnoreCase('warning')}" 
+                                            height="24px"/>
+                            <h:graphicImage library="img" 
+                                            name="errorIcon.png" 
+                                            rendered="#{node.mem.equalsIgnoreCase('error')}" 
+                                            height="24px"/>
+                        </rich:column>
+                        <rich:column styleClass="subStatusCol2">
+                            <f:facet name="header">Disk</f:facet>
+                            <!--h:outputText value="{node.disk}" /-->
+                            <h:graphicImage library="img" 
+                                            name="greenOkIcon.png" 
+                                            rendered="#{node.disk.equalsIgnoreCase('ok')}"
+                                            height="24px"/>
+                            <h:graphicImage library="img" 
+                                            name="warningIcon.png" 
+                                            rendered="#{node.disk.equalsIgnoreCase('warning')}" 
+                                            height="24px"/>
+                            <h:graphicImage library="img" 
+                                            name="errorIcon.png" 
+                                            rendered="#{node.disk.equalsIgnoreCase('error')}" 
+                                            height="24px"/>
+                        </rich:column>                            
+                        <rich:column>
+                            <f:facet name="header">Actions</f:facet>
+                            <h:selectOneMenu value="">
+                                <f:selectItem noSelectionOption="true"
+                                              id="noOption"/>   
+                                <f:selectItem id="action1" itemLabel="action1"/>
+                                <f:selectItem id="action2" itemLabel="action2"/>
+                            </h:selectOneMenu>
+                        </rich:column>
+                        <f:facet name="footer">
+                            <rich:column colspan="8">
+                                <a4j:commandButton id="nodeButton"
+                                                   value="Submit"                                                        
+                                                   render="nodeSummaryTable" />
+                            </rich:column>
+                        </f:facet>                        
+                    </rich:dataTable>   
+                </h:form>
+            </h:panelGrid>                    
+            <h:panelGrid id="alertsUpdateDashboard" 
+                         columns="2" 
+                         cellspacing="0" 
+                         cellpadding="0"
+                         width="100%">                    
+                <h:panelGrid id="alertsDashboard" 
+                             cellspacing="0" 
+                             cellpadding="0"
+                             width="100%">
+                    <h:outputText value="ALERTS" styleClass="dashboardSubtitle" />   
+                    <h:panelGrid id="alertsInnerPanel"
+                                 columns="5"                                          
+                                 width="100%">
+                        <h:panelGrid styleClass="alertPanel" 
+                                     columnClasses="alertColPanel">
+                            <h:panelGrid columns="2" 
+                                         columnClasses="subStatusCol2,subStatusCol2">                                        
+                                <h:graphicImage library="img" 
+                                                name="diskIcon.png" 
+                                                height="32px;" />
+                                <h:outputText value="Disk" 
+                                              styleClass="alertTitle"/>
+                            </h:panelGrid>
+                            <h:panelGrid columns="3" 
+                                         styleClass="alertInnerPanel" 
+                                         columnClasses="subStatusCol2,subStatusCol3,subStatusCol2" > 
+                                <h:outputText value="CRITICAL" styleClass="alertInnerTitle"/>
+                                <h:outputText value="" />
+                                <h:outputText value="WARNING" styleClass="alertInnerTitle"/>
+                                <h:outputText value="2" styleClass="alertCritPositNumber"/>
+                                <h:outputText value="|" styleClass="separator" />
+                                <h:outputText value="2" styleClass="alertWarnPositNumber"/>                                        
+                            </h:panelGrid>
+                        </h:panelGrid>
+                        <h:panelGrid styleClass="alertPanel" 
+                                     columnClasses="alertColPanel">
+                            <h:panelGrid columns="2" 
+                                         columnClasses="subStatusCol2,subStatusCol2">                                        
+                                <h:graphicImage library="img" 
+                                                name="cpuIcon.png" 
+                                                height="32px;" />
+                                <h:outputText value="CPU" 
+                                              styleClass="alertTitle"/>
+                            </h:panelGrid>
+                            <h:panelGrid columns="3" 
+                                         styleClass="alertInnerPanel" 
+                                         columnClasses="subStatusCol2,subStatusCol3,subStatusCol2" > 
+                                <h:outputText value="CRITICAL" styleClass="alertInnerTitle"/>
+                                <h:outputText value="" />
+                                <h:outputText value="WARNING" styleClass="alertInnerTitle"/>
+                                <h:outputText value="0" styleClass="alertZeroNumber"/>
+                                <h:outputText value="|" styleClass="separator" />
+                                <h:outputText value="2" styleClass="alertWarnPositNumber"/>                                        
+                            </h:panelGrid>
+                        </h:panelGrid>
+                        <h:panelGrid styleClass="alertPanel" 
+                                     columnClasses="alertColPanel">
+                            <h:panelGrid columns="2" 
+                                         columnClasses="subStatusCol2,subStatusCol2">                                        
+                                <h:graphicImage library="img" 
+                                                name="gpuIcon.png" 
+                                                height="32px;" />
+                                <h:outputText value="GPU" 
+                                              styleClass="alertTitle"/>
+                            </h:panelGrid>
+                            <h:panelGrid columns="3" 
+                                         styleClass="alertInnerPanel" 
+                                         columnClasses="subStatusCol2,subStatusCol3,subStatusCol2" > 
+                                <h:outputText value="CRITICAL" styleClass="alertInnerTitle"/>
+                                <h:outputText value="" />
+                                <h:outputText value="WARNING" styleClass="alertInnerTitle"/>
+                                <h:outputText value="2" styleClass="alertCritPositNumber"/>
+                                <h:outputText value="|" styleClass="separator" />
+                                <h:outputText value="0" styleClass="alertZeroNumber"/>                                        
+                            </h:panelGrid>
+                        </h:panelGrid>
+                        <h:panelGrid styleClass="alertPanel" 
+                                     columnClasses="alertColPanel">
+                            <h:panelGrid columns="2" 
+                                         columnClasses="subStatusCol2,subStatusCol2">                                        
+                                <h:graphicImage library="img" 
+                                                name="tempIcon.png" 
+                                                height="32px;" />
+                                <h:outputText value="TEMP" 
+                                              styleClass="alertTitle"/>
+                            </h:panelGrid>
+                            <h:panelGrid columns="3" 
+                                         styleClass="alertInnerPanel" 
+                                         columnClasses="subStatusCol2,subStatusCol3,subStatusCol2" > 
+                                <h:outputText value="CRITICAL" styleClass="alertInnerTitle"/>
+                                <h:outputText value="" />
+                                <h:outputText value="WARNING" styleClass="alertInnerTitle"/>
+                                <h:outputText value="0" styleClass="alertZeroNumber"/>
+                                <h:outputText value="|" styleClass="separator" />
+                                <h:outputText value="1" styleClass="alertWarnPositNumber"/>                                        
+                            </h:panelGrid>
+                        </h:panelGrid>
+                        <h:panelGrid styleClass="alertPanel" 
+                                     columnClasses="alertColPanel">
+                            <h:panelGrid columns="2" 
+                                         columnClasses="subStatusCol2,subStatusCol2">                                        
+                                <h:graphicImage library="img" 
+                                                name="errorIcon.png" 
+                                                height="32px;" />
+                                <h:outputText value="Errors" 
+                                              styleClass="alertTitle"/>
+                            </h:panelGrid>
+                            <h:panelGrid columns="3" 
+                                         styleClass="alertInnerPanel" 
+                                         columnClasses="subStatusCol2,subStatusCol3,subStatusCol2" > 
+                                <h:outputText value="CRITICAL" styleClass="alertInnerTitle"/>
+                                <h:outputText value="" />
+                                <h:outputText value="WARNING" styleClass="alertInnerTitle"/>
+                                <h:outputText value="0" styleClass="alertZeroNumber"/>
+                                <h:outputText value="|" styleClass="separator" />
+                                <h:outputText value="0" styleClass="alertZeroNumber"/>                                        
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </h:panelGrid>
+                </h:panelGrid>                    
+                <h:panelGrid id="updateDashboard" styleClass="verticalSeparator">
+                    <h:panelGrid>
+                        <h:outputText value="OTHERS" styleClass="dashboardSubtitle" />
+                        <h:panelGrid styleClass="othersPanel" 
+                                     columnClasses="alertColPanel">
+                            <h:panelGrid columns="2" 
+                                         columnClasses="subStatusCol2,subStatusCol2">                                        
+                                <h:graphicImage library="img" 
+                                                name="diskIcon.png" 
+                                                height="32px;" />
+                                <h:outputText value="Disk" 
+                                              styleClass="alertTitle"/>
+                            </h:panelGrid>
+                            <h:panelGrid columns="3" 
+                                         styleClass="alertInnerPanel" 
+                                         columnClasses="subStatusCol2,subStatusCol3,subStatusCol2" > 
+                                <h:outputText value="CRITICAL" styleClass="alertInnerTitle"/>
+                                <h:outputText value="" />
+                                <h:outputText value="WARNING" styleClass="alertInnerTitle"/>
+                                <h:outputText value="2" styleClass="alertCritPositNumber"/>
+                                <h:outputText value="|" styleClass="separator" />
+                                <h:outputText value="2" styleClass="alertWarnPositNumber"/>                                        
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </h:panelGrid>
+                </h:panelGrid>
+            </h:panelGrid>              
+    </h:body>
+</html>

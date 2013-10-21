@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <h:body>
+        <h:form> 
+            <a4j:poll id="testsTablePoll" 
+                      interval="5000" 
+                      enabled="#{testsBean.testsRunning.size()>0}" 
+                      render="testsHistoryTable testsTablePoll" />
+        </h:form>
+        <h:form>
+            <a4j:jsFunction name="setActiveTab"    
+                            render="poll,dashboardGrid,managementPanel,tasksPanel,myAccountPanel,myMonitorPanel">
+                <a4j:param name="activeTab" assignTo="#{userBean.activeTab}"/>
+            </a4j:jsFunction>
+        </h:form>
+        <h:form>
+            <a4j:jsFunction name="setActiveSub" 
+                            render="subManagementPanel,subTasksPanel,subAccountPanel,subMonitorPanel">
+                <a4j:param name="activeSub" assignTo="#{userBean.activeSub}"/>
+            </a4j:jsFunction> 
+        </h:form>
+                
+        <rich:popupPanel id="searchPopup" 
+                         modal="false" 
+                         autosized="true" 
+                         resizeable="false">
+            <f:facet name="header">
+                <h:outputText value="Search results" />
+            </f:facet>
+            <f:facet name="controls">
+                <h:outputLink value="#" 
+                              onclick="#{rich:component('searchPopup')}.hide(); return false;">
+                    <h:graphicImage library="img" name="closeIcon.png" width="16px" />
+                </h:outputLink>
+            </f:facet>
+            <h:panelGrid>      
+                <h:form>
+                <rich:dataTable id="resultsTasksTable" 
+                                value="#{processesBean.allProcesses}" 
+                                var="process" 
+                                iterationStatusVar="it"                                     
+                                rows="10"
+                                styleClass="centered">
+                    <rich:column>
+                        <f:facet name="header">ID</f:facet>
+                        <h:outputText value="#{process.idProcess}" />
+                    </rich:column>
+
+                    <rich:column>
+                        <f:facet name="header">User</f:facet>
+                        <h:outputText value="#{process.user.userName}" />
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">Name</f:facet>
+                        <h:outputText value="#{process.name}" />
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">Type</f:facet>
+                        <h:outputText value="#{process.type}" />
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">Priority</f:facet>
+                        <h:outputText value="#{process.priority}" />
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">Status</f:facet>                                                        
+                        <h:outputText value="#{process.status}" 
+                                      style="color: green;" 
+                                      rendered="#{process.status.equalsIgnoreCase('finished')}"/>
+                        <h:outputText value="#{process.status}" 
+                                      style="color: red;" 
+                                      rendered="#{process.status.equalsIgnoreCase('running')}"/>
+                        <h:outputText value="#{process.status}" 
+                                      style="color: blue;" 
+                                      rendered="#{process.status.equalsIgnoreCase('waiting')}"/>                                                      
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">Start time</f:facet>
+                        <h:outputText value="#{process.startTime}" />
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">End time</f:facet>
+                        <h:outputText value="#{process.endTime}" />
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">Actions</f:facet>
+                        <h:selectOneMenu value="#{processesBean.action}">
+                            <f:selectItem noSelectionOption="true"/>
+                            <f:selectItem itemLabel="Cancel" 
+                                          itemValue="cancel"
+                                          itemDisabled="#{processesBean.isFinished(process.idProcess)}"/>
+                            <f:selectItem itemLabel="Force Start" 
+                                          itemValue="force"
+                                          itemDisabled="#{not processesBean.isWaiting(process.idProcess)}"/>
+                        </h:selectOneMenu>
+                    </rich:column>
+                    <f:facet name="footer">
+                        <rich:dataScroller page="#{processesBean.page}" />                                
+                    </f:facet>                        
+                </rich:dataTable> 
+                </h:form>
+                <hr />
+                <h:panelGrid columns="6">
+                    <div id="resultOneDiv" class="resultPie" />
+                    <h:outputScript library="jqPlot" name="createDiskOne.js"/>
+                    <div id="resultTwoDiv" class="resultPie" />
+                    <h:outputScript library="jqPlot" name="createDiskTwo.js"/>
+                    <div id="resultThreeDiv" class="resultPie" /> 
+                    <h:outputScript library="jqPlot" name="createDiskThree.js"/>
+                </h:panelGrid>
+                <hr />                        
+                <h:panelGrid columns="4" styleClass="centered">
+                    <h:outputText value="Format" />
+                    <h:form>
+                    <h:selectOneMenu value="">
+                        <f:selectItem noSelectionOption="true"/>
+                        <f:selectItem itemLabel="PDF" 
+                                          itemValue="pdf"/>
+                        <f:selectItem itemLabel="CSV" 
+                                          itemValue="csv"/>
+                    </h:selectOneMenu>                            
+                    <h:commandButton value="Export">
+                        <rich:componentControl target="exportPopup" operation="show" />
+                    </h:commandButton>
+                    <h:commandButton value="Cancel" onclick="#{rich:component('searchPopup')}.hide(); return false;"/>
+                    </h:form>
+                </h:panelGrid>
+            </h:panelGrid>
+        </rich:popupPanel>
+
+        <rich:popupPanel id="exportPopup" 
+                         modal="true" 
+                         resizeable="true" 
+                         onmaskclick="#{rich:component('exportPopup')}.hide()">
+            <f:facet name="header">
+                <h:outputText value="Export result" />
+            </f:facet>
+            <f:facet name="controls">
+                <h:outputLink value="#" 
+                              onclick="#{rich:component('exportPopup')}.hide(); return false;">
+                    <h:graphicImage library="img" name="closeIcon.png" width="16px" />
+                </h:outputLink>
+            </f:facet>
+            <h:form>
+            <h:panelGrid styleClass="centered">
+                <h:outputText value="New PDF/CSV File"/>                        
+            </h:panelGrid>
+            <h:panelGrid styleClass="centered">
+                <h:commandButton value="OK" onclick="#{rich:component('exportPopup')}.hide(); return false;"/>
+            </h:panelGrid>
+            </h:form>
+        </rich:popupPanel>
+        
+        <h:form>
+            <a4j:jsFunction name="updateSub" render="launchCol">
+                <a4j:param name="activeSub" assignTo="#{userBean.activeSub}" />
+            </a4j:jsFunction>
+        </h:form>
+        
+        <rich:popupPanel id="uploadingPopup" 
+                         modal="false" 
+                         autosized="true" 
+                         left="40%">
+            <f:facet name="header">
+                <h:outputText value="Uploading file..." />
+            </f:facet>
+            <f:facet name="controls">
+                <h:outputLink value="#" 
+                              onclick="#{rich:component('uploadingPopup')}.hide(); return false;">
+                    <h:graphicImage library="img" name="closeIcon.png" width="16px" />
+                </h:outputLink>
+            </f:facet>                
+            <h:form>
+                <rich:fileUpload id="uploadingForm"
+                                 fileUploadListener="#{fileUploadBean.listener}" 
+                                 maxFilesQuantity="1"
+                                 addLabel="Select File"
+                                 listHeight="38px"
+                                 noDuplicate="true"
+                                 clearLabel="Clear">
+                    <a4j:ajax event="uploadcomplete" 
+                              execute="@none"
+                              render=":inputTextFile,uploadingForm"
+                              oncomplete="#{rich:component('uploadingPopup')}.hide(); return false;"/>
+                </rich:fileUpload>
+            </h:form>
+        </rich:popupPanel>
+        
+        <rich:popupPanel id="paramPopup" 
+                         modal="false" 
+                         autosized="true" 
+                         onhide="updateSub('Launch');">
+            <f:facet name="header">
+                <h:outputText value="New Parameter" />
+            </f:facet>
+            <f:facet name="controls">
+                <h:outputLink value="#" 
+                              onclick="#{rich:component('paramPopup')}.hide(); return false;">
+                    <h:graphicImage library="img" name="closeIcon.png" width="16px" />
+                </h:outputLink>
+            </f:facet>
+            <h:panelGrid columns="2">
+                <h:form>
+                <h:outputText value="Name: "/>
+                <h:inputText value="#{appsBean.newParam}"/>
+                <h:outputText value="Type: "/>
+                <h:selectOneRadio value="text">
+                    <f:selectItem itemLabel="Text" itemValue="text" />
+                    <f:selectItem itemLabel="Input File" itemValue="inputFile" />
+                </h:selectOneRadio>
+                <h:commandButton value="Accept" onclick="#{rich:component('paramPopup')}.hide(); return false;"/>
+                <h:commandButton value="Cancel" onclick="#{rich:component('paramPopup')}.hide(); return false;"/>
+                </h:form>
+            </h:panelGrid>
+        </rich:popupPanel>
+        
+        <rich:popupPanel header="Edit User Roles" 
+                         id="editPane" 
+                         domElementAttachment="parent" 
+                         width="600" 
+                         height="219"
+                         left="50"
+                         top="50"
+                         style="background-color: #FFDCDC">
+            <h:form>
+            <h:panelGrid columns="3" id="editGrid">                                                
+                <rich:panel style="width:560px;">
+                    <!--f:facet name="header">
+                        <h:outputText value="Roles"/>
+                    </f:facet-->
+                    <rich:pickList value="#{rolesBean.selectedRoles}" 
+                                   sourceCaption="Available roles" 
+                                   targetCaption="Current roles" 
+                                   listWidth="165px" 
+                                   listHeight="100px" 
+                                   orderable="true">
+                        <f:selectItems value="#{rolesBean.roles}" 
+                                       var="role" 
+                                       itemValue="#{role}" 
+                                       itemLabel="#{role.roleName}" />
+                        <f:converter converterId="rolesConverter" />
+                    </rich:pickList>
+                </rich:panel>                                                
+            </h:panelGrid>
+            <a4j:commandButton value="Store" 
+                               action="#{usersBean.store}" 
+                               render="usersTable" 
+                               execute="editPane"
+                               oncomplete="#{rich:component('editPane')}.hide(); #{rolesBean.removeNewRoles()}; return false;" />
+            <a4j:commandButton value="Cancel" 
+                               onclick="#{rich:component('editPane')}.hide(); return false;" />
+            </h:form>
+        </rich:popupPanel>
+        
+    </h:body>
+</html>

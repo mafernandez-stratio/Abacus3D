@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <h:body>        
+        <h:form id="subMonitor">
+            <h:panelGrid id ="subMonitorPanel" columns="4" styleClass="panelLinks" width="100%"                             
+                     columnClasses="subStatusCol2,subStatusCol2,subStatusCol2,subStatusCol2">                    
+                <a4j:commandLink styleClass="headerLinks" 
+                                 action="#{userBean.changeSub('Main')}" 
+                                 value="Main" 
+                                 render="subMonitorPanel,myMonitorPanel"
+                                 execute=":subMonitor"
+                                 disabled="#{userBean.activeSub.equalsIgnoreCase('Main')}"/>
+                <a4j:commandLink styleClass="headerLinks" 
+                                 action="#{userBean.changeSub('Launch')}" 
+                                 value="Launch" 
+                                 render="subMonitorPanel,myMonitorPanel"
+                                 execute=":subMonitor"
+                                 disabled="#{userBean.activeSub.equalsIgnoreCase('Launch')}"/>
+                <a4j:commandLink styleClass="headerLinks" 
+                                 action="#{userBean.changeSub('Monitor')}" 
+                                 value="Monitor" 
+                                 render="subMonitorPanel,myMonitorPanel"
+                                 execute=":subMonitor"
+                                 disabled="#{userBean.activeSub.equalsIgnoreCase('Monitor')}"/>
+                <a4j:commandLink styleClass="headerLinks" 
+                                 action="#{userBean.changeSub('Tests')}" 
+                                 value="Tests" 
+                                 render="subMonitorPanel,myMonitorPanel"
+                                 execute=":subMonitor"
+                                 disabled="#{userBean.activeSub.equalsIgnoreCase('Tests')}"/>                    
+            </h:panelGrid>
+        </h:form>                
+    </h:body>
+</html>

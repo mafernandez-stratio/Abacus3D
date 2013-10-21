@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <h:body>        
+        <h:form id="subAccount">
+            <h:panelGrid id ="subAccountPanel" columns="4" styleClass="panelLinks" width="100%"                             
+                     columnClasses="subStatusCol2,subStatusCol2,subStatusCol2,subStatusCol2">                    
+                <a4j:commandLink styleClass="headerLinks" 
+                                 action="#{userBean.changeSub('Main')}" 
+                                 value="Main" 
+                                 render="subAccountPanel,myAccountPanel"
+                                 execute=":subAccount"
+                                 disabled="#{userBean.activeSub.equalsIgnoreCase('Main')}"/>
+                <a4j:commandLink styleClass="headerLinks" 
+                                 action="#{userBean.changeSub('Launch')}" 
+                                 value="Launch" 
+                                 render="subAccountPanel,myAccountPanel"
+                                 execute=":subAccount"
+                                 disabled="#{userBean.activeSub.equalsIgnoreCase('Launch')}"/>
+                <a4j:commandLink styleClass="headerLinks" 
+                                 action="#{userBean.changeSub('Monitor')}" 
+                                 value="Monitor" 
+                                 render="subAccountPanel,myAccountPanel"
+                                 execute=":subAccount"
+                                 disabled="#{userBean.activeSub.equalsIgnoreCase('Monitor')}"/>
+                <a4j:commandLink styleClass="headerLinks" 
+                                 action="#{userBean.changeSub('Tests')}" 
+                                 value="Tests" 
+                                 render="subAccountPanel,myAccountPanel"
+                                 execute=":subAccount"
+                                 disabled="#{userBean.activeSub.equalsIgnoreCase('Tests')}"/>                    
+            </h:panelGrid>
+        </h:form>
+        <br />
+        <h:panelGrid id="myAccountPanel" styleClass="appTable">
+            <h:form id="myAccountForm">
+                <rich:dataTable value="#{appsBean.allApps}"
+                                var="app"
+                                iterationStatusVar="it" 
+                                id="myAccountTable" 
+                                rows="20"
+                                rendered="#{userBean.getActiveSub().equalsIgnoreCase('Main')}">
+                    <rich:column>
+                        <f:facet name="header">Logo</f:facet>
+                        <h:graphicImage name="#{app.logo}" 
+                                        library="img" 
+                                        height="24px"/>
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">App</f:facet>
+                        <h:outputText value="#{app.name}" />
+                    </rich:column>                        
+                    <rich:column>
+                        <f:facet name="header">Status</f:facet>
+                        <h:outputText value="#{app.status}" />
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">Actions</f:facet>
+                        <h:selectOneMenu value="#{appsBean.action}">    
+                            <f:selectItem noSelectionOption="true"/>
+                            <f:selectItem itemLabel="Install" 
+                                          itemValue="install" 
+                                          itemDisabled="#{appsBean.isAvailable(app.name)}" />
+                            <f:selectItem itemLabel="Uninstall"
+                                          itemValue="uninstall"
+                                          itemDisabled="#{appsBean.isInstalled(app.name)}" />
+                        </h:selectOneMenu>
+                    </rich:column>                          
+                    <f:facet name="footer">
+                        <rich:column colspan="4">
+                            <a4j:commandButton value="Submit" render="myAccountTable" execute=":myAccountFrom" />
+                        </rich:column>
+                    </f:facet>                        
+                </rich:dataTable>
+                <h:panelGrid columns="2" rendered="#{userBean.getActiveSub().equalsIgnoreCase('Main')}">
+                    <br />
+                    <br />                                               
+                    <br />
+                    <h:form id="pbForm">
+                        <rich:progressBar mode="ajax" 
+                                          value="50" 
+                                          interval="500" 
+                                          id="pb"
+                                          enabled="#{userBean.activeTab.equalsIgnoreCase('MyAccount')}" 
+                                          minValue="0" 
+                                          maxValue="100">                            
+                            <h:outputText value="50 %" />
+
+                            <!-- Update the progress for each AJAX update -->
+                            <a4j:ajax event="begin" listener="#{progressBarBean.increment}" />
+                        </rich:progressBar>
+                    </h:form>
+                </h:panelGrid>
+            </h:form>
+        </h:panelGrid>
+    </h:body>
+</html>

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <h:body>
+        <h:form id="subManagement">
+            <h:panelGrid id ="subManagementPanel" columns="4" styleClass="panelLinks" width="100%"                             
+                     columnClasses="subStatusCol2,subStatusCol2,subStatusCol2,subStatusCol2">                    
+                <a4j:commandLink styleClass="headerLinks" 
+                                 action="#{userBean.changeSub('Main')}" 
+                                 value="Main" 
+                                 render="subManagementPanel,managementPanel"
+                                 execute=":subManagement"
+                                 disabled="#{userBean.activeSub.equalsIgnoreCase('Main')}"/>
+                <a4j:commandLink styleClass="headerLinks" 
+                                 action="#{userBean.changeSub('Launch')}" 
+                                 value="Launch" 
+                                 render="subManagementPanel,managementPanel"
+                                 execute=":subManagement,"
+                                 disabled="#{userBean.activeSub.equalsIgnoreCase('Launch')}"/>
+                <a4j:commandLink styleClass="headerLinks" 
+                                 action="#{userBean.changeSub('Monitor')}" 
+                                 value="Monitor" 
+                                 render="subManagementPanel,managementPanel"
+                                 execute=":subManagement"
+                                 disabled="#{userBean.activeSub.equalsIgnoreCase('Monitor')}"/>
+                <a4j:commandLink styleClass="headerLinks" 
+                                 action="#{userBean.changeSub('Tests')}" 
+                                 value="Tests" 
+                                 render="subManagementPanel,managementPanel"
+                                 execute=":subManagement"
+                                 disabled="#{userBean.activeSub.equalsIgnoreCase('Tests')}"/>                    
+            </h:panelGrid>
+        </h:form>
+        <br />
+        <h:outputText value="Information not available for non-administrators"
+                      rendered="#{!userBean.isAdmin()}"/>
+
+        <h:panelGrid id="managementPanel" columns="2" columnClasses="regularCol,topCol">                                                            
+            <h:form id="ldapForm">
+                <rich:panel id="ldapPanel"
+                            rendered="#{userBean.getActiveSub().equalsIgnoreCase('Main')}">
+                            <!-- rendered="{userBean.isAdmin()}" -->
+                    <f:facet name="header">
+                        <h:outputText value="LDAP Configuration" />
+                    </f:facet>
+                    <h:panelGrid columns="2">                        
+                        <h:outputText value="Host: " />
+                        <h:inputText value="#{managerBean.host}" />
+                        <h:outputText value="Port: " />
+                        <h:inputText value="#{managerBean.port}" />
+                        <h:outputText value="cn: " />
+                        <h:inputText value="#{managerBean.cn}" />
+                        <h:outputText value="Password: " />
+                        <h:inputSecret value="#{managerBean.password}" redisplay="true" />
+                        <h:outputText value="Group (OU): " />
+                        <h:inputText value="#{managerBean.group}" />
+                        <h:outputText value="DCs: " />
+                        <h:inputText value="#{managerBean.dcs}" />
+                        <h:outputText value=" "/>
+                        <a4j:commandButton value="Save" 
+                                           action="#{managerBean.saveLdapInfo()}"
+                                           render="ldapPanel"
+                                           execute=":ldapForm"/>
+                    </h:panelGrid>
+                </rich:panel>
+            </h:form> 
+            <h:form>
+            <rich:dataTable id="usersTable"
+                            value="#{usersBean.allUsers}" 
+                            var="user" 
+                            iterationStatusVar="it"                                      
+                            rows="15"
+                            rendered="#{userBean.getActiveSub().equalsIgnoreCase('Main')}"
+                            styleClass="rolesTable">
+                <rich:column>
+                    <f:facet name="header">#</f:facet>
+                    #{it.index}
+                </rich:column>
+                <rich:column>
+                    <f:facet name="header">Username</f:facet>
+                    <h:outputText value="#{user.userName}" />
+                </rich:column>
+                <rich:column>
+                    <f:facet name="header">Created</f:facet>
+                    <h:outputText value="#{user.created}" />
+                </rich:column>
+                <rich:column>
+                    <f:facet name="header">Last Connection</f:facet>
+                    <h:outputText value="#{user.lastConnection}" />
+                </rich:column> 
+                <rich:column>
+                    <f:facet name="header">Comment</f:facet>
+                    <h:outputText value="#{user.comment}" />
+                </rich:column> 
+                <rich:column>  
+                    <f:facet name="header">Roles</f:facet>
+                    <a4j:commandLink styleClass="no-decor" 
+                                     render="editGrid" 
+                                     execute="@this"
+                                     action="#{rolesBean.setCurrentIndex(it.index)}"
+                                     oncomplete="#{rich:component('editPane')}.show()">
+                        <h:graphicImage library="img"
+                                        name="edit.png" 
+                                        alt="edit" />
+                        <a4j:param value="#{it.index}" 
+                                   assignTo="#{usersBean.currentUserIndex}" />
+                        <f:setPropertyActionListener target="#{usersBean.editedUser}" 
+                                                     value="#{user}" />
+                    </a4j:commandLink>
+                </rich:column>
+                <f:facet name="footer">
+                    <rich:dataScroller page="#{usersBean.page}" />
+                </f:facet>
+            </rich:dataTable>  
+            </h:form>
+        </h:panelGrid>
+                      
+    </h:body>
+</html>

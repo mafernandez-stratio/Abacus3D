@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <h:body>
+        <h:form>
+            <rich:collapsiblePanel id="statusPanel" 
+                                   header="Status" 
+                                   switchType="client"
+                                   bodyClass="statusStyle"
+                                   headerClass="headerStatus">
+                <h:panelGrid columns="5"                            
+                             width="100%"
+                             styleClass="outerPanel"
+                             cellspacing="0">
+                    <h:panelGrid id="status_1_panel" 
+                                 styleClass="innerPanel">
+                        <h:outputText value="INFO" styleClass="subStatusTitle" />
+                        <h:panelGrid columns="2" >                        
+                            <h:graphicImage library="img" name="serverIcon.png" height="48px;" 
+                                            styleClass="statusGraphic" />
+                                <h:panelGrid columns="2" columnClasses="subStatusCol">
+                                <h:outputText value="Name: " />
+                                <h:outputText value="miguel-Ubuntu" styleClass="subStatusTitle" />
+                                <h:outputText value="IP: " />
+                                <h:outputText value="192.10.0.100" styleClass="subStatusTitle" />
+                                <h:outputText value="Status: " />
+                                <h:graphicImage library="img" name="greenOkIcon.png" height="16px" styleClass="subStatusTitle" />
+                                <h:outputText value="GPU: " />
+                                <h:outputText value="Nvidia" styleClass="subStatusTitle" />
+                            </h:panelGrid>
+                        </h:panelGrid>                    
+                    </h:panelGrid>
+                    <h:panelGrid id="status_2_panel" styleClass="innerPanel">
+                        <h:outputText value="COMPUTER" styleClass="subStatusTitle" />                    
+                        <div id="computerBarDiv" style="height: 65px; width: 176px;" />
+                        <h:outputScript library="jqPlot" name="createComputerGraph.js"/>
+                    </h:panelGrid>
+                    <h:panelGrid id="status_3_panel" styleClass="innerPanel">
+                        <h:outputText value="GPU" styleClass="subStatusTitle" />
+                        <div id="gpuBarDiv" style="height: 65px; width: 118px;" />
+                        <h:outputScript library="jqPlot" name="createGpuGraph.js"/>                                       
+                    </h:panelGrid>
+                    <h:panelGrid id="status_4_panel" styleClass="innerPanel">
+                        <h:outputText value="SYSTEM HEALTH" styleClass="subStatusTitle" />                    
+                        <h:panelGrid columns="8" columnClasses="subStatusCol2,subStatusCol2,subStatusCol2,subStatusCol2">
+                            <div id="queuedBarDiv" style="height: 65px; width: 118px;" />   
+                            <h:outputScript library="jqPlot" name="createQueuedGraph.js"/>
+                            <div id="runningBarDiv" style="height: 65px; width: 118px;" /> 
+                            <h:outputScript library="jqPlot" name="createRunningGraph.js"/>
+                            <div id="loadBarDiv" style="height: 65px; width: 118px;" />                                                
+                            <h:outputScript library="jqPlot" name="createLoadGraph.js"/>                        
+                            <div id="diskBarDiv" style="height: 65px; width: 118px;"/>  
+                            <h:outputScript library="jqPlot" name="createDiskGraph.js"/>
+                        </h:panelGrid>                    
+                    </h:panelGrid>                
+                    <h:panelGrid id="status_5_panel" styleClass="innerPanel">
+                        <a4j:commandButton value="Refresh" 
+                                           render="outerStatusPanel"/>
+                    </h:panelGrid>                                
+                </h:panelGrid>
+            </rich:collapsiblePanel>
+        </h:form>        
+    </h:body>
+</html>

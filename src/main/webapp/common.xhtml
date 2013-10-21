@@ -4,11 +4,46 @@ To change this template, choose Tools | Templates
 and open the template in the editor.
 -->
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-        <title>TODO supply a title</title>
-    </head>
-    <body>
-        <div>TODO write content</div>
-    </body>
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <f:event type="preRenderView" listener="#{userBean.checkNotLoggedin}" />
+    <f:view>
+        <h:head>
+            <title>ABACUS - Powered by CEDIANT</title>
+            <h:outputStylesheet library="css" name="main.css" />
+            <h:outputStylesheet library="jqPlot" name="jquery.jqplot.css" />
+        </h:head>
+        <h:body onload="#{userBean.setActiveTab('Dashboard')}; #{userBean.changeSub('Main')};"
+                onunload="#{userBean.setActiveTab('Dashboard')}; #{userBean.changeSub('Main')};">                        
+            <ui:insert name="import">
+                <ui:include src="import.xhtml" />
+            </ui:insert>
+            <ui:insert name="global">
+                <ui:include src="global.xhtml" />
+            </ui:insert>
+            <div id="wrapDiv">                  
+                <ui:insert name="header" >
+                    <ui:include src="header.xhtml" />
+                </ui:insert> 
+                <ui:insert name="bar" >
+                    <ui:include src="bar.xhtml" />
+                </ui:insert>
+                <div id="mainDiv">
+                    <ui:insert name="content" >
+                        <ui:include src="contents.xhtml" />
+                    </ui:insert>
+                </div>
+            </div>
+            <div id="footerDiv">
+                <ui:insert name="footer" >
+                    <ui:include src="footer.xhtml" />
+                </ui:insert>
+            </div>
+        </h:body>
+    </f:view>
 </html>

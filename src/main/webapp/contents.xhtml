@@ -4,11 +4,113 @@ To change this template, choose Tools | Templates
 and open the template in the editor.
 -->
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-        <title>TODO supply a title</title>
-    </head>
-    <body>
-        <div>TODO write content</div>
-    </body>
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <h:body>
+        <ui:composition> 
+            <rich:tabPanel id="generalTabPanel"
+                           switchType="client" 
+                           activeItem="#{userBean.activeTab==null?'Dashboard':userBean.activeTab}"
+                           tabActiveHeaderClass="tabActive">
+                
+                <rich:tab header="Dashboard"
+                          id="Dashboard"
+                          onenter="setActiveTab('Dashboard'); buildgraphs('#{dashboardBean.strOne}', '#{dashboardBean.strTwo}', #{dashboardBean.interval});"                      
+                          render="poll,dashboardGrid"
+                          contentClass="contentTab">  
+                    <f:facet name="header">
+                        <h:panelGroup>
+                            <h:panelGrid columns="2" columnClasses="middleCol,middleCol">
+                                <h:graphicImage library="img" name="dashboard.png" height="18px;"/>
+                                <h:outputLabel value="Dashboard"/>
+                            </h:panelGrid>
+                        </h:panelGroup>
+                    </f:facet> 
+                    <ui:insert name="dashboard" >
+                        <ui:include src="dashboard.xhtml" />
+                    </ui:insert>
+                </rich:tab>
+                
+                <rich:tab header="Tasks"
+                          id="Tasks"
+                          onenter="setActiveTab('Tasks')"
+                          onleave="setActiveSub('Main')"
+                          contentClass="richTabContent">  
+                    <f:facet name="header">
+                        <h:panelGroup>
+                            <h:panelGrid columns="2" columnClasses="middleCol,middleCol">
+                                <h:graphicImage library="img" name="tasks.png" height="18px;"/>
+                                <h:outputLabel value="Tasks"/>
+                            </h:panelGrid>
+                        </h:panelGroup>
+                    </f:facet> 
+                    <ui:insert name="tasks" >
+                        <ui:include src="tasks.xhtml" />
+                    </ui:insert>                
+                </rich:tab>
+                
+                <rich:tab header="Management"
+                          id="Management"
+                          onenter="setActiveTab('Management')"
+                          onleave="setActiveSub('Main')"
+                          contentClass="richTabContent">
+                    <f:facet name="header">
+                        <h:panelGroup>
+                            <h:panelGrid columns="2" columnClasses="middleCol,middleCol">
+                                <h:graphicImage library="img" name="management.png" height="18px;"/>
+                                <h:outputLabel value="Management"/>
+                            </h:panelGrid>
+                        </h:panelGroup>
+                    </f:facet>
+                    <ui:insert name="management" >
+                        <ui:include src="management.xhtml" />
+                    </ui:insert>
+                </rich:tab>
+
+                <rich:tab header="Monitor"
+                          id="Monitor"
+                          onenter="setActiveTab('Monitor')"
+                          onleave="setActiveSub('Main')"
+                          contentClass="richTabContent">
+                    <f:facet name="header">
+                        <h:panelGroup>
+                            <h:panelGrid columns="2" columnClasses="middleCol,middleCol">
+                                <h:graphicImage library="img" name="monitor.png" height="18px;"/>
+                                <h:outputLabel value="Monitor"/>
+                            </h:panelGrid>
+                        </h:panelGroup>
+                    </f:facet>   
+                    <ui:insert name="monitor" >
+                        <ui:include src="monitor.xhtml" />
+                    </ui:insert>
+                </rich:tab>
+                
+                <rich:tab header="My account"
+                          id="MyAccount"
+                          onenter="setActiveTab('MyAccount')"
+                          onleave="setActiveSub('Main')"
+                          contentClass="richTabContent"> 
+                    <f:facet name="header">
+                        <h:panelGroup>
+                            <h:panelGrid columns="2" columnClasses="middleCol,middleCol">
+                                <h:graphicImage library="img" name="account.png" height="18px;"/>
+                                <h:outputLabel value="My Account"/>
+                            </h:panelGrid>
+                        </h:panelGroup>
+                    </f:facet>
+                
+                    <ui:insert name="account" >
+                        <ui:include src="account.xhtml" />
+                    </ui:insert>
+                
+                </rich:tab>
+
+            </rich:tabPanel>
+        </ui:composition>
+    </h:body>
 </html>
