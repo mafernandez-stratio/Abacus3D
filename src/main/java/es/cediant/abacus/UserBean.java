@@ -318,7 +318,8 @@ public class UserBean implements Serializable {
                 User user = uh.getUser(username);
                 setUserId(user.getIdUser().toString());     
                 //System.out.println("userId="+userId); 
-                FacesContext.getCurrentInstance().getExternalContext().redirect("/main.xhtml");
+                //FacesContext.getCurrentInstance().getExternalContext().redirect("/main.xhtml");
+                FacesContext.getCurrentInstance().getExternalContext().redirect("/home.xhtml");
             } else {
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_ERROR, 
